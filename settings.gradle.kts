@@ -6,4 +6,5 @@ rootProject.name = "multimodule-example"
 include(":graphql-gateway")
 include(":model-contracts")
 include(":library-service")
+include(":identity-management")
 

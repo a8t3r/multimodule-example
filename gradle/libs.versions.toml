@@ -3,14 +3,17 @@ kotlin-logging = "3.0.4"
 lorem = "2.1"
 j2html = "1.6.0"
 kotlin = "1.8.0"
-micronaut-plugin = "3.7.0"
+micronautPlugin = "3.7.0"
 dokka = "1.7.20"
 detekt = "1.21.0"
 micronaut = "3.8.2"
+micronautSecurity = "3.9.2"
 coroutines = "1.6.4"
 graphqlKotlin = "6.3.5"
 graphqlJava = "19.2"
 graphqlExtendedScalars = "19.0"
+kotlinxSerializationJson = "1.4.1"
+kotlinxSerializationPlugin = "1.8.0"
 
 [libraries]
 # project dependencies
@@ -22,15 +25,18 @@ graphql-scalars = { module = "com.graphql-java:graphql-java-extended-scalars", v
 kotlin-graphql = { module = "com.expediagroup:graphql-kotlin-server", version.ref = "graphqlKotlin" }
 kotlin-graphql-schema-generator = { module = "com.expediagroup:graphql-kotlin-schema-generator", version.ref = "graphqlKotlin" }
 kotlin-micronaut-core = { module = "io.micronaut:micronaut-core", version.ref = "micronaut" }
+kotlin-micronaut-security-annotations = { module = "io.micronaut.security:micronaut-security-annotations", version.ref = "micronautSecurity" }
+kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxSerializationJson" }
 
 # buildSrc dependencies (plugins)
 kotlin-gradle = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
 kotlin-allopen = { module = "org.jetbrains.kotlin:kotlin-allopen", version.ref = "kotlin" }
 kotlin-noarg = { module = "org.jetbrains.kotlin:kotlin-noarg", version.ref = "kotlin" }
+kotlinx-serialization-gradle = { module = "org.jetbrains.kotlin:kotlin-serialization", version.ref = "kotlinxSerializationPlugin" }
 dokka-gradle = { module = "org.jetbrains.dokka:dokka-gradle-plugin", version.ref = "dokka" }
 detekt-gradle = { module = "io.gitlab.arturbosch.detekt:detekt-gradle-plugin", version.ref = "detekt" }
 detekt-formatting = { module = "io.gitlab.arturbosch.detekt:detekt-formatting", version.ref = "detekt" }
-micronaut-gradle = { module = "io.micronaut.gradle:micronaut-gradle-plugin", version.ref = "micronaut-plugin" }
+micronaut-gradle = { module = "io.micronaut.gradle:micronaut-gradle-plugin", version.ref = "micronautPlugin" }
 
 [bundles]
 kotlinLogging = ["kotlin-logging"]

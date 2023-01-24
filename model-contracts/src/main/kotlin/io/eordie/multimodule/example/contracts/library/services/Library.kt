@@ -1,9 +1,9 @@
-package io.eordie.multimodule.example.contracts.services
+package io.eordie.multimodule.example.contracts.library.services
 
 import com.expediagroup.graphql.generator.annotations.GraphQLIgnore
-import io.eordie.multimodule.example.contracts.Query
-import io.eordie.multimodule.example.contracts.models.Author
-import io.eordie.multimodule.example.contracts.models.Book
+import io.eordie.multimodule.example.contracts.library.models.Author
+import io.eordie.multimodule.example.contracts.library.models.Book
+import io.eordie.multimodule.example.contracts.utils.Query
 import java.util.*
 
 interface Library : Query {

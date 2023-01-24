@@ -1,8 +1,8 @@
 package io.eordie.multimodule.example.library
 
-import io.eordie.multimodule.example.contracts.models.Author
-import io.eordie.multimodule.example.contracts.models.Book
-import io.eordie.multimodule.example.contracts.services.Library
+import io.eordie.multimodule.example.contracts.library.models.Author
+import io.eordie.multimodule.example.contracts.library.models.Book
+import io.eordie.multimodule.example.contracts.library.services.Library
 import jakarta.inject.Singleton
 import java.util.*
 

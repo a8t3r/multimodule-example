@@ -1,13 +1,10 @@
-package io.eordie.multimodule.example.contracts
+package io.eordie.multimodule.example.contracts.utils
 
 import graphql.schema.DataFetchingEnvironment
 import java.util.concurrent.CompletableFuture
 import kotlin.jvm.internal.CallableReference
 import kotlin.reflect.KCallable
 import kotlin.reflect.KClass
-
-interface Query
-interface Mutation
 
 fun <V> DataFetchingEnvironment.getValueBy(function: KCallable<*>, id: Any, vararg args: Any?): CompletableFuture<V> {
     return if (function !is CallableReference) error("should be callable reference") else {

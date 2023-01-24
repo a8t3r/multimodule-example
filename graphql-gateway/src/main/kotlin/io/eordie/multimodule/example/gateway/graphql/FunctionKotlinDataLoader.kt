@@ -1,7 +1,7 @@
-package io.eordie.multimodule.example.gateway.config
+package io.eordie.multimodule.example.gateway.graphql
 
 import com.expediagroup.graphql.dataloader.KotlinDataLoader
-import io.eordie.multimodule.example.contracts.Query
+import io.eordie.multimodule.example.contracts.utils.Query
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.future.future
 import org.dataloader.DataLoader
