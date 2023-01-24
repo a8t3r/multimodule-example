@@ -1,0 +1,27 @@
+console-reports:
+  active: true
+  exclude:
+    - '' # Exclude nothing -> Enable all workaround
+
+performance:
+  active: true
+  SpreadOperator:
+    active: false
+
+formatting:
+  active: true
+  NoWildcardImports:
+    active: false
+  MaximumLineLength:
+    active: false
+
+style:
+  active: true
+  WildcardImport:
+    active: false
+  UnnecessaryAbstractClass:
+    active: false
+  MaxLineLength:
+    active: false
+  ForbiddenComment:
+    values: [ 'TODO', 'FIXME', 'STOPSHIP' ]

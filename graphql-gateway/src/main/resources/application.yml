@@ -1,0 +1,12 @@
+micronaut:
+  application:
+    name: gateway
+
+graphql:
+  graphiql:
+    enabled: true
+
+netty:
+  default:
+    allocator:
+      max-order: 3
