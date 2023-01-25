@@ -1,14 +1,14 @@
 package io.eordie.multimodule.example.contracts.identitymanagement.models
 
 import io.micronaut.core.annotation.Introspected
-import java.time.OffsetDateTime
+import kotlinx.serialization.Serializable
 
 @Introspected
+@Serializable
 data class AuthenticationDetails(
     val userId: String?,
     val username: String? = null,
     val roles: List<String> = emptyList(),
-    val expiredAt: OffsetDateTime? = null,
     val active: Boolean = false,
     val emailVerified: Boolean = false
 ) {
