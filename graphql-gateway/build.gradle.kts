@@ -15,5 +15,4 @@ dependencies {
 
     implementation(project(":model-contracts"))
     implementation(project(":library-service"))
-    implementation(project(":identity-management"))
 }

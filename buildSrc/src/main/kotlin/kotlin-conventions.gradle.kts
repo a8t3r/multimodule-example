@@ -4,6 +4,7 @@ import gradle.kotlin.dsl.accessors._39e098789f9a3862479dce1fe3e5f9d3.implementat
 import gradle.kotlin.dsl.accessors._39e098789f9a3862479dce1fe3e5f9d3.testImplementation
 import io.gitlab.arturbosch.detekt.Detekt
 import org.jetbrains.kotlin.gradle.plugin.getKotlinPluginVersion
+import java.net.URI
 
 plugins {
     id("kotlin-conventions")
@@ -17,6 +18,9 @@ plugins {
 
 repositories {
     mavenCentral()
+    maven {
+        url = URI("https://jitpack.io")
+    }
 }
 
 val embeddedMajorAndMinorKotlinVersion = project.getKotlinPluginVersion().substringBeforeLast(".")
@@ -74,6 +78,9 @@ dependencies {
     implementation(platform("org.jetbrains.kotlin:kotlin-bom"))
 
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
+
+    val logbackVersion = libs.findVersion("logback").get()
+    implementation("ch.qos.logback:logback-classic:$logbackVersion")
 
     val coroutinesVersion = libs.findVersion("coroutines").get()
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutinesVersion")

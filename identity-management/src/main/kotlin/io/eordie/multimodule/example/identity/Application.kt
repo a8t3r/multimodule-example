@@ -1,7 +1,15 @@
 package io.eordie.multimodule.example.identity
 
-import io.micronaut.runtime.Micronaut.run
+import org.springframework.boot.SpringApplication
+import org.springframework.boot.autoconfigure.SpringBootApplication
+import org.springframework.boot.autoconfigure.liquibase.LiquibaseAutoConfiguration
 
-fun main(args: Array<String>) {
-    run(*args)
+@SpringBootApplication(exclude = [LiquibaseAutoConfiguration::class])
+open class Application {
+    companion object {
+        @JvmStatic
+        fun main(args: Array<String>) {
+            SpringApplication.run(Application::class.java, *args)
+        }
+    }
 }
