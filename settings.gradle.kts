@@ -5,6 +5,8 @@ plugins {
 rootProject.name = "multimodule-example"
 include(":graphql-gateway")
 include(":model-contracts")
+include(":common-service")
 include(":library-service")
-include(":identity-management")
-
+include(":organization-management")
+include(":api-tests")
+// include(":embedded-keycloak")

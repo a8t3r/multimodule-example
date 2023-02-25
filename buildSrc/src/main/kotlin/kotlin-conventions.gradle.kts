@@ -1,8 +1,8 @@
 @file:Suppress("UnstableApiUsage")
 
-import gradle.kotlin.dsl.accessors._39e098789f9a3862479dce1fe3e5f9d3.implementation
-import gradle.kotlin.dsl.accessors._39e098789f9a3862479dce1fe3e5f9d3.testImplementation
 import io.gitlab.arturbosch.detekt.Detekt
+import io.gitlab.arturbosch.detekt.DetektCreateBaselineTask
+import org.jetbrains.kotlin.gradle.dsl.KotlinCompile
 import org.jetbrains.kotlin.gradle.plugin.getKotlinPluginVersion
 import java.net.URI
 
@@ -17,6 +17,7 @@ plugins {
 }
 
 repositories {
+    mavenLocal()
     mavenCentral()
     maven {
         url = URI("https://jitpack.io")
@@ -25,8 +26,10 @@ repositories {
 
 val embeddedMajorAndMinorKotlinVersion = project.getKotlinPluginVersion().substringBeforeLast(".")
 if (KOTLIN_VERSION != embeddedMajorAndMinorKotlinVersion) {
-    logger.warn("Constant 'KOTLIN_VERSION' ($KOTLIN_VERSION) differs from embedded Kotlin version in Gradle (${project.getKotlinPluginVersion()})!\n" +
-            "Constant 'KOTLIN_VERSION' should be ($embeddedMajorAndMinorKotlinVersion).")
+    logger.warn(
+        "Constant 'KOTLIN_VERSION' ($KOTLIN_VERSION) differs from embedded Kotlin version in Gradle (${project.getKotlinPluginVersion()})!\n" +
+            "Constant 'KOTLIN_VERSION' should be ($embeddedMajorAndMinorKotlinVersion)."
+    )
 }
 
 tasks.compileKotlin {
@@ -64,7 +67,7 @@ kotlin {
 detekt {
     ignoreFailures = false
     buildUponDefaultConfig = true
-    config = files("$rootDir/detekt.yml")
+    config.setFrom("$rootDir/detekt.yml")
     parallel = true
 }
 
@@ -82,18 +85,53 @@ dependencies {
     val logbackVersion = libs.findVersion("logback").get()
     implementation("ch.qos.logback:logback-classic:$logbackVersion")
 
+    val commonsLangVersion = libs.findVersion("commons-lang").get()
+    implementation("org.apache.commons:commons-lang3:$commonsLangVersion")
+
     val coroutinesVersion = libs.findVersion("coroutines").get()
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutinesVersion")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-jdk8:$coroutinesVersion")
 
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutinesVersion")
 
+    val truthVersion = libs.findVersion("truth").get()
+    testImplementation("com.google.truth:truth:$truthVersion")
+
     add("detektPlugins", libs.findLibrary("detekt-formatting").get())
 }
 
-tasks.withType<Detekt>().configureEach {
-    // Target version of the generated JVM bytecode. It is used for type resolution.
-    this.jvmTarget = JDK_VERSION
+tasks.withType<KotlinCompile<*>>().configureEach {
+    kotlinOptions {
+        allWarningsAsErrors = false
+    }
+}
 
-    onlyIf { project.hasProperty("runDetekt") }
+// Activate Type Resolution
+tasks.withType<Detekt>().configureEach {
+    this.jvmTarget = JDK_VERSION
+    classpath.setFrom(
+        sourceSets.main.get().compileClasspath,
+        sourceSets.test.get().compileClasspath
+    )
+}
+
+// Activate Type Resolution
+tasks.withType<DetektCreateBaselineTask>().configureEach {
+    this.jvmTarget = JDK_VERSION
+    classpath.setFrom(
+        sourceSets.main.get().compileClasspath,
+        sourceSets.test.get().compileClasspath
+    )
+}
+
+afterEvaluate {
+    // Workaround for https://detekt.dev/docs/gettingstarted/gradle/#gradle-runtime-dependencies
+    // and https://github.com/detekt/detekt/issues/6428#issuecomment-1779291878
+    configurations.matching { it.name == "detekt" }.all {
+        resolutionStrategy.eachDependency {
+            if (requested.group == "org.jetbrains.kotlin") {
+                useVersion(io.gitlab.arturbosch.detekt.getSupportedKotlinVersion())
+            }
+        }
+    }
 }

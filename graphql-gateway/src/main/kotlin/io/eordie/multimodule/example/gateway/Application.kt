@@ -1,7 +1,7 @@
 package io.eordie.multimodule.example.gateway
 
-import io.micronaut.runtime.Micronaut.run
+import io.eordie.multimodule.example.runApplication
 
 fun main(args: Array<String>) {
-    run(*args)
+    runApplication(args)
 }

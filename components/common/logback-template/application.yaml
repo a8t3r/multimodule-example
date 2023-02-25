@@ -1,0 +1,1 @@
+#var mc.template.logback.fromFile: ${logback@configDir}/logback.xml

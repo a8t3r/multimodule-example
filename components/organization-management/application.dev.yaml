@@ -1,0 +1,7 @@
+datasources:
+  keycloak:
+    dialect: postgres
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://dunedain.box:5432/keycloak
+    username: keycloak
+    password: keycloak

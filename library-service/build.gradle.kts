@@ -1,10 +1,18 @@
+import io.micronaut.testresources.buildtools.KnownModules
+
 plugins {
-    id("kotlin-conventions")
-    id("testing-conventions")
-    id("dokka-conventions")
-    id("micronaut-conventions")
+    `kubernetes-conventions`
+    id("io.micronaut.test-resources")
 }
 
 dependencies {
+    ksp("io.micronaut.data:micronaut-data-processor")
     implementation(project(":model-contracts"))
+    implementation(project(":common-service"))
+}
+
+micronaut {
+    testResources {
+        additionalModules.add(KnownModules.JDBC_POSTGRESQL)
+    }
 }

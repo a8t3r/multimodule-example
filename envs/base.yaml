@@ -1,0 +1,6 @@
+payments:
+  components:
+    - graphql-gateway
+    - library-service
+    - organization-management
+    - api-tests

@@ -1,0 +1,32 @@
+#include postgres, logback-template, bootstrap-template, keycloak, keycloak-security, redis
+
+micronaut:
+  application:
+    name: api-tests
+  security:
+    enabled: true
+
+graphql:
+  graphiql:
+    enabled: true
+  instrumentation:
+    maxComplexity: 500
+    maxDepth: 15
+
+flyway:
+  datasources:
+    default:
+      enabled: false
+      baseline-on-migrate: true
+      locations:
+        - classpath:/db/library/migration
+    keycloak:
+      enabled: false
+      baseline-on-migrate: true
+      locations:
+        - classpath:/db/keycloak/migration
+
+endpoints:
+  health:
+    discovery-client:
+      enabled: false

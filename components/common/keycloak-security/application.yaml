@@ -1,0 +1,43 @@
+micronaut:
+  security:
+    enabled: true
+    intercept-url-map:
+      - pattern: /
+        access:
+          - isAnonymous()
+      - pattern: /graphiql
+        access:
+          - isAnonymous()
+      - pattern: /graphql
+        access:
+          - isAnonymous()
+      - pattern: /oauth/login/keycloak
+        access:
+          - isAnonymous()
+    token:
+      jwt:
+        enabled: true
+
+    authentication: idtoken
+    oauth2:
+      clients:
+        keycloak:
+          clientId: ${keycloak.clientId}
+          clientSecret: ${keycloak.clientSecret}
+          scopes:
+            - openid
+            - email
+            - phone
+            - roles
+          token:
+            url: ${keycloak.baseUri}/protocol/openid-connect/token
+          openid:
+            authorization:
+              prompt: select_account
+            issuer: '${keycloak.baseUri}'
+    endpoints:
+      logout:
+        get-allowed: true
+
+keycloak:
+  baseUri: ${keycloak.serverUrl}/realms/${keycloak.realm}

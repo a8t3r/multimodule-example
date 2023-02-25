@@ -1,0 +1,8 @@
+#include postgres, logback-template, bootstrap-template, keycloak
+
+datasources:
+  keycloak:
+    dialect: postgres
+    username: test
+    password: test
+    url: jdbc:postgresql://${datasources.keycloak.host}:${datasources.keycloak.port}/test?hint=${keycloak.gui}

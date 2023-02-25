@@ -1,0 +1,6 @@
+consul:
+  client:
+    registration:
+      enabled: false
+    discovery:
+      enabled: false

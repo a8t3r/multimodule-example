@@ -1,17 +1,16 @@
 package io.eordie.multimodule.example.gateway.graphql
 
 import com.expediagroup.graphql.dataloader.KotlinDataLoader
-import io.eordie.multimodule.example.contracts.utils.Query
+import graphql.GraphQLContext
+import io.eordie.multimodule.example.contracts.Query
+import io.eordie.multimodule.example.rsocket.client.getServiceInterface
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.future.future
 import org.dataloader.DataLoader
 import org.dataloader.DataLoaderFactory
 import org.dataloader.DataLoaderOptions
-import kotlin.coroutines.EmptyCoroutineContext
 import kotlin.reflect.KFunction
 import kotlin.reflect.full.callSuspend
-import kotlin.reflect.full.superclasses
-import kotlin.reflect.full.valueParameters
 
 class FunctionKotlinDataLoader(
     private val instance: Query,
@@ -19,26 +18,31 @@ class FunctionKotlinDataLoader(
 ) : KotlinDataLoader<Any, Any?> {
 
     companion object {
-        private const val maxBatchSize = 200
+        private const val MAX_BATCH_SIZE = 100
     }
 
     private val defaultOptions = DataLoaderOptions.newOptions()
-        .setMaxBatchSize(maxBatchSize)
+        .setMaxBatchSize(MAX_BATCH_SIZE)
         .setCachingEnabled(true)
 
-    private val isBatchedFunction = function.valueParameters.first().type.arguments.isNotEmpty()
+    private val isBatchedFunction = function.returnType.classifier == Map::class
 
-    override val dataLoaderName = instance::class.superclasses.first().simpleName + ":" + function.name
+    override val dataLoaderName =
+        (instance::class.getServiceInterface() ?: instance::class).simpleName + ":" + function.name
 
-    override fun getDataLoader(): DataLoader<Any, Any?> = DataLoaderFactory.newDataLoader(
-        { ids ->
-            CoroutineScope(EmptyCoroutineContext).future {
-                buildResult(ids)
-            }
-        },
-        defaultOptions
-    )
+    override fun getDataLoader(graphQLContext: GraphQLContext): DataLoader<Any, Any?> {
+        val context = graphQLContext.openTelemetryElement() + graphQLContext.authenticationElementOrEmpty()
+        return DataLoaderFactory.newDataLoader(
+            { ids, _ ->
+                CoroutineScope(context).future {
+                    buildResult(ids)
+                }
+            },
+            defaultOptions
+        )
+    }
 
+    // build groups of invocation arguments for batching calls
     private suspend fun buildResult(keys: List<Any>): MutableList<Any?> {
         val result = mutableListOf<Any?>().also { list -> repeat(keys.size) { list.add(null) } }
 
@@ -52,6 +56,7 @@ class FunctionKotlinDataLoader(
         }
 
         if (isBatchedFunction) {
+            // perform invocation for each unique group of arguments
             preparedArgs.groupBy({ it.first }, { it.second })
                 .entries
                 .forEach { (argumentValues, indexedKeys) ->
@@ -62,6 +67,7 @@ class FunctionKotlinDataLoader(
                     }
                 }
         } else {
+            // if batching unsupported then perform naive invocations
             preparedArgs.forEach { (argumentValues, indexedValue) ->
                 val key = indexedValue.value
                 result[indexedValue.index] = callSuspend(key, argumentValues)

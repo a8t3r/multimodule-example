@@ -1,0 +1,28 @@
+keycloak:
+  serverUrl: http://localhost:${keycloak.gui}/
+  realm: master
+  username: admin
+  password: admin
+  clientId: admin-cli
+  clientSecret: undefinedvalue
+
+test-resources:
+  containers:
+    keycloak:
+      image-name: quay.io/phasetwo/phasetwo-keycloak:latest
+      depends-on: postgresql
+      exposed-ports:
+        - keycloak.gui: 8080
+      network: custom
+      network-aliases: keycloak-server
+      env:
+        - KC_DB: "postgres"
+          KEYCLOAK_ADMIN: "admin"
+          KEYCLOAK_ADMIN_PASSWORD: "admin"
+          KC_DB_URL_HOST: "postgres-keycloak"
+          KC_DB_URL_DATABASE: "test"
+          KC_DB_URL_PORT: "5432"
+          KC_DB_USERNAME: "test"
+          KC_DB_PASSWORD: "test"
+      startup-timeout: 60
+      command: "start-dev"

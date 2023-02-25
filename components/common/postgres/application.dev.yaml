@@ -1,0 +1,8 @@
+datasources:
+  default:
+    dialect: postgres
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://dunedain.box:5432/library
+    username: multimodule
+    password: secret
+

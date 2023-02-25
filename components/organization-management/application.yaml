@@ -1,0 +1,19 @@
+#include logback-template, bootstrap-template, keycloak
+
+micronaut:
+  application:
+    name: organization-management
+  server:
+    port: 8082
+
+datasources:
+  keycloak:
+    dialect: postgres
+
+flyway:
+  datasources:
+    keycloak:
+      enabled: false
+      baseline-on-migrate: true
+      locations:
+        - classpath:/db/keycloak/migration

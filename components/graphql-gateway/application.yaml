@@ -1,0 +1,29 @@
+#include postgres, logback-template, bootstrap-template, keycloak, keycloak-security, redis
+
+micronaut:
+  application:
+    name: graphql-gateway
+
+  security:
+    enabled: false
+
+application:
+  rsocket:
+    enabled: false
+
+graphql:
+  instrumentation:
+    maxDepth: 15
+    maxComplexity: 500
+  graphiql:
+    enabled: true
+
+netty:
+  default:
+    allocator:
+      max-order: 3
+
+endpoints:
+  health:
+    discovery-client:
+      enabled: false

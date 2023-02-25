@@ -1,0 +1,11 @@
+redis:
+  uri: redis://${redis.host}:${redis.port}
+
+test-resources:
+  containers:
+    redis:
+      image-name: redis:latest
+      hostnames:
+        - redis.host
+      exposed-ports:
+        - redis.host: 6379

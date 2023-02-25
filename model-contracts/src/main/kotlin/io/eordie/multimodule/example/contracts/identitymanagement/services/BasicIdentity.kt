@@ -1,13 +1,19 @@
 package io.eordie.multimodule.example.contracts.identitymanagement.services
 
-import graphql.schema.DataFetchingEnvironment
+import com.expediagroup.graphql.generator.annotations.GraphQLIgnore
+import com.google.auto.service.AutoService
+import io.eordie.multimodule.example.contracts.Query
+import io.eordie.multimodule.example.contracts.annotations.Secured
 import io.eordie.multimodule.example.contracts.identitymanagement.models.AuthenticationDetails
-import io.eordie.multimodule.example.contracts.utils.IS_ANONYMOUS
-import io.eordie.multimodule.example.contracts.utils.Query
-import io.micronaut.security.annotation.Secured
+import io.eordie.multimodule.example.contracts.utils.Roles
 
+@AutoService(Query::class)
 interface BasicIdentity : Query {
 
-    @Secured(IS_ANONYMOUS)
-    suspend fun me(env: DataFetchingEnvironment): AuthenticationDetails
+    @Secured(allowAnonymous = true)
+    suspend fun me(@GraphQLIgnore authentication: AuthenticationDetails?): AuthenticationDetails?
+
+    suspend fun supportedRoles(): List<String> {
+        return Roles.entries.map { it.humanName() }.toList()
+    }
 }

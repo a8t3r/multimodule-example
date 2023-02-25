@@ -1,0 +1,138 @@
+datasources:
+  default:
+    dialect: postgres
+    password: test
+    url: jdbc:postgresql://${datasources.keycloak.host}:${datasources.keycloak.port}/test
+    username: test
+  keycloak:
+    dialect: postgres
+    password: test
+    url: jdbc:postgresql://${datasources.keycloak.host}:${datasources.keycloak.port}/test?hint=${keycloak.gui}
+    username: test
+
+endpoints:
+  health:
+    discovery-client:
+      enabled: false
+
+flyway:
+  datasources:
+    default:
+      baseline-on-migrate: true
+      enabled: false
+      locations:
+        - classpath:/db/library/migration
+    keycloak:
+      baseline-on-migrate: true
+      enabled: false
+      locations:
+        - classpath:/db/keycloak/migration
+
+graphql:
+  graphiql:
+    enabled: true
+  instrumentation:
+    maxComplexity: 500
+    maxDepth: 15
+
+keycloak:
+  baseUri: ${keycloak.serverUrl}/realms/${keycloak.realm}
+  clientId: admin-cli
+  clientSecret: undefinedvalue
+  password: admin
+  realm: master
+  serverUrl: http://localhost:${keycloak.gui}/
+  username: admin
+
+micronaut:
+  application:
+    name: api-tests
+  security:
+    authentication: idtoken
+    enabled: true
+    intercept-url-map:
+      - pattern: /
+        access:
+          - isAnonymous()
+      - pattern: /graphiql
+        access:
+          - isAnonymous()
+      - pattern: /graphql
+        access:
+          - isAnonymous()
+      - pattern: /oauth/login/keycloak
+        access:
+          - isAnonymous()
+    endpoints:
+      logout:
+        get-allowed: true
+    oauth2:
+      clients:
+        keycloak:
+          clientId: ${keycloak.clientId}
+          clientSecret: ${keycloak.clientSecret}
+          scopes:
+            - openid
+            - email
+            - phone
+            - roles
+          openid:
+            issuer: '${keycloak.baseUri}'
+            authorization:
+              prompt: select_account
+          token:
+            url: ${keycloak.baseUri}/protocol/openid-connect/token
+    token:
+      jwt:
+        enabled: true
+
+redis:
+  computation-thread-pool-size: 4
+  io-thread-pool-size: 5
+  uri: redis://${redis.host}:${redis.port}
+  caches:
+    oauth2:
+      expire-after-write: 30d
+      value-serializer: io.micronaut.jackson.serialize.JacksonObjectSerializer
+
+test-resources:
+  containers:
+    keycloak:
+      command: "start-dev"
+      depends-on: postgresql
+      env:
+        - KC_DB: "postgres"
+          KEYCLOAK_ADMIN: "admin"
+          KEYCLOAK_ADMIN_PASSWORD: "admin"
+          KC_DB_URL_HOST: "postgres-keycloak"
+          KC_DB_URL_DATABASE: "test"
+          KC_DB_URL_PORT: "5432"
+          KC_DB_USERNAME: "test"
+          KC_DB_PASSWORD: "test"
+      exposed-ports:
+        - keycloak.gui: 8080
+      image-name: quay.io/phasetwo/phasetwo-keycloak:latest
+      network: custom
+      network-aliases: keycloak-server
+      wait-strategy:
+        log:
+          regex: ".*Listening.*"
+    postgresql:
+      env:
+        - POSTGRES_DB: test
+          POSTGRES_USER: test
+          POSTGRES_PASSWORD: test
+      exposed-ports:
+        - datasources.keycloak.port: 5432
+      hostnames:
+        - datasources.keycloak.host
+      image-name: postgres:11
+      network: custom
+      network-aliases: postgres-keycloak
+      startup-timeout: 60
+    redis:
+      exposed-ports:
+        - redis.port: 6379
+      hostnames:
+        - redis.host
+      image-name: redis:latest

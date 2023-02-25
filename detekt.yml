@@ -1,7 +1,27 @@
+config:
+  validation: true
+  warningsAsErrors: true
+
 console-reports:
   active: true
   exclude:
     - '' # Exclude nothing -> Enable all workaround
+
+coroutines:
+  InjectDispatcher:
+    dispatcherNames: [ Default ]
+  SuspendFunWithFlowReturnType:
+    active: false
+
+complexity:
+  LongParameterList:
+    constructorThreshold: 12
+  TooManyFunctions:
+    thresholdInInterfaces: 15
+    thresholdInFiles: 15
+    thresholdInClasses: 15
+  CyclomaticComplexMethod:
+    threshold: 15
 
 performance:
   active: true
@@ -14,6 +34,8 @@ formatting:
     active: false
   MaximumLineLength:
     active: false
+  MultiLineIfElse:
+    active: false
 
 style:
   active: true
@@ -24,4 +46,10 @@ style:
   MaxLineLength:
     active: false
   ForbiddenComment:
-    values: [ 'TODO', 'FIXME', 'STOPSHIP' ]
+    comments: [ 'TODO', 'FIXME', 'STOPSHIP' ]
+  MagicNumber:
+    ignoreNumbers: [ "0", "1", "-1", "2", "3", "4", "5", "8", "16", "24", "32", "0xff", "10", "20", "100", "1000" ]
+  DestructuringDeclarationWithTooManyEntries:
+    maxDestructuringEntries: 6
+  VarCouldBeVal:
+    ignoreLateinitVar: true

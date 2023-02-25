@@ -1,0 +1,57 @@
+version: '3'
+
+volumes:
+  caddy_data:
+    driver: local
+
+services:
+  postgres:
+    image: postgres
+    volumes:
+      - /opt/data/postgres/keycloak:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: keycloak
+      POSTGRES_USER: keycloak
+      POSTGRES_PASSWORD: password
+    ports:
+      - '5433:5432'
+  keycloak:
+    image: quay.io/phasetwo/keycloak-crdb:latest
+    environment:
+      PROXY_ADDRESS_FORWARDING: 'true'
+      KC_HTTP_RELATIVE_PATH: /auth
+      KEYCLOAK_USER: admin
+      KEYCLOAK_PASSWORD: password
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: password
+      KC_DB: postgres
+      KC_DB_URL_HOST: postgres
+      KC_DB_URL_DATABASE: keycloak
+      KC_DB_SCHEMA: public
+      KC_DB_USERNAME: keycloak
+      KC_DB_PASSWORD: password
+      KC_HOSTNAME_STRICT: 'false'
+      KC_HTTP_ENABLED: 'true'
+      KC_PROXY: 'edge'
+      KC_LOG_LEVEL: INFO
+    command:
+      - start-dev
+    volumes:
+      - ../../tools/phasetwo-providers/org.keycloak-keycloak-admin-client-20.0.3.jar:/opt/keycloak/providers/org.keycloak-keycloak-admin-client-20.0.3.jar:z
+      - ../keycloak-orgs-copy/target/keycloak-orgs-0.22-SNAPSHOT.jar:/opt/keycloak/providers/io.phasetwo.keycloak-keycloak-orgs-0.5.jar:z
+    ports:
+      - '9090:8080'
+      - '8443:8443'
+    depends_on:
+      - postgres
+  caddy:
+    image: caddy:2.6.4-alpine
+    restart: unless-stopped
+    command: caddy reverse-proxy --from https://localhost:443 --to http://keycloak:8080
+    ports:
+      - '80:80'
+      - '443:443'
+    volumes:
+      - caddy_data:/data
+    depends_on:
+      - keycloak

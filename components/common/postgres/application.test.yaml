@@ -1,0 +1,22 @@
+datasources:
+  default:
+    dialect: postgres
+    username: test
+    password: test
+    url: jdbc:postgresql://${datasources.keycloak.host}:${datasources.keycloak.port}/test
+
+test-resources:
+  containers:
+    postgresql:
+      image-name: postgres:11
+      startup-timeout: 60
+      hostnames:
+        - datasources.keycloak.host
+      exposed-ports:
+        - datasources.keycloak.port: 5432
+      network: custom
+      network-aliases: postgres-keycloak
+      env:
+        - POSTGRES_DB: test
+          POSTGRES_USER: test
+          POSTGRES_PASSWORD: test

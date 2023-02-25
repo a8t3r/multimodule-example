@@ -1,21 +1,21 @@
 plugins {
     id("kotlin-conventions")
-    kotlin("kapt")
     id("io.micronaut.application")
     id("io.micronaut.docker")
+    id("com.google.devtools.ksp")
 }
 
 repositories {
     mavenCentral()
 }
 
-java {
-    toolchain {
-        implementation.set(JvmImplementation.J9)
+graalvmNative.toolchainDetection.set(false)
+
+kotlin {
+    sourceSets.main {
+        kotlin.srcDir("build/generated/ksp/main/kotlin")
     }
 }
-
-graalvmNative.toolchainDetection.set(false)
 
 val libs = extensions.getByType<VersionCatalogsExtension>().named("libs")
 val micronautVersion = libs.findVersion("micronaut").get().toString()
@@ -27,8 +27,6 @@ micronaut {
 }
 
 dependencies {
-    kapt("io.micronaut:micronaut-http-validation")
-    implementation("io.micronaut:micronaut-validation")
     implementation("io.micronaut:micronaut-http-server-netty")
     implementation("io.micronaut.kotlin:micronaut-kotlin-runtime")
     implementation("io.micronaut.kotlin:micronaut-kotlin-extension-functions")
@@ -38,8 +36,8 @@ dependencies {
     implementation("io.micronaut.micrometer:micronaut-micrometer-registry-prometheus")
 
     implementation("io.micronaut:micronaut-http-client")
-    implementation("jakarta.annotation:jakarta.annotation-api")
-}
+    implementation("io.micronaut.kotlin:micronaut-kotlin-runtime")
 
-logger.lifecycle("Enabling Micronaut application plugin in module ${project.path}")
-apply(plugin = "io.micronaut.application")
+    runtimeOnly("org.yaml:snakeyaml")
+    testImplementation("io.micronaut.testresources:micronaut-test-resources-jdbc-postgresql")
+}

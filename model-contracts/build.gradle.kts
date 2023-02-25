@@ -1,13 +1,18 @@
 plugins {
+    id("com.google.devtools.ksp")
     id("kotlin-conventions")
     id("testing-conventions")
-    id("dokka-conventions")
     kotlin("plugin.serialization")
 }
 
 dependencies {
-    implementation(libs.kotlin.micronaut.core)
-    implementation(libs.kotlin.micronaut.security.annotations)
-    implementation(libs.kotlinx.serialization.json)
+    ksp(libs.micronaut.inject.kotlin)
+    ksp(libs.ksp.auto.service)
+
+    implementation(libs.auto.service)
+    compileOnly(libs.kotlin.micronaut.core)
     compileOnly(libs.kotlin.graphql.schema.generator)
+
+    api(libs.kotlinx.serialization.json)
+    api(libs.kotlinx.serialization.protobuf)
 }

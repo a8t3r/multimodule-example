@@ -1,0 +1,1 @@
+#var mc.template.bootstrap.fromFile: ${bootstrap@configDir}/bootstrap.yaml
