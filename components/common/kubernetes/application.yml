@@ -1,0 +1,33 @@
+dekorate:
+  docker:
+    enabled: true
+    version: ${system@generatedTag:latest}
+    group: example
+    # hint: dekorate checks Dockerfile existence
+    docker-file: build.gradle.kts
+
+  kubernetes:
+    annotations:
+      - key: k9scli.io/auto-port-forwards
+        value: ${this@micronaut.application.name}::5005
+
+    version: ${system@generatedTag:latest}
+    mounts:
+      - name: config-volume
+        path: /home/app/resources/mount
+        read-only: false
+    config-map-volumes:
+      volume-name: config-volume
+      config-map-name: microservice-loggers
+
+    ports:
+      - name: http
+        containerPort: 8080
+      - name: debugging
+        containerPort: 5005
+      - name: rsocket
+        containerPort: 9000
+    readinessProbe:
+      httpActionPath: /health
+      periodSeconds: 5
+      timeoutSeconds: 2

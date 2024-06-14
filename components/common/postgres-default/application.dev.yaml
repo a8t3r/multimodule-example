@@ -1,0 +1,6 @@
+datasources:
+  default:
+    url: jdbc:postgresql://dunedain.box:5432/library
+    username: multimodule
+    password: secret
+

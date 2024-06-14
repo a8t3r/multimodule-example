@@ -25,6 +25,8 @@ complexity:
 
 performance:
   active: true
+  ArrayPrimitive:
+    active: false
   SpreadOperator:
     active: false
 

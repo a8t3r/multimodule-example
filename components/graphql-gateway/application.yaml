@@ -1,4 +1,9 @@
-#include postgres, logback-template, bootstrap-template, keycloak, keycloak-security, redis
+#include logback-template, bootstrap, keycloak, keycloak-security, redis
+
+# strictly required for graphql introspection
+# otherwise empty lists wouldn't be serialized
+jackson:
+  serializationInclusion: ALWAYS
 
 micronaut:
   application:
@@ -23,7 +28,5 @@ netty:
     allocator:
       max-order: 3
 
-endpoints:
-  health:
-    discovery-client:
-      enabled: false
+kafka:
+  enabled: false

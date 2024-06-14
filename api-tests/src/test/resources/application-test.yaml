@@ -1,19 +1,22 @@
 datasources:
   default:
     dialect: postgres
+    driver-class-name: org.postgresql.Driver
     password: test
     url: jdbc:postgresql://${datasources.keycloak.host}:${datasources.keycloak.port}/test
     username: test
   keycloak:
     dialect: postgres
+    driver-class-name: org.postgresql.Driver
     password: test
     url: jdbc:postgresql://${datasources.keycloak.host}:${datasources.keycloak.port}/test?hint=${keycloak.gui}
     username: test
-
-endpoints:
-  health:
-    discovery-client:
-      enabled: false
+  osm:
+    dialect: postgres
+    driver-class-name: org.postgresql.Driver
+    password: qaIACxO6wMR3
+    url: jdbc:postgresql://${datasources.osm.host}:${datasources.osm.port}/nominatim
+    username: nominatim
 
 flyway:
   datasources:
@@ -27,6 +30,11 @@ flyway:
       enabled: false
       locations:
         - classpath:/db/keycloak/migration
+    osm:
+      baseline-on-migrate: true
+      enabled: false
+      locations:
+        - classpath:/db/regions/migration
 
 graphql:
   graphiql:
@@ -34,6 +42,12 @@ graphql:
   instrumentation:
     maxComplexity: 500
     maxDepth: 15
+
+jackson:
+  serializationInclusion: ALWAYS
+
+kafka:
+  enabled: false
 
 keycloak:
   baseUri: ${keycloak.serverUrl}/realms/${keycloak.realm}
@@ -47,6 +61,7 @@ keycloak:
 micronaut:
   application:
     name: api-tests
+    simulate-remote-routing: true
   security:
     authentication: idtoken
     enabled: true
@@ -86,11 +101,18 @@ micronaut:
       jwt:
         enabled: true
 
+otel:
+  exporter:
+    enabled: false
+
 redis:
   computation-thread-pool-size: 4
   io-thread-pool-size: 5
   uri: redis://${redis.host}:${redis.port}
   caches:
+    dataloader:
+      expire-after-write: 1d
+      value-serializer: io.eordie.multimodule.common.utils.ProtobufObjectSerializer
     oauth2:
       expire-after-write: 30d
       value-serializer: io.micronaut.jackson.serialize.JacksonObjectSerializer
@@ -114,9 +136,23 @@ test-resources:
       image-name: quay.io/phasetwo/phasetwo-keycloak:latest
       network: custom
       network-aliases: keycloak-server
+      startup-timeout: 60
       wait-strategy:
         log:
           regex: ".*Listening.*"
+    nominatim:
+      env:
+        - PBF_PATH: "/nominatim/data/andorra-latest.osm.pbf"
+      exposed-ports:
+        - datasources.osm.port: 5432
+      hostnames:
+        - datasources.osm.host
+      image-name: mediagis/nominatim:4.4
+      rw-fs-bind:
+        - src/test/resources/pbf/andorra-latest.osm.pbf: /nominatim/data/andorra-latest.osm.pbf
+      wait-strategy:
+        log:
+          regex: ".*Nominatim\ is\ ready\ to\ accept\ requests.*"
     postgresql:
       env:
         - POSTGRES_DB: test
@@ -126,7 +162,7 @@ test-resources:
         - datasources.keycloak.port: 5432
       hostnames:
         - datasources.keycloak.host
-      image-name: postgres:11
+      image-name: postgres:14
       network: custom
       network-aliases: postgres-keycloak
       startup-timeout: 60

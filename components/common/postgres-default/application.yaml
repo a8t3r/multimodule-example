@@ -1,0 +1,5 @@
+datasources:
+  default:
+    dialect: postgres
+    driver-class-name: org.postgresql.Driver
+

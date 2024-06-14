@@ -1,0 +1,4 @@
+datasources:
+  osm:
+    dialect: postgres
+    driver-class-name: org.postgresql.Driver

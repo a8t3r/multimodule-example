@@ -1,0 +1,42 @@
+datasources:
+  keycloak:
+    dialect: postgres
+    password: test
+    url: jdbc:postgresql://${datasources.keycloak.host}:${datasources.keycloak.port}/test?hint=${keycloak.gui}
+    username: test
+
+test-resources:
+  containers:
+    keycloak:
+      command: "start-dev"
+      depends-on: postgresql
+      env:
+        - KC_DB: "postgres"
+          KEYCLOAK_ADMIN: "admin"
+          KEYCLOAK_ADMIN_PASSWORD: "admin"
+          KC_DB_URL_HOST: "postgres-keycloak"
+          KC_DB_URL_DATABASE: "test"
+          KC_DB_URL_PORT: "5432"
+          KC_DB_USERNAME: "test"
+          KC_DB_PASSWORD: "test"
+      exposed-ports:
+        - keycloak.gui: 8080
+      image-name: quay.io/phasetwo/phasetwo-keycloak:latest
+      network: custom
+      network-aliases: keycloak-server
+      wait-strategy:
+        log:
+          regex: ".*Listening.*"
+    postgresql:
+      env:
+        - POSTGRES_DB: test
+          POSTGRES_USER: test
+          POSTGRES_PASSWORD: test
+      exposed-ports:
+        - datasources.keycloak.port: 5432
+      hostnames:
+        - datasources.keycloak.host
+      image-name: postgres:14
+      network: custom
+      network-aliases: postgres-keycloak
+      startup-timeout: 60

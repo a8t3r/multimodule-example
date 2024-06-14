@@ -3,4 +3,5 @@ payments:
     - graphql-gateway
     - library-service
     - organization-management
+    - regions-service
     - api-tests

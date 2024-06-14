@@ -1,0 +1,5 @@
+datasources:
+  osm:
+    url: jdbc:postgresql://dunedain.box:5432/osm
+    username: postgres
+    password: postgres

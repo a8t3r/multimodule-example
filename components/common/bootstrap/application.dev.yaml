@@ -1,0 +1,8 @@
+otel:
+  exporter:
+    otlp:
+      endpoint: http://jaeger-all-in-one:4317
+  traces:
+    exporter: otlp
+  exclusions:
+    - /v1/.*

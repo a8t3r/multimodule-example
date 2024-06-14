@@ -1,0 +1,15 @@
+#include postgres-osm, logback-template, bootstrap, kubernetes
+
+micronaut:
+  application:
+    name: regions
+
+flyway:
+  datasources:
+    osm:
+      enabled: false
+      locations:
+        - classpath:/db/regions/migration
+
+kafka:
+  enabled: false

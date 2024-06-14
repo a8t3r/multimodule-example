@@ -1,0 +1,13 @@
+kafka:
+  enabled: true
+
+  consumers:
+    default:
+      allow.auto.create.topics: true
+
+  bootstrap:
+    servers:
+      - dunedain.box:19092
+      - dunedain.box:29092
+      - dunedain.box:39092
+

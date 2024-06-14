@@ -1,0 +1,6 @@
+dekorate:
+  docker:
+    registry: galadriel.box:32000
+  kubernetes:
+    replicas: 2
+    deployment-strategy: RollingUpdate

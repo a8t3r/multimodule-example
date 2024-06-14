@@ -1,24 +1,42 @@
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
+DELETE FROM public.credential WHERE user_label = 'My password';
 DELETE FROM public.user_entity WHERE email like '%@nowhere.com' or email like '%@noreply.phasetwo.io';
+
 TRUNCATE TABLE public.organization cascade;
 TRUNCATE TABLE public.organization_domain cascade;
 TRUNCATE TABLE public.organization_member cascade;
 TRUNCATE TABLE public.organization_role cascade;
 TRUNCATE TABLE public.user_organization_role_mapping cascade;
 
+TRUNCATE TABLE public.organization_positions cascade;
+TRUNCATE TABLE public.organization_departments cascade;
+TRUNCATE TABLE public.organization_employees cascade;
+
+create or replace function realm() returns text as $$
+begin
+    return (SELECT id FROM realm WHERE name = 'master');
+end;
+$$ LANGUAGE plpgsql;
+
 INSERT INTO public.user_entity VALUES
-    ('cb082bb6-d7f3-4052-b43a-fff7547dc3b4', 'admin@nowhere.com', '8cba2359-0c92-4148-b42a-81cdff0483dd', false, true, NULL, NULL, NULL, '75c23205-f1ea-4ce2-9f85-521bdd68e51d', 'organization-admin', 1705962214771, NULL, 0),
-    ('edf5c94f-8da8-4cc8-97e6-f7625d199186', 'org-admin-70b3b9e8-1c63-4768-98f1-29ae087de907@noreply.phasetwo.io', 'org-admin-70b3b9e8-1c63-4768-98f1-29ae087de907@noreply.phasetwo.io', true, true, NULL, NULL, NULL, '75c23205-f1ea-4ce2-9f85-521bdd68e51d', 'org-admin-70b3b9e8-1c63-4768-98f1-29ae087de907', 1705962692068, NULL, 0),
-    ('94c3c352-215e-47cb-b580-649c887b1fa3', 'org-admin-c55e2b54-a0f9-425b-bd2e-e64f9e441eb8@noreply.phasetwo.io', 'org-admin-c55e2b54-a0f9-425b-bd2e-e64f9e441eb8@noreply.phasetwo.io', true, true, NULL, NULL, NULL, '75c23205-f1ea-4ce2-9f85-521bdd68e51d', 'org-admin-c55e2b54-a0f9-425b-bd2e-e64f9e441eb8', 1706043395033, NULL, 0),
-    ('84cad478-66db-40ba-ad1a-4be516ff14d0', 'org-admin-d11e0aee-be2c-413a-9001-0856430a8d71@noreply.phasetwo.io', 'org-admin-d11e0aee-be2c-413a-9001-0856430a8d71@noreply.phasetwo.io', true, true, NULL, NULL, NULL, '75c23205-f1ea-4ce2-9f85-521bdd68e51d', 'org-admin-d11e0aee-be2c-413a-9001-0856430a8d71', 1706043406609, NULL, 0),
-    ('bd918ec6-7b7d-49a6-93fa-824191ba261f', 'developer1@nowhere.com', 'eda4b88c-b35e-4523-9856-2a129270025f', false, true, NULL, '', '', '75c23205-f1ea-4ce2-9f85-521bdd68e51d', 'developer1', 1706043425311, NULL, 0),
-    ('fb51139c-2348-417a-b486-ae5bba6a34cf', 'developer2@nowhere.com', '4b7375ed-90fe-4950-9f10-568480c5bca6', false, true, NULL, '', '', '75c23205-f1ea-4ce2-9f85-521bdd68e51d', 'developer2', 1706043434282, NULL, 0);
+    ('cb082bb6-d7f3-4052-b43a-fff7547dc3b4', 'admin@nowhere.com', '8cba2359-0c92-4148-b42a-81cdff0483dd', false, true, NULL, NULL, NULL, realm(), 'organization-admin', 1705962214771, NULL, 0),
+    ('edf5c94f-8da8-4cc8-97e6-f7625d199186', 'org-admin-70b3b9e8-1c63-4768-98f1-29ae087de907@noreply.phasetwo.io', 'org-admin-70b3b9e8-1c63-4768-98f1-29ae087de907@noreply.phasetwo.io', true, true, NULL, NULL, NULL, realm(), 'org-admin-70b3b9e8-1c63-4768-98f1-29ae087de907', 1705962692068, NULL, 0),
+    ('94c3c352-215e-47cb-b580-649c887b1fa3', 'org-admin-c55e2b54-a0f9-425b-bd2e-e64f9e441eb8@noreply.phasetwo.io', 'org-admin-c55e2b54-a0f9-425b-bd2e-e64f9e441eb8@noreply.phasetwo.io', true, true, NULL, NULL, NULL, realm(), 'org-admin-c55e2b54-a0f9-425b-bd2e-e64f9e441eb8', 1706043395033, NULL, 0),
+    ('84cad478-66db-40ba-ad1a-4be516ff14d0', 'org-admin-d11e0aee-be2c-413a-9001-0856430a8d71@noreply.phasetwo.io', 'org-admin-d11e0aee-be2c-413a-9001-0856430a8d71@noreply.phasetwo.io', true, true, NULL, NULL, NULL, realm(), 'org-admin-d11e0aee-be2c-413a-9001-0856430a8d71', 1706043406609, NULL, 0),
+    ('bd918ec6-7b7d-49a6-93fa-824191ba261f', 'developer1@nowhere.com', 'eda4b88c-b35e-4523-9856-2a129270025f', false, true, NULL, '', '', realm(), 'developer1', 1706043425311, NULL, 0),
+    ('fb51139c-2348-417a-b486-ae5bba6a34cf', 'developer2@nowhere.com', '4b7375ed-90fe-4950-9f10-568480c5bca6', false, true, NULL, '', '', realm(), 'developer2', 1706043434282, NULL, 0);
+
+INSERT INTO public.credential VALUES
+    ('f64275c0-d82e-40a0-8797-bbc577e0bfae', NULL, 'password', 'cb082bb6-d7f3-4052-b43a-fff7547dc3b4', 1718980794154, 'My password', '{"value":"6lIlcvqGE49C6Ywz1bI89HoNngRHgFYKtnklKwFTx5ZU5+a34V0mJMZRiiCbkSGKT2IWX7BxQ6QQPyaD7ba+ww==","salt":"BARCWUTuK9zGtgB2M2hCIg==","additionalParameters":{}}', '{"hashIterations":27500,"algorithm":"pbkdf2-sha256","additionalParameters":{}}', 10),
+    ('2cfb67a8-ed4a-47bd-b7bc-fcaa5cb8127e', NULL, 'password', 'bd918ec6-7b7d-49a6-93fa-824191ba261f', 1718980817786, 'My password', '{"value":"Xdnz7Mze+XUB9obbZZdUB0Da59uBOrEiPG7evAeBdKuwaZYuPofBaPqUV/NBI5XlG3VtlgRtDnrIZZckYycsow==","salt":"/rlXBO4rs5ddHtP4vmL11w==","additionalParameters":{}}', '{"hashIterations":27500,"algorithm":"pbkdf2-sha256","additionalParameters":{}}', 10),
+    ('4ae0a3de-8c2b-4991-b535-df9362a47a71', NULL, 'password', 'fb51139c-2348-417a-b486-ae5bba6a34cf', 1718980831388, 'My password', '{"value":"0QQzwWMwEOqUdCpVIM7QzGgSSNIZvyHwX2fVa64ecDKin/43Y5nkafW+OzT92ql94V/K0G7PUw1ApY2XnX8VKA==","salt":"QZb1QYDzfgDW/v2XIt/1sA==","additionalParameters":{}}', '{"hashIterations":27500,"algorithm":"pbkdf2-sha256","additionalParameters":{}}', 10);
+
 
 INSERT INTO public.organization VALUES
-	('70b3b9e8-1c63-4768-98f1-29ae087de907', 'Developers org', '75c23205-f1ea-4ce2-9f85-521bdd68e51d', 'cb082bb6-d7f3-4052-b43a-fff7547dc3b4', 'Developers LTD', ''),
-	('c55e2b54-a0f9-425b-bd2e-e64f9e441eb8', 'First Organization', '75c23205-f1ea-4ce2-9f85-521bdd68e51d', 'cb082bb6-d7f3-4052-b43a-fff7547dc3b4', 'The One', ''),
-	('d11e0aee-be2c-413a-9001-0856430a8d71', 'Second Organization', '75c23205-f1ea-4ce2-9f85-521bdd68e51d', 'cb082bb6-d7f3-4052-b43a-fff7547dc3b4', 'The two', '');
+	('70b3b9e8-1c63-4768-98f1-29ae087de907', 'Developers org', realm(), 'cb082bb6-d7f3-4052-b43a-fff7547dc3b4', 'Developers LTD', ''),
+	('c55e2b54-a0f9-425b-bd2e-e64f9e441eb8', 'First Organization', realm(), 'cb082bb6-d7f3-4052-b43a-fff7547dc3b4', 'The One', ''),
+	('d11e0aee-be2c-413a-9001-0856430a8d71', 'Second Organization', realm(), 'cb082bb6-d7f3-4052-b43a-fff7547dc3b4', 'The two', '');
 
 INSERT INTO public.organization_domain VALUES
 	('70b3b9e8-1c63-4768-98f1-29ae087de907', 'dev.io', false, 'ed625ccd-a0d2-4f50-b3d3-898bd1a306a6'),

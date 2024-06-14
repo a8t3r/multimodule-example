@@ -1,8 +1,12 @@
-#include postgres, logback-template, bootstrap-template, keycloak, keycloak-security, redis
+#include postgres-default, postgres-keycloak, postgres-osm, logback-template, keycloak, kafka, keycloak-security, redis, bootstrap
+
+jackson:
+  serializationInclusion: ALWAYS
 
 micronaut:
   application:
     name: api-tests
+    simulate-remote-routing: true
   security:
     enabled: true
 
@@ -25,8 +29,8 @@ flyway:
       baseline-on-migrate: true
       locations:
         - classpath:/db/keycloak/migration
-
-endpoints:
-  health:
-    discovery-client:
+    osm:
       enabled: false
+      baseline-on-migrate: true
+      locations:
+        - classpath:/db/regions/migration

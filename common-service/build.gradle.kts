@@ -1,3 +1,5 @@
+import com.bmuschko.gradle.docker.tasks.image.DockerPushImage
+
 plugins {
     kotlin("plugin.serialization")
     id("micronaut-conventions")
@@ -14,28 +16,27 @@ dependencies {
     implementation(libs.kotlinx.serialization.protobuf)
     implementation(libs.kotlin.rsocket.transport.ktor.tcp)
 
-    api("io.opentelemetry:opentelemetry-api")
-    api("io.opentelemetry:opentelemetry-context")
-    api("io.opentelemetry:opentelemetry-extension-kotlin")
     implementation("io.opentelemetry:opentelemetry-exporter-otlp")
     implementation("io.micronaut.tracing:micronaut-tracing-opentelemetry-http")
+    implementation("io.micronaut.tracing:micronaut-tracing-opentelemetry-kafka")
+    implementation("io.micronaut.kubernetes:micronaut-kubernetes-discovery-client")
 
     implementation("io.micronaut.reactor:micronaut-reactor")
-    implementation("io.micronaut.discovery:micronaut-discovery-client")
-
     implementation("com.fasterxml.jackson.core:jackson-databind")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
 
-    api(libs.guava)
-    api(libs.kotlin.konform)
-    api(libs.jimmer.sql.kotlin)
-    api(libs.kotlin.logging.jvm)
+    implementation(libs.guava)
+    implementation(libs.kotlin.valiktor.core)
+    implementation(libs.jimmer.sql.kotlin)
+    implementation(libs.kotlin.logging.jvm)
 
-    api("org.postgresql:postgresql")
-    api("io.micronaut.flyway:micronaut-flyway")
-    api("org.flywaydb:flyway-database-postgresql")
-    api("org.springframework:spring-jdbc:6.1.6")
-    api("io.micronaut.sql:micronaut-jdbc-hikari")
-    api("io.micronaut.data:micronaut-data-model")
-    api("io.micronaut.data:micronaut-data-jdbc")
+    implementation("org.postgresql:postgresql")
+    implementation("io.micronaut.flyway:micronaut-flyway")
+    implementation("org.flywaydb:flyway-database-postgresql")
+    implementation("io.micronaut.sql:micronaut-jdbc-hikari")
+    implementation("org.springframework:spring-jdbc:6.1.6")
+}
+
+tasks.withType<DockerPushImage> {
+    enabled = false
 }

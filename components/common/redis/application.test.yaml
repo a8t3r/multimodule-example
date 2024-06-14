@@ -8,4 +8,4 @@ test-resources:
       hostnames:
         - redis.host
       exposed-ports:
-        - redis.host: 6379
+        - redis.port: 6379

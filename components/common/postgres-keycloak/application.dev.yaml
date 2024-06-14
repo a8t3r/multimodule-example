@@ -1,0 +1,5 @@
+datasources:
+  keycloak:
+    url: jdbc:postgresql://dunedain.box:5432/keycloak
+    username: keycloak
+    password: keycloak

@@ -1,62 +1,69 @@
 [versions]
-kotlin = "1.9.22"
+auto-service = "1.1.1"
+commons-lang = "3.14.0"
+coroutines = "1.8.1"
+dekorate = "4.1.2"
 detekt = "1.23.4"
+dag-command = "1.11.0"
 dokka = "1.9.10"
-graphqlExtendedScalars = "19.0"
-graphqlKotlin = "7.0.2"
-coroutines = "1.7.3"
-logback = "1.4.14"
+graphqlExtendedScalars = "22.0"
+graphqlKotlin = "7.1.1"
+guava = "33.0.0-jre"
+jimmer = "0.8.139"
+valiktor = "0.12.0"
+kotlin = "1.9.24"
+kotlinxSerializationJson = "1.6.3"
 kotlinxSerializationPlugin = "1.9.24"
 kotlinxSerializationProtobuf = "1.6.3"
-kotlinxSerializationJson = "1.6.3"
-micronaut = "4.4.2"
-micronautPlugin = "4.2.1"
+ksp = "1.9.24-1.0.20"
+ksp-auto-service = "1.2.0"
+logback = "1.5.3"
+logging-jvm = "5.1.0"
+logitech = "1.19.0"
+micronaut = "4.5.0"
+micronautPlugin = "4.4.0"
 rsocket = "0.15.4"
 rsocketLoadBalancer = "1.1.3"
-jimmer = "0.8.132"
-ksp = "1.9.24-1.0.20"
-logging-jvm = "5.1.0"
 truth = "1.2.0"
-guava = "33.0.0-jre"
-dekorate = "4.1.2"
-commons-lang = "3.14.0"
-ksp-auto-service = "1.2.0"
-auto-service = "1.1.1"
-konform = "0.6.0"
 
 [libraries]
+auto-service = { module = "com.google.auto.service:auto-service-annotations", version.ref = "auto-service" }
+commons-lang = { module = "org.apache.commons:commons-lang3", version.ref = "commons-lang" }
+dekorate-kubernetes-annotations = { module = "io.dekorate:kubernetes-annotations", version.ref = "dekorate" }
+dekorate-prometheus-annotations = { module = "io.dekorate:prometheus-annotations", version.ref = "dekorate" }
+detekt-formatting = { module = "io.gitlab.arturbosch.detekt:detekt-formatting", version.ref = "detekt" }
+detekt-gradle = { module = "io.gitlab.arturbosch.detekt:detekt-gradle-plugin", version.ref = "detekt" }
+dag-command-gradle = { module = "io.github.leandroborgesferreira:dag-command", version.ref = "dag-command" }
+dokka-gradle = { module = "org.jetbrains.dokka:dokka-gradle-plugin", version.ref = "dokka" }
 graphql-scalars = { module = "com.graphql-java:graphql-java-extended-scalars", version.ref = "graphqlExtendedScalars" }
+guava = { module = "com.google.guava:guava", version.ref = "guava" }
+jimmer-sql-kotlin = { module = "org.babyfish.jimmer:jimmer-sql-kotlin", version.ref = "jimmer" }
+kotlin-allopen = { module = "org.jetbrains.kotlin:kotlin-allopen", version.ref = "kotlin" }
+kotlin-gradle = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
 kotlin-graphql = { module = "com.expediagroup:graphql-kotlin-server", version.ref = "graphqlKotlin" }
 kotlin-graphql-schema-generator = { module = "com.expediagroup:graphql-kotlin-schema-generator", version.ref = "graphqlKotlin" }
-kotlin-micronaut-core = { module = "io.micronaut:micronaut-core", version.ref = "micronaut" }
-micronaut-inject = { module = "io.micronaut:micronaut-inject", version.ref = "micronaut" }
-micronaut-inject-kotlin = { module = "io.micronaut:micronaut-inject-kotlin", version.ref = "micronaut" }
-kotlinx-serialization-protobuf = { module = "org.jetbrains.kotlinx:kotlinx-serialization-protobuf-jvm", version.ref = "kotlinxSerializationProtobuf" }
-kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json-jvm", version.ref = "kotlinxSerializationJson" }
-kotlin-rsocket-ktor-server = { module = "io.rsocket.kotlin:rsocket-ktor-server", version.ref = "rsocket" }
-kotlin-rsocket-transport-ktor-tcp = { module = "io.rsocket.kotlin:rsocket-transport-ktor-tcp", version.ref = "rsocket" }
-kotlin-rsocket-load-balancer = { module = "io.rsocket:rsocket-load-balancer", version.ref = "rsocketLoadBalancer" }
-ksp-jimmer = {  module = "org.babyfish.jimmer:jimmer-ksp", version.ref = "jimmer" }
-jimmer-sql-kotlin = { module = "org.babyfish.jimmer:jimmer-sql-kotlin", version.ref = "jimmer"}
+kotlin-valiktor-core = { module = "org.valiktor:valiktor-core", version.ref = "valiktor" }
 kotlin-logging-jvm = { module = "io.github.oshai:kotlin-logging-jvm", version.ref = "logging-jvm" }
-truth = { module = "com.google.truth:truth", version.ref = "truth" }
-guava = { module = "com.google.guava:guava", version.ref = "guava" }
-auto-service = { module = "com.google.auto.service:auto-service-annotations", version.ref = "auto-service" }
-kotlin-konform = { module = "io.konform:konform", version.ref = "konform" }
-
-# buildSrc dependencies (plugins)
-kotlin-gradle = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
-kotlin-allopen = { module = "org.jetbrains.kotlin:kotlin-allopen", version.ref = "kotlin" }
+kotlin-micronaut-core = { module = "io.micronaut:micronaut-core", version.ref = "micronaut" }
 kotlin-noarg = { module = "org.jetbrains.kotlin:kotlin-noarg", version.ref = "kotlin" }
+kotlin-rsocket-ktor-server = { module = "io.rsocket.kotlin:rsocket-ktor-server", version.ref = "rsocket" }
+kotlin-rsocket-load-balancer = { module = "io.rsocket:rsocket-load-balancer", version.ref = "rsocketLoadBalancer" }
+kotlin-rsocket-transport-ktor-tcp = { module = "io.rsocket.kotlin:rsocket-transport-ktor-tcp", version.ref = "rsocket" }
+kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "coroutines" }
+kotlinx-coroutines-jdk8 = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-jdk8", version.ref = "coroutines" }
+kotlinx-coroutines-reactive = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-reactive", version.ref = "coroutines" }
+kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "coroutines" }
 kotlinx-serialization-gradle = { module = "org.jetbrains.kotlin:kotlin-serialization", version.ref = "kotlinxSerializationPlugin" }
-dokka-gradle = { module = "org.jetbrains.dokka:dokka-gradle-plugin", version.ref = "dokka" }
-detekt-gradle = { module = "io.gitlab.arturbosch.detekt:detekt-gradle-plugin", version.ref = "detekt" }
-detekt-formatting = { module = "io.gitlab.arturbosch.detekt:detekt-formatting", version.ref = "detekt" }
-micronaut-gradle = { module = "io.micronaut.gradle:micronaut-gradle-plugin", version.ref = "micronautPlugin" }
+kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json-jvm", version.ref = "kotlinxSerializationJson" }
+kotlinx-serialization-protobuf = { module = "org.jetbrains.kotlinx:kotlinx-serialization-protobuf-jvm", version.ref = "kotlinxSerializationProtobuf" }
 ksp = { module = "com.google.devtools.ksp:symbol-processing", version.ref = "ksp" }
 ksp-api = { module = "com.google.devtools.ksp:symbol-processing-api", version.ref = "ksp" }
-ksp-gradle = { module = "com.google.devtools.ksp:symbol-processing-gradle-plugin", version.ref = "ksp" }
 ksp-auto-service = { module = "dev.zacsweers.autoservice:auto-service-ksp", version.ref = "ksp-auto-service" }
-
-[plugins]
-detekt-gradle = { id = "io.gitlab.arturbosch.detekt:detekt-gradle-plugin", version.ref = "detekt" }
+ksp-gradle = { module = "com.google.devtools.ksp:symbol-processing-gradle-plugin", version.ref = "ksp" }
+ksp-jimmer = { module = "org.babyfish.jimmer:jimmer-ksp", version.ref = "jimmer" }
+logback = { module = "ch.qos.logback:logback-classic", version.ref = "logback" }
+logitech-jts-core = { module = "org.locationtech.jts:jts-core", version.ref = "logitech" }
+micronaut-gradle = { module = "io.micronaut.gradle:micronaut-gradle-plugin", version.ref = "micronautPlugin" }
+micronaut-inject = { module = "io.micronaut:micronaut-inject", version.ref = "micronaut" }
+micronaut-inject-kotlin = { module = "io.micronaut:micronaut-inject-kotlin", version.ref = "micronaut" }
+truth = { module = "com.google.truth:truth", version.ref = "truth" }

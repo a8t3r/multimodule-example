@@ -2,6 +2,9 @@ redis:
   io-thread-pool-size: 5
   computation-thread-pool-size: 4
   caches:
+    dataloader:
+      expire-after-write: 1d
+      value-serializer: io.eordie.multimodule.common.utils.ProtobufObjectSerializer
     oauth2:
       expire-after-write: 30d
       value-serializer: io.micronaut.jackson.serialize.JacksonObjectSerializer

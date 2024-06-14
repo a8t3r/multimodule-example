@@ -1,9 +1,11 @@
-<configuration>
+<configuration debug="true" scan="true" scanPeriod="30 seconds">
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
             <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} -%kvp- %msg%n</pattern>
         </encoder>
     </appender>
+
+    <include file="resources/mount/loggers-include.xml"/>
 
     <root level="info">
         <appender-ref ref="STDOUT"/>

@@ -1,4 +1,4 @@
-package io.eordie.multimodule.example.identity
+package io.eordie.multimodule.common.identity
 
 import org.springframework.boot.SpringApplication
 import org.springframework.boot.autoconfigure.SpringBootApplication

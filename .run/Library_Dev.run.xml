@@ -1,20 +1,17 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="Library_Dev" type="MicronautRunConfigurationType" factoryName="Micronaut">
-    <classpathModifications>
-      <entry path="$PROJECT_DIR$/build/dev/library-service" />
-    </classpathModifications>
-    <option name="MAIN_CLASS_NAME" value="io.eordie.multimodule.example.library.ApplicationKt" />
+    <option name="MAIN_CLASS_NAME" value="io.eordie.multimodule.library.ApplicationKt" />
     <module name="multimodule-example.library-service.main" />
     <option name="VM_PARAMETERS" value="-Dmicronaut.environments=dev" />
     <extension name="coverage">
       <pattern>
-        <option name="PATTERN" value="io.eordie.multimodule.example.library.*" />
+        <option name="PATTERN" value="io.eordie.multimodule.library.*" />
         <option name="ENABLED" value="true" />
       </pattern>
     </extension>
     <option name="alternativeJrePath" />
     <option name="alternativeJrePathEnabled" value="false" />
-    <option name="mainClass" value="io.eordie.multimodule.example.library.ApplicationKt" />
+    <option name="mainClass" value="io.eordie.multimodule.library.ApplicationKt" />
     <option name="passParentEnvs" value="true" />
     <option name="programParameters" value="" />
     <option name="vmParameters" value="-Dmicronaut.environments=dev" />

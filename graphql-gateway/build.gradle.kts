@@ -11,7 +11,4 @@ dependencies {
 
     implementation(libs.kotlin.graphql)
     implementation(libs.graphql.scalars)
-
-    implementation(project(":common-service"))
-    implementation(project(":model-contracts"))
 }

@@ -1,4 +1,17 @@
-#include postgres, logback-template, bootstrap-template, keycloak, keycloak-security, redis
+#include logback-template, bootstrap, keycloak, keycloak-security, redis, kubernetes
+
+dekorate:
+  kubernetes:
+    annotations:
+      - key: k9scli.io/auto-port-forwards
+        value: ${this@micronaut.application.name}::5005
+      - key: nginx.ingress.kubernetes.io/proxy-buffer-size
+        value: 10k
+
+    ingress:
+      expose: true
+      target-port: http
+      host: dunedain.box
 
 micronaut:
   security:

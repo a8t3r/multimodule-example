@@ -1,0 +1,13 @@
+endpoints:
+  health:
+    discovery-client:
+      enabled: false
+
+micronaut:
+  caches:
+    discovery-client:
+      enabled: false
+
+otel:
+  exporter:
+    enabled: false

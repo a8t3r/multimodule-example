@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: microservice-loggers
+  namespace: default
+data:
+  loggers-include.xml: |+
+    <included>
+        <logger name="io.eordie.multimodule.common.config.DataSourceMigrationRunner" level="INFO"/>
+    </included>

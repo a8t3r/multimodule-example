@@ -8,12 +8,9 @@ import java.net.URI
 
 plugins {
     id("kotlin-conventions")
-
-    // Apply the Kotlin JVM plugin to add support for Kotlin on the JVM.
     kotlin("jvm")
-
-    // A tool to detect kotlin problems. It's nice, give it a try!
     id("io.gitlab.arturbosch.detekt")
+    id("io.github.leandroborgesferreira.dag-command")
 }
 
 repositories {
@@ -71,6 +68,11 @@ detekt {
     parallel = true
 }
 
+dagCommand {
+    defaultBranch = "origin/develop"
+    outputType = "json"
+}
+
 val libs = extensions.getByType<VersionCatalogsExtension>().named("libs")
 
 dependencies {
@@ -79,25 +81,18 @@ dependencies {
     }
 
     implementation(platform("org.jetbrains.kotlin:kotlin-bom"))
-
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
 
-    val logbackVersion = libs.findVersion("logback").get()
-    implementation("ch.qos.logback:logback-classic:$logbackVersion")
+    implementation(libs.findLibrary("logback").get())
+    implementation(libs.findLibrary("commons-lang").get())
+    implementation(libs.findLibrary("kotlinx-coroutines-core").get())
+    implementation(libs.findLibrary("kotlinx-coroutines-jdk8").get())
+    implementation(libs.findLibrary("kotlinx-coroutines-reactive").get())
 
-    val commonsLangVersion = libs.findVersion("commons-lang").get()
-    implementation("org.apache.commons:commons-lang3:$commonsLangVersion")
+    testImplementation(libs.findLibrary("kotlinx-coroutines-test").get())
+    testImplementation(libs.findLibrary("truth").get())
 
-    val coroutinesVersion = libs.findVersion("coroutines").get()
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutinesVersion")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-jdk8:$coroutinesVersion")
-
-    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutinesVersion")
-
-    val truthVersion = libs.findVersion("truth").get()
-    testImplementation("com.google.truth:truth:$truthVersion")
-
-    add("detektPlugins", libs.findLibrary("detekt-formatting").get())
+    detektPlugins(libs.findLibrary("detekt-formatting").get())
 }
 
 tasks.withType<KotlinCompile<*>>().configureEach {
