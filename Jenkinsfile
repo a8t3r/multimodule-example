@@ -25,6 +25,6 @@ pipeline {
   }
 
   tools {
-    jdk 'openjdk-17'
+    jdk 'zulu-21'
   }
 }
