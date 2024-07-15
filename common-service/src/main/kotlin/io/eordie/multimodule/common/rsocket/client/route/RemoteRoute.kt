@@ -77,7 +77,7 @@ open class RemoteRoute(
         }
 
         return try {
-            if (method.name.startsWith("broadcast")) {
+            if (routeId.contains(":broadcast")) {
                 rsocketFactory.rsockets(getModuleDefinition())
                     .forEach { invokeMethod(method, requestPayload.copy()) { it } }
             } else {
