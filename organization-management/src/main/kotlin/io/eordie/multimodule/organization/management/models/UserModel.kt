@@ -1,5 +1,6 @@
 package io.eordie.multimodule.organization.management.models
 
+import io.eordie.multimodule.common.repository.Convertable
 import io.eordie.multimodule.contracts.organization.models.User
 import org.babyfish.jimmer.sql.Column
 import org.babyfish.jimmer.sql.Entity
@@ -10,7 +11,7 @@ import java.util.*
 
 @Entity
 @Table(name = "user_entity")
-interface UserModel : io.eordie.multimodule.common.repository.Convertable<User> {
+interface UserModel : Convertable<User> {
     @Id
     @Column(name = "uid")
     val id: UUID
