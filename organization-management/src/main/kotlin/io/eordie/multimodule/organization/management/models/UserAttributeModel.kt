@@ -28,5 +28,5 @@ interface UserAttributeModel {
 
     @ManyToOne
     @JoinColumn(name = "user_uid", referencedColumnName = "uid")
-    val user: io.eordie.multimodule.organization.management.models.UserModel
+    val user: UserModel
 }
