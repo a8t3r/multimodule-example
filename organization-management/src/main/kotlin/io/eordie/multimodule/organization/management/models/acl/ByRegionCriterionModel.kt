@@ -1,5 +1,6 @@
 package io.eordie.multimodule.organization.management.models.acl
 
+import io.eordie.multimodule.common.repository.Convertable
 import io.eordie.multimodule.contracts.organization.models.acl.ByRegionCriterion
 import io.eordie.multimodule.organization.management.models.OrganizationDepartmentModel
 import org.babyfish.jimmer.sql.DissociateAction
@@ -17,7 +18,7 @@ import java.util.*
 
 @Entity
 @Table(name = "department_region_binding")
-interface ByRegionCriterionModel : io.eordie.multimodule.common.repository.Convertable<ByRegionCriterion> {
+interface ByRegionCriterionModel : Convertable<ByRegionCriterion> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO, generatorType = UUIDIdGenerator::class)

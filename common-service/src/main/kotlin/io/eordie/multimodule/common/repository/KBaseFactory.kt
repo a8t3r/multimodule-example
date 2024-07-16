@@ -31,7 +31,7 @@ abstract class KBaseFactory<T : Convertable<C>, C : Any, ID, F : Any>(
 
         if (!event.isUpdated() || event.difference?.hasAnyChanges() == true) {
             val convertedType = requireNotNull((old ?: new))::class
-            val affectedBy = (it.connection as? io.eordie.multimodule.common.repository.ConnectionWrapper)?.context
+            val affectedBy = (it.connection as? ConnectionWrapper)?.context
             eventPublisher.publish(convertedType, requireNotNull(affectedBy), event)
         }
     }
