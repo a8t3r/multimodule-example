@@ -15,16 +15,19 @@ suspend fun <T, P, V> Flow<T>.associateById(ids: List<P>, idMapper: (T) -> P, va
 suspend fun <T, P, V> Flow<T>.associateByIds(ids: List<P>, property: KProperty1<T, List<P>>, valueMapper: (T) -> V): Map<P, List<V>> =
     this.associateByIds(ids, { property.get(it) }, { valueMapper(it) })
 
-suspend fun <T, P, V> Flow<T>.associateByIds(ids: List<P>, idMapper: (T) -> List<P>, valueMapper: (T) -> V): Map<P, List<V>> {
+suspend fun <T, P, V> Flow<T>.associateByIds(ids: List<P>, idMapper: (T) -> List<P>, valueMapper: (T) -> V): Map<P, List<V>> =
+    associateFlattenByIds(ids, idMapper) { listOf(valueMapper(it)) }
+
+suspend fun <T, P, V> Flow<T>.associateFlattenByIds(ids: List<P>, idMapper: (T) -> List<P>, valueMapper: (T) -> List<V>): Map<P, List<V>> {
     val index = this.flatMapConcat { value ->
         idMapper(value).map { it to valueMapper(value) }.asFlow()
-    }.fold(mutableMapOf<P, MutableList<V>>()) { acc, (key, value) ->
-        acc.getOrPut(key) { mutableListOf() }.add(value)
+    }.fold(mutableMapOf<P, MutableSet<V>>()) { acc, (key, value) ->
+        acc.getOrPut(key) { mutableSetOf() }.addAll(value)
         acc
     }
 
     return ids.fold(mutableMapOf()) { acc, id ->
-        acc[id] = index[id].orEmpty()
+        acc[id] = index[id]?.toList().orEmpty()
         acc
     }
 }
