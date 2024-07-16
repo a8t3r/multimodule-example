@@ -29,7 +29,7 @@ interface UserModel : io.eordie.multimodule.common.repository.Convertable<User> 
     val membership: List<OrganizationMemberModel>
 
     @OneToMany(mappedBy = "user")
-    val attributes: List<io.eordie.multimodule.organization.management.models.UserAttributeModel>
+    val attributes: List<UserAttributeModel>
 
     fun organizationIds(): List<UUID> = membership.map { it.organizationId }
 }
