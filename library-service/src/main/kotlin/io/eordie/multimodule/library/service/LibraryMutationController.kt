@@ -18,7 +18,7 @@ class LibraryMutationController(
     private val authors: AuthorsFactory
 ) : LibraryMutations {
 
-    override suspend fun book(input: BookInput): Book {
+    override suspend fun book(input: BookInput): Book = books.transaction {
         val authorIds = input.authors.map { author ->
             authors.save<AuthorModelDraft>(author.id) { _, instance ->
                 instance.firstName = requireNotNull(author.firstName ?: instance.firstName)
@@ -26,7 +26,7 @@ class LibraryMutationController(
             }
         }.map { it.id }
 
-        return books.save<BookModelDraft>(input.id) { isNew, instance ->
+        books.save<BookModelDraft>(input.id) { isNew, instance ->
             if (isNew) {
                 instance.authorIds = emptyList()
             }
@@ -35,8 +35,8 @@ class LibraryMutationController(
             if (authorIds.isNotEmpty()) {
                 instance.authorIds = authorIds.distinct()
             }
-        }.convert()
-    }
+        }
+    }.convert()
 
     override suspend fun deleteBook(bookId: UUID): Boolean {
         return books.deleteById(bookId)

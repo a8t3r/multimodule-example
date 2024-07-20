@@ -11,7 +11,6 @@ import io.eordie.multimodule.common.rsocket.client.rsocket.LocalRSocketFactory
 import io.eordie.multimodule.common.rsocket.client.rsocket.RSocketLocalFactory
 import io.eordie.multimodule.contracts.basic.loader.EntityLoader
 import io.micronaut.context.BeanLocator
-import io.micronaut.context.annotation.Value
 import io.micronaut.inject.qualifiers.Qualifiers.byName
 import jakarta.inject.Singleton
 import kotlinx.coroutines.withContext
@@ -24,8 +23,6 @@ class GenericEntityLoader(
     private val beanLocator: BeanLocator
 ) {
 
-    @Suppress("VarCouldBeVal")
-    @Value("\${micronaut.application.simulate-remote-routing:false}")
     private var isSimulateRemoteRouting: Boolean = false
 
     private val routesCache: LoadingCache<Pair<Class<*>, Class<*>>, EntityLoaderRoute> = CacheBuilder.newBuilder()
@@ -48,7 +45,7 @@ class GenericEntityLoader(
     fun createLoader(idType: Class<*>, entityType: Class<*>): EntityLoader<Any, Any> {
         return findFactory(entityType)
             .map<SuspendInvoker> {
-                LocalRoute(EntityLoader::class, beanLocator, it).takeIf { !isSimulateRemoteRouting }
+                LocalRoute(EntityLoader::class, beanLocator, it)
             }
             .orElseGet {
                 routesCache.get(idType to entityType)
