@@ -155,21 +155,15 @@ open class KFactoryImpl<T : Any, ID : Comparable<ID>>(
 
     private fun T.getId(): ID = (this as ImmutableSpi).__get(idProperty.name()) as ID
 
-    open suspend fun calculatePermissions(acl: ResourceAcl, values: List<T>): Map<T, Set<Permission>> {
-        return if (isPermissionAware) {
+    open suspend fun calculatePermissions(acl: ResourceAcl, values: List<T>): Map<T, Set<Permission>> =
+        if (!isPermissionAware) emptyMap() else {
             values.associateWith { calculatePermissions(acl, it) }
-        } else {
-            emptyMap()
         }
-    }
 
-    open suspend fun calculatePermissions(acl: ResourceAcl, value: T): Set<Permission> {
-        return if (isPermissionAware) {
+    open suspend fun calculatePermissions(acl: ResourceAcl, value: T): Set<Permission> =
+        if (!isPermissionAware) emptySet() else {
             throw UnsupportedOperationException("should be implemented by factory")
-        } else {
-            emptySet()
         }
-    }
 
     private suspend fun <D> produce(base: T? = null, block: (D) -> Unit): D where D : T {
         val context = coroutineContext
