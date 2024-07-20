@@ -25,16 +25,18 @@ interface KFactory<T : Any, ID> {
     suspend fun findAllBySpecification(fetcher: Fetcher<T>? = null, block: KMutableRootQuery<T>.() -> Unit): Flow<T>
     suspend fun findIdsBySpecification(block: KMutableRootQuery<T>.() -> Unit): Flow<ID>
 
+    suspend fun deleteById(id: ID): Boolean
     suspend fun deleteByIds(ids: Collection<ID>): Int
     suspend fun truncateByIds(ids: Collection<ID>): Int
 
     suspend fun existsById(id: ID): Boolean
     suspend fun getById(id: ID, fetcher: Fetcher<T>? = null): T
     suspend fun findById(id: ID, fetcher: Fetcher<T>? = null): T?
-    suspend fun deleteById(id: ID): Boolean
+
     suspend fun <S : T> update(entity: S): T
     suspend fun <S : T> update(id: ID, block: S.() -> Unit): T
     suspend fun <S : T> updateIf(id: ID, block: S.() -> Boolean): Pair<T, Boolean>
+
     suspend fun <S : T> save(block: S.() -> Unit): T
     suspend fun <S : T> save(id: ID?, fetcher: Fetcher<T>? = null, block: (Boolean, S) -> Unit): T
     suspend fun <S : T> saveIf(id: ID?, fetcher: Fetcher<T>? = null, block: (Boolean, S) -> Boolean): Pair<T, Boolean>
