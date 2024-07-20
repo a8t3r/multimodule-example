@@ -12,7 +12,7 @@ import kotlinx.serialization.serializer
 import java.util.*
 import kotlin.reflect.KClass
 
-@Suppress("UNCHECKED_CAST", "TooGenericExceptionCaught")
+@Suppress("UNCHECKED_CAST")
 abstract class AbstractJsonScalarCoercing<In : Any, Out : Any>(
     private val inputType: KClass<In>,
     private val outputType: KClass<Out>

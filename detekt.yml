@@ -23,6 +23,10 @@ complexity:
   CyclomaticComplexMethod:
     threshold: 15
 
+exceptions:
+  TooGenericExceptionCaught:
+    active: false
+
 performance:
   active: true
   ArrayPrimitive:

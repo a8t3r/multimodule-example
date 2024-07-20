@@ -131,7 +131,7 @@ class InvocationHelper(private val beanLocator: BeanLocator, private val tracer:
             withContext(context + span.asContextElement()) {
                 descriptor.implementationFunction.callSuspendBy(arguments)
             }
-        } catch (@Suppress("TooGenericExceptionCaught") ex: Exception) {
+        } catch (ex: Exception) {
             val reason = ex.cause ?: ex
             span.recordException(reason)
             if (reason is BaseRuntimeException) reason else {
