@@ -2,7 +2,6 @@ package io.eordie.multimodule.api.tests.library
 
 import com.google.common.truth.Truth.assertThat
 import io.eordie.multimodule.api.tests.AbstractApplicationTest
-import io.eordie.multimodule.contracts.basic.exception.EntityNotFoundException
 import io.eordie.multimodule.contracts.basic.filters.OffsetDateTimeLiteralFilter
 import io.eordie.multimodule.contracts.basic.filters.StringLiteralFilter
 import io.eordie.multimodule.contracts.basic.filters.UUIDLiteralFilter
@@ -12,7 +11,6 @@ import io.eordie.multimodule.contracts.library.models.AuthorInput
 import io.eordie.multimodule.contracts.library.models.AuthorsFilter
 import io.eordie.multimodule.contracts.library.models.Book
 import io.eordie.multimodule.contracts.library.models.BookInput
-import io.eordie.multimodule.contracts.library.models.BookUpdate
 import io.eordie.multimodule.contracts.library.models.BooksFilter
 import io.eordie.multimodule.contracts.library.services.Library
 import io.eordie.multimodule.contracts.library.services.LibraryMutations
@@ -22,7 +20,6 @@ import kotlinx.coroutines.future.await
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.assertThrows
 import java.time.OffsetDateTime
 
 @Sql("truncate-library.sql", phase = Sql.Phase.BEFORE_ALL)
@@ -40,10 +37,10 @@ class LibraryTest : AbstractApplicationTest() {
     @BeforeAll
     fun init() = test {
         firstBook = mutateLibrary.book(
-            BookInput("First book", listOf(AuthorInput(firstName = "John", lastName = "Doe")))
+            BookInput(null, "First book", listOf(AuthorInput(firstName = "John", lastName = "Doe")))
         )
         secondBook = mutateLibrary.book(
-            BookInput("Second book", listOf(AuthorInput(firstName = "Jane", lastName = "Doe")))
+            BookInput(null, "Second book", listOf(AuthorInput(firstName = "Jane", lastName = "Doe")))
         )
     }
 
@@ -162,22 +159,23 @@ class LibraryTest : AbstractApplicationTest() {
 
     @Test
     fun `should delete book and recreate it`() = test {
-        assertThat(mutateLibrary.deleteBook(firstBook.id)).isTrue()
+        val bookId = firstBook.id
+        assertThat(mutateLibrary.deleteBook(bookId)).isTrue()
 
-        val actual = queryLibrary.bookById(firstBook.id)
+        val actual = queryLibrary.bookById(bookId)
         assertThat(actual).isNull()
 
-        val e = assertThrows<EntityNotFoundException> {
-            mutateLibrary.updateBook(BookUpdate(firstBook.id, name = firstBook.name))
-        }
-        assertThat(e.entityId).isEqualTo(firstBook.id.toString())
-        assertThat(e.entityType).isEqualTo("BookModel")
+        assertThat(queryLibrary.bookById(bookId)).isNull()
 
-        val books = queryLibrary.books(BooksFilter(id = UUIDLiteralFilter(eq = firstBook.id)))
+        val books = queryLibrary.books(BooksFilter(id = UUIDLiteralFilter(eq = bookId)))
         assertThat(books.pageable.cursor).isNull()
         assertThat(books.data).isEmpty()
 
-        val bookInput = BookInput("First book", listOf(AuthorInput(firstName = "John", lastName = "Doe")))
+        val bookInput = BookInput(bookId, "Third book", listOf(AuthorInput(firstName = "Jane", lastName = "Doe")))
         firstBook = mutateLibrary.book(bookInput)
+        assertThat(firstBook.id).isNotEqualTo(bookInput.id)
+        assertThat(firstBook.name).isEqualTo("Third book")
+        assertThat(firstBook.deleted).isFalse()
+        assertThat(firstBook.authorIds).hasSize(1)
     }
 }
