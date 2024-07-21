@@ -34,8 +34,8 @@ class OrganizationQueriesController(
         return organizations.findByFilter(filter.orDefault(), pageable).convert()
     }
 
-    override suspend fun organizationSummary(filter: OrganizationsFilter): OrganizationSummary {
-        return organizations.getOrganizationSummary(filter)
+    override suspend fun organizationSummary(filter: OrganizationsFilter?): OrganizationSummary {
+        return organizations.getOrganizationSummary(filter.orDefault())
     }
 
     override suspend fun loadOrganizationEmployedUsers(

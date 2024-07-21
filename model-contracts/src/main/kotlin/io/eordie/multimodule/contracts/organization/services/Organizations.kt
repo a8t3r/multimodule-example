@@ -19,7 +19,7 @@ interface OrganizationQueries : Query {
 
     suspend fun organizations(filter: OrganizationsFilter? = null, pageable: Pageable? = null): Page<Organization>
 
-    suspend fun organizationSummary(filter: OrganizationsFilter): OrganizationSummary
+    suspend fun organizationSummary(filter: OrganizationsFilter?): OrganizationSummary
 
     suspend fun loadOrganizationEmployedUsers(
         organizationIds: List<UUID>,

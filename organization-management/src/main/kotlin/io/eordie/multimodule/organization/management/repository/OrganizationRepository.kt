@@ -16,8 +16,8 @@ interface OrganizationRepository :
 
     @Query(
         """
-            select count(*) as totalCount, array_agg(id) as organizationIds
-            from organization
+            select count(*) as totalCount, array_agg(uid) as organizationIds
+            from organization tb_1_
         """
     )
     suspend fun getOrganizationSummary(filter: OrganizationsFilter): OrganizationSummary
