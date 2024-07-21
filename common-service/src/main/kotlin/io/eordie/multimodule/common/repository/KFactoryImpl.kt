@@ -6,7 +6,6 @@ import io.eordie.multimodule.common.repository.entity.OrganizationOwnerIF
 import io.eordie.multimodule.common.repository.entity.PermissionAwareIF
 import io.eordie.multimodule.common.repository.ext.name
 import io.eordie.multimodule.common.rsocket.context.Microservices
-import io.eordie.multimodule.common.rsocket.context.getAuthentication
 import io.eordie.multimodule.common.rsocket.context.getAuthenticationContext
 import io.eordie.multimodule.common.utils.asFlow
 import io.eordie.multimodule.common.validation.EntityValidator
@@ -20,7 +19,6 @@ import io.micronaut.context.ApplicationContext
 import io.micronaut.core.convert.ConversionService
 import io.micronaut.core.type.Argument
 import io.micronaut.inject.qualifiers.Qualifiers
-import io.micronaut.kotlin.context.getBean
 import jakarta.annotation.PostConstruct
 import jakarta.inject.Inject
 import jakarta.inject.Provider
@@ -75,6 +73,9 @@ open class KFactoryImpl<T : Any, ID : Comparable<ID>>(
 
     @Inject
     private lateinit var registryProvider: Provider<FiltersRegistry>
+
+    @Inject
+    private lateinit var microservices: Provider<Microservices>
 
     private val immutableType = ImmutableType.get(entityType.java)
 
@@ -158,13 +159,7 @@ open class KFactoryImpl<T : Any, ID : Comparable<ID>>(
         return Internal.produce(immutableType, base, consumer) as D
     }
 
-    suspend fun resourceAcl(): ResourceAcl {
-        val employeeAcl = if (!requireEmployeeAcl) emptyList() else {
-            val microservices = context.getBean<Microservices>()
-            microservices.loadAclElement().resource
-        }
-        return ResourceAcl(getAuthentication(), employeeAcl)
-    }
+    suspend fun resourceAcl(): ResourceAcl = microservices.get().buildAcl(coroutineContext, requireEmployeeAcl)
 
     private suspend fun applyPermissions(
         values: List<T>,

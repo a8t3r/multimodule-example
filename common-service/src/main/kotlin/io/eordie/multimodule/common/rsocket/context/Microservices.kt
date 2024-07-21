@@ -24,8 +24,10 @@ class Microservices @Inject constructor(private val api: EmployeeAclQueries) {
         return api.loadEmployeeAcl(context, userId, organizationId)
     }
 
-    fun buildAcl(context: CoroutineContext): ResourceAcl =
-        ResourceAcl(context.getAuthenticationContext(), loadAcl(context))
+    fun buildAcl(context: CoroutineContext, requireEmployeeAcl: Boolean = true): ResourceAcl {
+        val employeeAcl = if (requireEmployeeAcl) loadAcl(context) else emptyList()
+        return ResourceAcl(context.getAuthenticationContext(), employeeAcl)
+    }
 
     private fun loadAcl(context: CoroutineContext): List<EmployeeAcl> {
         val auth = context.getAuthenticationContext()
