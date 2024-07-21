@@ -103,7 +103,7 @@ open class KFactoryImpl<T : Any, ID : Comparable<ID>>(
     open val datasourceName = "default"
     open fun entityListener(): EntityListener<T>? = null
     open fun sortingExpressions(table: KNonNullTable<T>): List<KPropExpression<out Comparable<*>>> {
-        return immutableType.selectableScalarProps.map { table.get<Comparable<*>>(it.value) }.reversed()
+        return immutableType.selectableScalarProps.map { table.get(it.value) }
     }
 
     private val isCreatedByAware = entityType.isSubclassOf(CreatedByIF::class)
