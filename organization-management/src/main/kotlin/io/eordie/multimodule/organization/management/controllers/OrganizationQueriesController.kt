@@ -35,7 +35,7 @@ class OrganizationQueriesController(
     }
 
     override suspend fun organizationSummary(filter: OrganizationsFilter): OrganizationSummary {
-        return organizations.getOrganizationSummary(employees.resourceAcl(), filter)
+        return organizations.getOrganizationSummary(filter)
     }
 
     override suspend fun loadOrganizationEmployedUsers(

@@ -2,7 +2,6 @@ package io.eordie.multimodule.library.repository
 
 import io.eordie.multimodule.common.repository.KFactory
 import io.eordie.multimodule.common.repository.KRepository
-import io.eordie.multimodule.common.repository.ResourceAcl
 import io.eordie.multimodule.contracts.library.models.BookSummary
 import io.eordie.multimodule.contracts.library.models.BooksFilter
 import io.eordie.multimodule.library.models.BookModel
@@ -22,5 +21,5 @@ interface BooksRepository : KFactory<BookModel, UUID> {
         from library_books tb_1_, unnest(tb_1_.author_ids) as author_id                                       
         """
     )
-    suspend fun getBooksSummary(acl: ResourceAcl, filter: BooksFilter): BookSummary
+    suspend fun getBooksSummary(filter: BooksFilter): BookSummary
 }

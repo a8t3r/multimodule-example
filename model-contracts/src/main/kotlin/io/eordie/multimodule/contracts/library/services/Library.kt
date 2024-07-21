@@ -17,7 +17,7 @@ interface Library : Query {
 
     suspend fun books(filter: BooksFilter?, pageable: Pageable? = null): Page<Book>
 
-    suspend fun bookSummary(filter: BooksFilter?): BookSummary?
+    suspend fun bookSummary(filter: BooksFilter?): BookSummary
 
     suspend fun authorById(id: UUID): Author?
 

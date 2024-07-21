@@ -3,7 +3,6 @@ package io.eordie.multimodule.organization.management.repository
 import io.eordie.multimodule.common.repository.FilterSupportTrait
 import io.eordie.multimodule.common.repository.KFactory
 import io.eordie.multimodule.common.repository.KRepository
-import io.eordie.multimodule.common.repository.ResourceAcl
 import io.eordie.multimodule.contracts.organization.models.OrganizationSummary
 import io.eordie.multimodule.contracts.organization.models.OrganizationsFilter
 import io.eordie.multimodule.organization.management.models.OrganizationModel
@@ -21,5 +20,5 @@ interface OrganizationRepository :
             from organization
         """
     )
-    suspend fun getOrganizationSummary(acl: ResourceAcl, filter: OrganizationsFilter): OrganizationSummary
+    suspend fun getOrganizationSummary(filter: OrganizationsFilter): OrganizationSummary
 }

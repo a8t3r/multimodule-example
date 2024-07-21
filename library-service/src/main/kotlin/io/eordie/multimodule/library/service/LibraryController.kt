@@ -39,7 +39,7 @@ class LibraryController(
     }
 
     override suspend fun bookSummary(filter: BooksFilter?): BookSummary {
-        return booksRepository.getBooksSummary(books.resourceAcl(), filter.orDefault())
+        return booksRepository.getBooksSummary(filter.orDefault())
     }
 
     override suspend fun authors(filter: AuthorsFilter?, pageable: Pageable?): Page<Author> {

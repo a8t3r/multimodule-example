@@ -1,5 +1,6 @@
 package io.eordie.multimodule.common.rsocket.context
 
+import io.eordie.multimodule.common.repository.ResourceAcl
 import io.eordie.multimodule.contracts.organization.models.acl.EmployeeAcl
 import io.eordie.multimodule.contracts.organization.services.EmployeeAclQueries
 import jakarta.inject.Inject
@@ -22,6 +23,9 @@ class Microservices @Inject constructor(private val api: EmployeeAclQueries) {
     private fun loadAcl(context: CoroutineContext, userId: UUID, organizationId: UUID): List<EmployeeAcl> {
         return api.loadEmployeeAcl(context, userId, organizationId)
     }
+
+    fun buildAcl(context: CoroutineContext): ResourceAcl =
+        ResourceAcl(context.getAuthenticationContext(), loadAcl(context))
 
     private fun loadAcl(context: CoroutineContext): List<EmployeeAcl> {
         val auth = context.getAuthenticationContext()

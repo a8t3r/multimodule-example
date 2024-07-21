@@ -1,7 +1,7 @@
 package io.eordie.multimodule.common.repository.interceptor
 
 import io.eordie.multimodule.common.filter.FiltersRegistry
-import io.eordie.multimodule.common.repository.ResourceAcl
+import io.eordie.multimodule.common.rsocket.context.Microservices
 import io.eordie.multimodule.common.utils.OpenTelemetryExecutorLog
 import io.micronaut.aop.MethodInvocationContext
 import io.micronaut.context.ApplicationContext
@@ -24,6 +24,7 @@ import org.babyfish.jimmer.sql.runtime.Executor
 import org.babyfish.jimmer.sql.runtime.SqlBuilder
 import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.jdbc.datasource.SingleConnectionDataSource
+import kotlin.coroutines.Continuation
 import kotlin.reflect.KClass
 
 @Internal
@@ -33,6 +34,7 @@ class FindOneByPredicateInterceptor(
 ) {
 
     private val registry: FiltersRegistry = context.getBean<FiltersRegistry>()
+    private val microservices: Microservices = context.getBean<Microservices>()
     private val conversionService: ConversionService = context.getBean<ConversionService>()
     private val executorLog: OpenTelemetryExecutorLog? = context.getBean<Executor>()
         .takeIf { it is OpenTelemetryExecutorLog } as OpenTelemetryExecutorLog?
@@ -63,9 +65,11 @@ class FindOneByPredicateInterceptor(
         val query = context.stringValue(Query::class.java)
             .orElseThrow { IllegalStateException("No query present in method") }
 
+        val coroutineContext = (context.parameterValues.last() as Continuation<*>).context
+        val acl = microservices.buildAcl(coroutineContext)
+
         val baseQuery = sql.createQuery(rootEntity) {
-            val acl = context.parameterValues[0] as ResourceAcl
-            val filter = context.parameterValues[1] as Any
+            val filter = context.parameterValues[0] as Any
             where(registry.toPredicates(acl, filter, table) ?: value(true))
             select(value(1))
         }
