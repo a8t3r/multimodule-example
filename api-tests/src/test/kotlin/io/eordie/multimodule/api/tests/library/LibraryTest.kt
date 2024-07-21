@@ -79,11 +79,19 @@ class LibraryTest : AbstractApplicationTest() {
     @Test
     fun `should get summary of books`() = test {
         val summary = queryLibrary.bookSummary(BooksFilter())
-        assertThat(summary).isNotNull()
         assertThat(summary.totalCount).isEqualTo(2)
         assertThat(summary.ids).containsExactly(firstBook.id, secondBook.id)
         assertThat(summary.names).containsExactly(firstBook.name, secondBook.name)
         assertThat(summary.authorIds).isNotEmpty()
+    }
+
+    @Test
+    fun `should get summary of single book`() = test {
+        val summary = queryLibrary.bookSummary(BooksFilter(id = UUIDLiteralFilter(eq = firstBook.id)))
+        assertThat(summary.totalCount).isEqualTo(1)
+        assertThat(summary.ids).containsExactly(firstBook.id)
+        assertThat(summary.names).containsExactly(firstBook.name)
+        assertThat(summary.authorIds).isEqualTo(firstBook.authorIds)
     }
 
     @Test
