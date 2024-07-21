@@ -24,6 +24,7 @@ class OrganizationDepartmentFactory :
 
     val defaultFetcher = newFetcher(OrganizationDepartmentModel::class).by {
         allScalarFields()
+        organizationId()
         regionBindings { allScalarFields() }
         farmBindings { allScalarFields() }
     }

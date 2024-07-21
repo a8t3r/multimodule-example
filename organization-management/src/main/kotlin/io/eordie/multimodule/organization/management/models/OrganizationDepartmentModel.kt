@@ -7,7 +7,9 @@ import io.eordie.multimodule.contracts.organization.models.structure.Organizatio
 import io.eordie.multimodule.organization.management.models.acl.ByFarmCriterionModel
 import io.eordie.multimodule.organization.management.models.acl.ByRegionCriterionModel
 import org.babyfish.jimmer.sql.Entity
+import org.babyfish.jimmer.sql.IdView
 import org.babyfish.jimmer.sql.Key
+import org.babyfish.jimmer.sql.ManyToOne
 import org.babyfish.jimmer.sql.OneToMany
 import org.babyfish.jimmer.sql.Table
 import java.util.*
@@ -19,8 +21,12 @@ interface OrganizationDepartmentModel : UUIDIdentityIF, OrganizationOwnerIF, Con
     @Key
     val name: String
 
-    @Key
+    @IdView
     val organizationId: UUID
+
+    @Key
+    @ManyToOne
+    val organization: OrganizationModel
 
     @OneToMany(mappedBy = "department")
     val employees: List<OrganizationEmployeeModel>
