@@ -95,6 +95,23 @@ class LibraryTest : AbstractApplicationTest() {
     }
 
     @Test
+    fun `should get summary by complex filter`() = test {
+        val initial = BooksFilter(
+            authors = AuthorsFilter(
+                firstName = StringLiteralFilter(like = "John"),
+                lastName = StringLiteralFilter(eq = "Doe")
+            )
+        )
+        val filter = initial.copy(authors = initial.authors?.copy(books = initial))
+
+        val summary = queryLibrary.bookSummary(filter)
+        assertThat(summary.totalCount).isEqualTo(1)
+        assertThat(summary.ids).containsExactly(firstBook.id)
+        assertThat(summary.names).containsExactly(firstBook.name)
+        assertThat(summary.authorIds).isEqualTo(firstBook.authorIds)
+    }
+
+    @Test
     fun `should query book by id filter`() = test {
         val books = queryLibrary.books(BooksFilter(id = UUIDLiteralFilter(eq = firstBook.id)))
         assertThat(books).isNotNull()
