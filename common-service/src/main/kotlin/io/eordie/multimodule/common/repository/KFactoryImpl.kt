@@ -329,7 +329,7 @@ open class KFactoryImpl<T : Any, ID : Comparable<ID>>(
             val pager = createIdsPager(acl, block)
             val actualLimit = pageable.actualLimit()
             val items = mutableListOf<T>()
-            var nextPageable: Pageable = pageable
+            var nextPageable: Pageable = pageable.copy(supportedOrders = sortingExpressionsValue.keys)
 
             do {
                 val data = pager(nextPageable)
