@@ -37,13 +37,12 @@ class OrganizationFactory : BaseOrganizationFactory<OrganizationModel, Organizat
         filter: OrganizationsFilter,
         table: KNonNullTable<OrganizationModel>
     ): List<KNonNullExpression<Boolean>> {
+        val applyMembershipFilter = hasAnyOrganizationRole(Roles.VIEW_MEMBERS, Roles.MANAGE_ORGANIZATIONS)
         return listOfNotNull(
             table.id.accept(filter.id),
             table.name.accept(filter.name),
-            table.asTableEx().domains.accept(filter.domains),
-            table.asTableEx().members.user.accept(
-                filter.members?.takeIf { this.hasAnyOrganizationRole(Roles.VIEW_MEMBERS, Roles.MANAGE_ORGANIZATIONS) }
-            )
+            table.domains { accept(filter.domains) },
+            table.members { user.accept(filter.members?.takeIf { applyMembershipFilter }) }
         )
     }
 }

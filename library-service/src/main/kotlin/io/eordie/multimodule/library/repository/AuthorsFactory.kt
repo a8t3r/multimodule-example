@@ -32,7 +32,7 @@ class AuthorsFactory :
             table.id.accept(filter.id),
             table.firstName.accept(filter.firstName),
             table.lastName.accept(filter.lastName),
-            table.asTableEx().books.accept(filter.books)
+            table.books { accept(filter.books) }
         )
     }
 }

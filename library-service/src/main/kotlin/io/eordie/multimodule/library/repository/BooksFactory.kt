@@ -29,7 +29,7 @@ class BooksFactory : KBaseFactory<BookModel, Book, UUID, BooksFilter>(BookModel:
             table.id.accept(filter.id),
             table.name.accept(filter.name),
             table.authorIds.acceptMany(filter.authorIds),
-            table.asTableEx().authors.accept(filter.authors)
+            table.authors { accept(filter.authors) }
         )
     }
 }
