@@ -19,6 +19,7 @@ import io.micronaut.context.ApplicationContext
 import io.micronaut.core.convert.ConversionService
 import io.micronaut.core.type.Argument
 import io.micronaut.inject.qualifiers.Qualifiers
+import io.micronaut.transaction.exceptions.UnexpectedRollbackException
 import jakarta.annotation.PostConstruct
 import jakarta.inject.Inject
 import jakarta.inject.Provider
@@ -26,6 +27,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.singleOrNull
+import kotlinx.coroutines.runBlocking
 import org.babyfish.jimmer.DraftConsumer
 import org.babyfish.jimmer.kt.toImmutableProp
 import org.babyfish.jimmer.meta.ImmutableType
@@ -38,6 +40,7 @@ import org.babyfish.jimmer.sql.ast.mutation.SaveMode
 import org.babyfish.jimmer.sql.ast.tuple.Tuple6
 import org.babyfish.jimmer.sql.event.EntityListener
 import org.babyfish.jimmer.sql.fetcher.Fetcher
+import org.babyfish.jimmer.sql.kt.KEntities
 import org.babyfish.jimmer.sql.kt.KSqlClient
 import org.babyfish.jimmer.sql.kt.ast.expression.KNonNullExpression
 import org.babyfish.jimmer.sql.kt.ast.expression.KPropExpression
@@ -53,6 +56,7 @@ import org.valiktor.ConstraintViolationException
 import org.valiktor.i18n.mapToMessage
 import java.sql.Connection
 import java.util.concurrent.atomic.AtomicBoolean
+import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.coroutineContext
 import kotlin.jvm.optionals.getOrNull
 import kotlin.reflect.KClass
@@ -67,6 +71,7 @@ open class KFactoryImpl<T : Any, ID : Comparable<ID>>(
     private lateinit var context: ApplicationContext
 
     lateinit var sql: KSqlClient
+    private lateinit var noCacheSql: KSqlClient
 
     @Inject
     private lateinit var conversionService: ConversionService
@@ -106,6 +111,30 @@ open class KFactoryImpl<T : Any, ID : Comparable<ID>>(
     internal lateinit var idProperty: KPropExpression<ID>
     private lateinit var sortingExpressionsValue: Map<String, KPropExpression<out Comparable<*>>>
 
+    private class ConnectionContextElement(
+        val connection: Connection
+    ) : CoroutineContext.Element {
+        companion object Key : CoroutineContext.Key<ConnectionContextElement>
+        override val key: CoroutineContext.Key<*> = Key
+    }
+
+    private suspend fun currentConnection() = coroutineContext[ConnectionContextElement.Key]?.connection
+
+    suspend fun <R : Any> transaction(block: suspend (Connection) -> R): R {
+        val context = coroutineContext
+        val previous = currentConnection()
+        return if (previous != null) block(previous) else {
+            noCacheSql.javaClient.connectionManager.execute { connection ->
+                connection.autoCommit = false
+                runBlocking(context + ConnectionContextElement(connection)) {
+                    val result = kotlin.runCatching { block(connection) }
+                    if (result.isSuccess) connection.commit() else connection.rollback()
+                    result.getOrElse { throw UnexpectedRollbackException(it.message, it) }
+                }
+            }
+        }
+    }
+
     @PostConstruct
     fun init() {
         sql = context.getBean(KSqlClient::class.java, Qualifiers.byName(datasourceName)).apply {
@@ -114,6 +143,7 @@ open class KFactoryImpl<T : Any, ID : Comparable<ID>>(
                 getTriggers(true).addEntityListener(entityType, entityListener)
             }
         }
+        noCacheSql = sql.caches { disableAll() }
         sql.createQuery(entityType) {
             idProperty = table.getId()
             sortingExpressionsValue = sortingExpressions(table).associateBy { it.name() }
@@ -126,21 +156,15 @@ open class KFactoryImpl<T : Any, ID : Comparable<ID>>(
 
     private fun T.getId(): ID = (this as ImmutableSpi).__get(idProperty.name()) as ID
 
-    open suspend fun calculatePermissions(acl: ResourceAcl, values: List<T>): Map<T, Set<Permission>> {
-        return if (isPermissionAware) {
+    open suspend fun calculatePermissions(acl: ResourceAcl, values: List<T>): Map<T, Set<Permission>> =
+        if (!isPermissionAware) emptyMap() else {
             values.associateWith { calculatePermissions(acl, it) }
-        } else {
-            emptyMap()
         }
-    }
 
-    open suspend fun calculatePermissions(acl: ResourceAcl, value: T): Set<Permission> {
-        return if (isPermissionAware) {
+    open suspend fun calculatePermissions(acl: ResourceAcl, value: T): Set<Permission> =
+        if (!isPermissionAware) emptySet() else {
             throw UnsupportedOperationException("should be implemented by factory")
-        } else {
-            emptySet()
         }
-    }
 
     private suspend fun <D> produce(base: T? = null, block: (D) -> Unit): D where D : T {
         val context = coroutineContext
@@ -189,11 +213,18 @@ open class KFactoryImpl<T : Any, ID : Comparable<ID>>(
         return findById(id) != null
     }
 
+    private suspend fun entities(): KEntities {
+        val currentConnection = currentConnection()
+        return if (currentConnection == null) sql.entities else {
+            noCacheSql.entities.forConnection(currentConnection)
+        }
+    }
+
     override suspend fun findById(id: ID, fetcher: Fetcher<T>?): T? {
         val value = if (fetcher != null) {
-            sql.entities.findById(fetcher, id)
+            entities().findById(fetcher, id)
         } else {
-            sql.entities.findById(entityType, id)
+            entities().findById(entityType, id)
         }
 
         return value?.let { applyPermissions(it) }
@@ -235,9 +266,9 @@ open class KFactoryImpl<T : Any, ID : Comparable<ID>>(
         fetcher: Fetcher<T>?
     ): List<T> {
         val data = if (fetcher != null) {
-            sql.entities.findByIds(fetcher, ids)
+            entities().findByIds(fetcher, ids)
         } else {
-            sql.entities.findByIds(entityType, ids)
+            entities().findByIds(entityType, ids)
         }
         return applyPermissions(data)
     }
@@ -415,8 +446,13 @@ open class KFactoryImpl<T : Any, ID : Comparable<ID>>(
 
     private suspend fun <R : Any> wrapped(block: (Connection) -> R): R {
         val context = coroutineContext
-        return sql.javaClient.connectionManager.execute { connection ->
-            block.invoke(io.eordie.multimodule.common.repository.ConnectionWrapper(connection, context))
+        val previousConnection = currentConnection()
+        return if (previousConnection != null) {
+            block.invoke(ConnectionWrapper(previousConnection, context))
+        } else {
+            sql.javaClient.connectionManager.execute { connection ->
+                block.invoke(ConnectionWrapper(connection, context))
+            }
         }
     }
 
@@ -435,7 +471,7 @@ open class KFactoryImpl<T : Any, ID : Comparable<ID>>(
     }
 
     override suspend fun <S : T> updateIf(id: ID, block: S.() -> Boolean): Pair<T, Boolean> {
-        val value = sql.entities.findById(entityType, id) ?: throw EntityNotFoundException(id, entityType)
+        val value = entities().findById(entityType, id) ?: throw EntityNotFoundException(id, entityType)
 
         val mutate = AtomicBoolean()
         val draft = produce<S>(value) { mutate.set(block(it)) }
