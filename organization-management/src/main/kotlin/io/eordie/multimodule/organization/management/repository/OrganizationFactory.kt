@@ -11,6 +11,7 @@ import io.eordie.multimodule.organization.management.models.domains
 import io.eordie.multimodule.organization.management.models.id
 import io.eordie.multimodule.organization.management.models.members
 import io.eordie.multimodule.organization.management.models.name
+import io.eordie.multimodule.organization.management.models.user
 import jakarta.inject.Singleton
 import org.babyfish.jimmer.sql.kt.ast.expression.KNonNullExpression
 import org.babyfish.jimmer.sql.kt.ast.expression.KPropExpression
@@ -40,7 +41,7 @@ class OrganizationFactory : BaseOrganizationFactory<OrganizationModel, Organizat
             table.id.accept(filter.id),
             table.name.accept(filter.name),
             table.asTableEx().domains.accept(filter.domains),
-            table.asTableEx().members.accept(
+            table.asTableEx().members.user.accept(
                 filter.members?.takeIf { this.hasAnyOrganizationRole(Roles.VIEW_MEMBERS, Roles.MANAGE_ORGANIZATIONS) }
             )
         )
