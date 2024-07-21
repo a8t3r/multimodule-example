@@ -136,7 +136,7 @@ open class KFactoryImpl<T : Any, ID : Comparable<ID>>(
     }
 
     context(ResourceAcl)
-    fun <F, T : Any> KNonNullTable<T>.accept(filter: F?): KNonNullExpression<Boolean>? {
+    fun KNonNullTable<*>.accept(filter: Any?): KNonNullExpression<Boolean>? {
         val resourceAcl: ResourceAcl = this@ResourceAcl
         return filter?.let { registry.toPredicates(resourceAcl, it, this.asTableEx()) }
     }
