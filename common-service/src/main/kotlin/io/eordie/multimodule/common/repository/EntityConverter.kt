@@ -12,14 +12,13 @@ object EntityConverter {
     fun <T : Any> convert(convertable: Convertable<T>): T {
         val targetType = GenericTypes.getTypeArgument(convertable, Convertable::class)
         val introspection = getIntrospection<T>(targetType)
-        return convert(convertable, introspection)
+        return convert(convertable as ImmutableSpi, introspection)
     }
 
     private fun <T : Any> convert(
-        convertable: Convertable<T>,
+        from: ImmutableSpi,
         introspection: BeanIntrospection<T>
     ): T {
-        val from = convertable as ImmutableSpi
         val immutableType = from.__type()
         val constructorArgs = introspection.constructorArguments.map { argument ->
             val prop = immutableType.getProp(argument.name)
