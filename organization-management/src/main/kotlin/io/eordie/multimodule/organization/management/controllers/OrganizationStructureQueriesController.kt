@@ -6,6 +6,7 @@ import io.eordie.multimodule.contracts.basic.filters.UUIDLiteralFilter
 import io.eordie.multimodule.contracts.basic.paging.Page
 import io.eordie.multimodule.contracts.basic.paging.Pageable
 import io.eordie.multimodule.contracts.identitymanagement.models.CurrentOrganization
+import io.eordie.multimodule.contracts.organization.models.OrganizationsFilter
 import io.eordie.multimodule.contracts.organization.models.acl.BindingCriterion
 import io.eordie.multimodule.contracts.organization.models.acl.GlobalCriterion
 import io.eordie.multimodule.contracts.organization.models.structure.OrganizationDepartment
@@ -17,6 +18,7 @@ import io.eordie.multimodule.contracts.organization.models.structure.Organizatio
 import io.eordie.multimodule.contracts.organization.services.OrganizationStructureQueries
 import io.eordie.multimodule.contracts.utils.orDefault
 import io.eordie.multimodule.organization.management.models.OrganizationDepartmentModel
+import io.eordie.multimodule.organization.management.repository.OrganizationDepartmentFactory
 import io.eordie.multimodule.organization.management.repository.OrganizationEmployeeFactory
 import io.eordie.multimodule.organization.management.repository.OrganizationPositionFactory
 import jakarta.inject.Singleton
@@ -28,7 +30,7 @@ import java.util.*
 class OrganizationStructureQueriesController(
     private val positions: OrganizationPositionFactory,
     private val employees: OrganizationEmployeeFactory,
-    private val departments: io.eordie.multimodule.organization.management.repository.OrganizationDepartmentFactory
+    private val departments: OrganizationDepartmentFactory
 ) : OrganizationStructureQueries {
 
     override suspend fun positions(
@@ -65,7 +67,7 @@ class OrganizationStructureQueriesController(
         pageable: Pageable?
     ): Page<OrganizationDepartment> {
         val filterBy = filter.orDefault()
-            .copy(organizationId = UUIDLiteralFilter(eq = currentOrganization.id))
+            .copy(organization = OrganizationsFilter(id = UUIDLiteralFilter(eq = currentOrganization.id)))
 
         return departments.findByFilter(filterBy, pageable).convert()
     }
