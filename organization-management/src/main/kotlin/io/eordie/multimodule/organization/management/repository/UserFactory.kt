@@ -68,8 +68,7 @@ class UserFactory : KBaseFactory<UserModel, User, UUID, UsersFilter>(
         }
     }
 
-    override fun toPredicates(
-        acl: ResourceAcl,
+    override fun ResourceAcl.toPredicates(
         filter: UsersFilter,
         table: KNonNullTable<UserModel>
     ): List<KNonNullExpression<Boolean>> {
@@ -82,7 +81,7 @@ class UserFactory : KBaseFactory<UserModel, User, UUID, UsersFilter>(
             table.lastName.accept(filter.lastName),
             table.email.accept(filter.email),
             table.emailVerified.accept(filter.emailVerified),
-            table.asTableEx().membership.organization.accept(acl, filter.organization),
+            table.asTableEx().membership.organization.accept(filter.organization),
             filter.phoneNumber?.let {
                 observeAttributes(it, "phoneNumber", table)
             },

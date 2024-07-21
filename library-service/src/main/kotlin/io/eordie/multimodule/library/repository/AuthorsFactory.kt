@@ -24,8 +24,7 @@ class AuthorsFactory :
     override fun sortingExpressions(table: KNonNullTable<AuthorModel>): List<KPropExpression<out Comparable<*>>> =
         listOf(table.firstName, table.lastName, table.updatedAt, table.id)
 
-    override fun toPredicates(
-        acl: ResourceAcl,
+    override fun ResourceAcl.toPredicates(
         filter: AuthorsFilter,
         table: KNonNullTable<AuthorModel>
     ): List<KNonNullExpression<Boolean>> {
@@ -33,7 +32,7 @@ class AuthorsFactory :
             table.id.accept(filter.id),
             table.firstName.accept(filter.firstName),
             table.lastName.accept(filter.lastName),
-            table.asTableEx().books.accept(acl, filter.books)
+            table.asTableEx().books.accept(filter.books)
         )
     }
 }

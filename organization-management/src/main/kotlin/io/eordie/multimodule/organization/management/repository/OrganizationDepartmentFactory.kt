@@ -28,8 +28,7 @@ class OrganizationDepartmentFactory :
         farmBindings { allScalarFields() }
     }
 
-    override fun toPredicates(
-        acl: ResourceAcl,
+    override fun ResourceAcl.toPredicates(
         filter: OrganizationDepartmentFilter,
         table: KNonNullTable<OrganizationDepartmentModel>
     ): List<KNonNullExpression<Boolean>> {

@@ -29,8 +29,7 @@ class OrganizationEmployeeFactory :
     override val viewRoles = setOf(Roles.VIEW_ORGANIZATION, Roles.VIEW_MEMBERS)
     override val manageRoles = setOf(Roles.MANAGE_ORGANIZATION, Roles.MANAGE_MEMBERS)
 
-    override fun toPredicates(
-        acl: ResourceAcl,
+    override fun ResourceAcl.toPredicates(
         filter: OrganizationEmployeeFilter,
         table: KNonNullTable<OrganizationEmployeeModel>
     ): List<KNonNullExpression<Boolean>> {
@@ -39,10 +38,10 @@ class OrganizationEmployeeFactory :
             table.member.organizationId eq table.organizationId,
             table.organizationId.accept(filter.organizationId),
             table.userId.accept(filter.userId),
-            table.user.accept(acl, filter.user),
-            table.organization.accept(acl, filter.organization),
-            table.department.accept(acl, filter.department),
-            table.position.accept(acl, filter.position)
+            table.user.accept(filter.user),
+            table.organization.accept(filter.organization),
+            table.department.accept(filter.department),
+            table.position.accept(filter.position)
         )
     }
 }

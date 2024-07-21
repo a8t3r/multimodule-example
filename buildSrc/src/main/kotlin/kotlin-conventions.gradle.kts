@@ -33,7 +33,7 @@ tasks.compileKotlin {
     logger.lifecycle("Configuring $name with version ${project.getKotlinPluginVersion()} in project ${project.name}")
     kotlinOptions {
         @Suppress("SpellCheckingInspection")
-        freeCompilerArgs = listOf("-Xjsr305=strict")
+        freeCompilerArgs = listOf("-Xjsr305=strict", "-Xcontext-receivers")
         allWarningsAsErrors = true
         jvmTarget = JDK_VERSION
         languageVersion = KOTLIN_VERSION
@@ -45,7 +45,7 @@ tasks.compileTestKotlin {
     logger.lifecycle("Configuring $name with version ${project.getKotlinPluginVersion()} in project ${project.name}")
     kotlinOptions {
         @Suppress("SpellCheckingInspection")
-        freeCompilerArgs = listOf("-Xjsr305=strict")
+        freeCompilerArgs = listOf("-Xjsr305=strict", "-Xcontext-receivers")
         allWarningsAsErrors = true
         jvmTarget = JDK_VERSION
         languageVersion = KOTLIN_VERSION

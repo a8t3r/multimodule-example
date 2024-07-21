@@ -24,12 +24,12 @@ class BooksFactory : KBaseFactory<BookModel, Book, UUID, BooksFilter>(BookModel:
     override fun sortingExpressions(table: KNonNullTable<BookModel>): List<KPropExpression<out Comparable<*>>> =
         listOf(table.name, table.updatedAt, table.id)
 
-    override fun toPredicates(acl: ResourceAcl, filter: BooksFilter, table: KNonNullTable<BookModel>): List<KNonNullExpression<Boolean>> {
+    override fun ResourceAcl.toPredicates(filter: BooksFilter, table: KNonNullTable<BookModel>): List<KNonNullExpression<Boolean>> {
         return listOfNotNull(
             table.id.accept(filter.id),
             table.name.accept(filter.name),
             table.authorIds.acceptMany(filter.authorIds),
-            table.asTableEx().authors.accept(acl, filter.authors)
+            table.asTableEx().authors.accept(filter.authors)
         )
     }
 }

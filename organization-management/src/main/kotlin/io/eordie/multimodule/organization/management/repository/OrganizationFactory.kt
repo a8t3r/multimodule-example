@@ -32,18 +32,16 @@ class OrganizationFactory : BaseOrganizationFactory<OrganizationModel, Organizat
         )
     }
 
-    override fun toPredicates(
-        acl: ResourceAcl,
+    override fun ResourceAcl.toPredicates(
         filter: OrganizationsFilter,
         table: KNonNullTable<OrganizationModel>
     ): List<KNonNullExpression<Boolean>> {
         return listOfNotNull(
             table.id.accept(filter.id),
             table.name.accept(filter.name),
-            table.asTableEx().domains.accept(acl, filter.domains),
+            table.asTableEx().domains.accept(filter.domains),
             table.asTableEx().members.accept(
-                acl,
-                filter.members?.takeIf { acl.hasAnyOrganizationRole(Roles.VIEW_MEMBERS, Roles.MANAGE_ORGANIZATIONS) }
+                filter.members?.takeIf { this.hasAnyOrganizationRole(Roles.VIEW_MEMBERS, Roles.MANAGE_ORGANIZATIONS) }
             )
         )
     }

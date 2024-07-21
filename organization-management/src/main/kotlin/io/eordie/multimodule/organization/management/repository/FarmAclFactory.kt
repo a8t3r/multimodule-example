@@ -45,16 +45,15 @@ class FarmAclFactory : BaseOrganizationFactory<FarmAclModel, FarmAcl, UUID, Farm
         )
     )
 
-    override fun toPredicates(
-        acl: ResourceAcl,
+    override fun ResourceAcl.toPredicates(
         filter: FarmAclFilter,
         table: KNonNullTable<FarmAclModel>
     ): List<KNonNullExpression<Boolean>> {
         return listOfNotNull(
             table.farmId.accept(filter.farmId),
             table.fieldIds.acceptMany(filter.fieldId),
-            table.organization.accept(acl, filter.organization),
-            table.farmOwnerOrganization.accept(acl, filter.farmOwnerOrganization)
+            table.organization.accept(filter.organization),
+            table.farmOwnerOrganization.accept(filter.farmOwnerOrganization)
         )
     }
 

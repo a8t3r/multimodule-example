@@ -55,7 +55,10 @@ class FiltersRegistry(
             ?: error("unregistered filter type ${filter::class.simpleName}")
 
         val i = getIntrospection<F>(filter::class)
-        val ownPredicates = filterSupport.toPredicates(acl, filter, table)
+        val ownPredicates = with(filterSupport) {
+            acl.toPredicates(filter, table)
+        }
+
         val basicPredicates = buildList {
             if (VersionedEntityIF::class.isSuperclassOf(targetClass)) {
                 val prop = table.get<Int>(VersionedEntityIFProps.VERSION.unwrap())

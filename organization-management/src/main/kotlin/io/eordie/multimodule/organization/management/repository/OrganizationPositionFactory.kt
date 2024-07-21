@@ -25,8 +25,7 @@ class OrganizationPositionFactory :
 
     override val organizationId = OrganizationPositionModel::organizationId
 
-    override fun toPredicates(
-        acl: ResourceAcl,
+    override fun ResourceAcl.toPredicates(
         filter: OrganizationPositionFilter,
         table: KNonNullTable<OrganizationPositionModel>
     ): List<KNonNullExpression<Boolean>> {

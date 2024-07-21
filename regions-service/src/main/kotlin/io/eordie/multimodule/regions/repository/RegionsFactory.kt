@@ -47,8 +47,7 @@ class RegionsFactory : KBaseFactory<OsmRegionTreeModel, Region, Long, RegionsFil
         return this.jsonStr(tag)
     }
 
-    override fun toPredicates(
-        acl: ResourceAcl,
+    override fun ResourceAcl.toPredicates(
         filter: RegionsFilter,
         table: KNonNullTable<OsmRegionTreeModel>
     ): List<KNonNullExpression<Boolean>> = listOfNotNull(
@@ -59,7 +58,7 @@ class RegionsFactory : KBaseFactory<OsmRegionTreeModel, Region, Long, RegionsFil
             val ex = table.relation.asTableEx()
             or(
                 ex.tags.name().accept(it),
-                ex.tags.name(acl.auth.locale.language).accept(it)
+                ex.tags.name(auth.locale.language).accept(it)
             )
         }
     )
