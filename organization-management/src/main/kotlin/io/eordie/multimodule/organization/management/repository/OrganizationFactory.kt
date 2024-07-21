@@ -40,18 +40,11 @@ class OrganizationFactory : BaseOrganizationFactory<OrganizationModel, Organizat
         return listOfNotNull(
             table.id.accept(filter.id),
             table.name.accept(filter.name),
-            filter.domains?.let {
-                table.domains {
-                    registry.toPredicates(acl, filter, asTableEx())
-                }
-            },
-            filter.members
-                ?.takeIf { acl.hasAnyOrganizationRole(Roles.VIEW_MEMBERS, Roles.MANAGE_ORGANIZATIONS) }
-                ?.let {
-                    table.members {
-                        registry.toPredicates(acl, it, asTableEx())
-                    }
-                }
+            table.asTableEx().domains.accept(acl, filter.domains),
+            table.asTableEx().members.accept(
+                acl,
+                filter.members?.takeIf { acl.hasAnyOrganizationRole(Roles.VIEW_MEMBERS, Roles.MANAGE_ORGANIZATIONS) }
+            )
         )
     }
 }

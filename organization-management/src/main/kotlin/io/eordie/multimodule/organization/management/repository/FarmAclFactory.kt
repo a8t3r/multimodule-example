@@ -11,8 +11,10 @@ import io.eordie.multimodule.contracts.organization.models.acl.FarmAcl
 import io.eordie.multimodule.contracts.organization.models.acl.FarmAclFilter
 import io.eordie.multimodule.organization.management.models.acl.FarmAclModel
 import io.eordie.multimodule.organization.management.models.acl.farmId
+import io.eordie.multimodule.organization.management.models.acl.farmOwnerOrganization
 import io.eordie.multimodule.organization.management.models.acl.farmOwnerOrganizationId
 import io.eordie.multimodule.organization.management.models.acl.fieldIds
+import io.eordie.multimodule.organization.management.models.acl.organization
 import io.eordie.multimodule.organization.management.models.acl.organizationId
 import jakarta.inject.Singleton
 import org.babyfish.jimmer.sql.kt.ast.expression.KNonNullExpression
@@ -51,12 +53,8 @@ class FarmAclFactory : BaseOrganizationFactory<FarmAclModel, FarmAcl, UUID, Farm
         return listOfNotNull(
             table.farmId.accept(filter.farmId),
             table.fieldIds.acceptMany(filter.fieldId),
-            filter.organization?.let {
-                registry.toPredicates(acl, it, table.asTableEx())
-            },
-            filter.farmOwnerOrganization?.let {
-                registry.toPredicates(acl, it, table.asTableEx())
-            }
+            table.organization.accept(acl, filter.organization),
+            table.farmOwnerOrganization.accept(acl, filter.farmOwnerOrganization)
         )
     }
 

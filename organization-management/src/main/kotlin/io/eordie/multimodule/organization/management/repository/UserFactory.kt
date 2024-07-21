@@ -82,11 +82,7 @@ class UserFactory : KBaseFactory<UserModel, User, UUID, UsersFilter>(
             table.lastName.accept(filter.lastName),
             table.email.accept(filter.email),
             table.emailVerified.accept(filter.emailVerified),
-            filter.organization?.let {
-                table.membership {
-                    registry.toPredicates(acl, it, organization.asTableEx())
-                }
-            },
+            table.asTableEx().membership.organization.accept(acl, filter.organization),
             filter.phoneNumber?.let {
                 observeAttributes(it, "phoneNumber", table)
             },

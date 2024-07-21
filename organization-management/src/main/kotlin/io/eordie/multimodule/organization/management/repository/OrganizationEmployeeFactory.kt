@@ -39,18 +39,10 @@ class OrganizationEmployeeFactory :
             table.member.organizationId eq table.organizationId,
             table.organizationId.accept(filter.organizationId),
             table.userId.accept(filter.userId),
-            filter.user?.let {
-                registry.toPredicates(acl, it, table.user.asTableEx())
-            },
-            filter.organization?.let {
-                registry.toPredicates(acl, it, table.organization.asTableEx())
-            },
-            filter.department?.let {
-                registry.toPredicates(acl, it, table.department.asTableEx())
-            },
-            filter.position?.let {
-                registry.toPredicates(acl, it, table.position.asTableEx())
-            }
+            table.user.accept(acl, filter.user),
+            table.organization.accept(acl, filter.organization),
+            table.department.accept(acl, filter.department),
+            table.position.accept(acl, filter.position)
         )
     }
 }

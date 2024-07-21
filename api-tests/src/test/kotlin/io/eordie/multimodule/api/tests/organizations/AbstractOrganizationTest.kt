@@ -27,6 +27,7 @@ abstract class AbstractOrganizationTest : AbstractApplicationTest() {
     companion object {
         val organizationManager = authWith(
             developersOrg,
+            Roles.VIEW_USERS,
             Roles.MANAGE_ORGANIZATION,
             Roles.VIEW_ORGANIZATION,
             Roles.VIEW_MEMBERS,

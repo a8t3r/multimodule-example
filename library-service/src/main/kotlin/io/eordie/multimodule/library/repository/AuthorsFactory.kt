@@ -33,11 +33,7 @@ class AuthorsFactory :
             table.id.accept(filter.id),
             table.firstName.accept(filter.firstName),
             table.lastName.accept(filter.lastName),
-            filter.books?.let {
-                table.books {
-                    registry.toPredicates(acl, it, asTableEx())
-                }
-            }
+            table.asTableEx().books.accept(acl, filter.books)
         )
     }
 }

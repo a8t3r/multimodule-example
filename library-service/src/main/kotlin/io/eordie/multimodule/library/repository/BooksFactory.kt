@@ -29,11 +29,7 @@ class BooksFactory : KBaseFactory<BookModel, Book, UUID, BooksFilter>(BookModel:
             table.id.accept(filter.id),
             table.name.accept(filter.name),
             table.authorIds.acceptMany(filter.authorIds),
-            filter.authors?.let {
-                table.authors {
-                    registry.toPredicates(acl, it, asTableEx())
-                }
-            }
+            table.asTableEx().authors.accept(acl, filter.authors)
         )
     }
 }

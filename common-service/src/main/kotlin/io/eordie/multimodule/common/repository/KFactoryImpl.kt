@@ -135,6 +135,10 @@ open class KFactoryImpl<T : Any, ID : Comparable<ID>>(
         }
     }
 
+    fun <F, T : Any> KNonNullTable<T>.accept(acl: ResourceAcl, filter: F?): KNonNullExpression<Boolean>? {
+        return filter?.let { registry.toPredicates(acl, it, this.asTableEx()) }
+    }
+
     @PostConstruct
     fun init() {
         sql = context.getBean(KSqlClient::class.java, Qualifiers.byName(datasourceName)).apply {
