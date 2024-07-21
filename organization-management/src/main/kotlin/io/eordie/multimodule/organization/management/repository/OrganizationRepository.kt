@@ -16,8 +16,14 @@ interface OrganizationRepository :
 
     @Query(
         """
-            select count(*) as totalCount, array_agg(uid) as organizationIds
+            select 
+                count(distinct tb_1_.uid) as totalCount, 
+                array_agg(distinct tb_1_.uid) as organizationIds,
+                count(distinct u.uid) as usersCount,
+                array_agg(distinct u.uid) filter (where u.uid is not null) as userIds
             from organization tb_1_
+            left join organization_member om on om.organization_uid = tb_1_.uid
+            left join user_entity u on u.uid = om.user_uid and u.enabled and u.first_name is not null and u.last_name is not null 
         """
     )
     suspend fun getOrganizationSummary(filter: OrganizationsFilter): OrganizationSummary
