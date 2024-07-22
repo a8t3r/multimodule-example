@@ -15,7 +15,8 @@ class ValidationException(
 
     constructor(message: String) : this(listOf(ValidationError(".", message)))
 
-    override val message = "validation errors occurred"
+    override val message get() = "validation errors occurred: $errors"
+
     override fun extensions(): Map<String, Any> = mapOf(
         "constraints" to errors.associateBy({ it.dataPath }, { it.message })
     )
