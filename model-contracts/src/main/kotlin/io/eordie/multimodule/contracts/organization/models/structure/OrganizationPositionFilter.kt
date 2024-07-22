@@ -11,5 +11,6 @@ import kotlinx.serialization.Serializable
 data class OrganizationPositionFilter(
     val name: StringLiteralFilter? = null,
     val parentId: UUIDLiteralFilter? = null,
-    val organization: OrganizationsFilter? = null
+    val organization: OrganizationsFilter? = null,
+    val organizationId: UUIDLiteralFilter? = null
 )

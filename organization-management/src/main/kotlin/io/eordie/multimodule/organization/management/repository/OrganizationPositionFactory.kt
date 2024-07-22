@@ -8,6 +8,7 @@ import io.eordie.multimodule.organization.management.models.OrganizationPosition
 import io.eordie.multimodule.organization.management.models.by
 import io.eordie.multimodule.organization.management.models.name
 import io.eordie.multimodule.organization.management.models.organization
+import io.eordie.multimodule.organization.management.models.organizationId
 import io.eordie.multimodule.organization.management.models.parentId
 import jakarta.inject.Singleton
 import kotlinx.coroutines.flow.toList
@@ -32,7 +33,8 @@ class OrganizationPositionFactory :
         return listOfNotNull(
             table.name.accept(filter.name),
             table.parentId.accept(filter.parentId),
-            table.organization.accept(filter.organization)
+            table.organization.accept(filter.organization),
+            table.organizationId.accept(filter.organizationId)
         )
     }
 

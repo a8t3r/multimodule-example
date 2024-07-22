@@ -9,6 +9,7 @@ import io.eordie.multimodule.organization.management.models.by
 import io.eordie.multimodule.organization.management.models.id
 import io.eordie.multimodule.organization.management.models.name
 import io.eordie.multimodule.organization.management.models.organization
+import io.eordie.multimodule.organization.management.models.organizationId
 import jakarta.inject.Singleton
 import org.babyfish.jimmer.sql.kt.ast.expression.KNonNullExpression
 import org.babyfish.jimmer.sql.kt.ast.table.KNonNullTable
@@ -37,7 +38,8 @@ class OrganizationDepartmentFactory :
         return listOfNotNull(
             table.id.accept(filter.id),
             table.name.accept(filter.name),
-            table.organization.accept(filter.organization)
+            table.organization.accept(filter.organization),
+            table.organizationId.accept(filter.organizationId)
         )
     }
 }

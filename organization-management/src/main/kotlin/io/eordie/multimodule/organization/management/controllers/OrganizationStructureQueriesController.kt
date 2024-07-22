@@ -6,7 +6,6 @@ import io.eordie.multimodule.contracts.basic.filters.UUIDLiteralFilter
 import io.eordie.multimodule.contracts.basic.paging.Page
 import io.eordie.multimodule.contracts.basic.paging.Pageable
 import io.eordie.multimodule.contracts.identitymanagement.models.CurrentOrganization
-import io.eordie.multimodule.contracts.organization.models.OrganizationsFilter
 import io.eordie.multimodule.contracts.organization.models.acl.BindingCriterion
 import io.eordie.multimodule.contracts.organization.models.acl.GlobalCriterion
 import io.eordie.multimodule.contracts.organization.models.structure.OrganizationDepartment
@@ -37,9 +36,8 @@ class OrganizationStructureQueriesController(
         currentOrganization: CurrentOrganization,
         filter: OrganizationPositionFilter?
     ): List<OrganizationPosition> {
-        val filterBy = filter.orDefault().run {
-            copy(organization = organization.orDefault().copy(id = UUIDLiteralFilter(eq = currentOrganization.id)))
-        }
+        val filterBy = filter.orDefault()
+            .copy(organizationId = UUIDLiteralFilter(eq = currentOrganization.id))
 
         return positions.findAllByFilter(filterBy).map { it.convert() }.toList()
     }
@@ -68,7 +66,7 @@ class OrganizationStructureQueriesController(
         pageable: Pageable?
     ): Page<OrganizationDepartment> {
         val filterBy = filter.orDefault()
-            .copy(organization = OrganizationsFilter(id = UUIDLiteralFilter(eq = currentOrganization.id)))
+            .copy(organizationId = UUIDLiteralFilter(eq = currentOrganization.id))
 
         return departments.findByFilter(filterBy, pageable).convert()
     }
