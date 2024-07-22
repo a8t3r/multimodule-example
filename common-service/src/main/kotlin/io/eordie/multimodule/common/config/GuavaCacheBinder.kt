@@ -2,6 +2,8 @@ package io.eordie.multimodule.common.config
 
 import com.google.common.cache.Cache
 import com.google.common.cache.CacheBuilder
+import org.babyfish.jimmer.meta.ImmutableProp
+import org.babyfish.jimmer.meta.ImmutableType
 import org.babyfish.jimmer.sql.kt.cache.KSimpleBinder
 import java.time.Duration
 
@@ -24,4 +26,7 @@ internal class GuavaCacheBinder<K, V> : KSimpleBinder<K, V> {
         cache.invalidateAll(map.filterValues { it == null }.keys)
         cache.putAll(map.filterValues { it != null })
     }
+
+    override fun prop(): ImmutableProp? = null
+    override fun type(): ImmutableType? = null
 }

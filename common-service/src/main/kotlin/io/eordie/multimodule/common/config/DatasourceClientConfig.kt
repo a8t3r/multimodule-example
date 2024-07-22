@@ -15,6 +15,7 @@ import org.babyfish.jimmer.meta.ImmutableType
 import org.babyfish.jimmer.sql.JSqlClient
 import org.babyfish.jimmer.sql.cache.Cache
 import org.babyfish.jimmer.sql.cache.chain.ChainCacheBuilder
+import org.babyfish.jimmer.sql.dialect.Dialect
 import org.babyfish.jimmer.sql.dialect.PostgresDialect
 import org.babyfish.jimmer.sql.event.TriggerType
 import org.babyfish.jimmer.sql.kt.KSqlClient
@@ -24,6 +25,7 @@ import org.babyfish.jimmer.sql.runtime.ConnectionManager
 import org.babyfish.jimmer.sql.runtime.Executor
 import org.babyfish.jimmer.sql.runtime.ScalarProvider
 import java.sql.Connection
+import java.sql.Types
 import java.util.function.Function
 
 @Factory
@@ -38,14 +40,28 @@ class DatasourceClientConfig {
         }
     }
 
+    @Singleton
+    fun dialect(): Dialect {
+        return object : PostgresDialect() {
+            override fun resolveJdbcType(sqlType: Class<*>): Int {
+                return when (sqlType) {
+                    java.lang.Boolean::class.java -> Types.BOOLEAN
+                    java.util.List::class.java -> Types.ARRAY
+                    else -> super.resolveJdbcType(sqlType)
+                }
+            }
+        }
+    }
+
     @EachBean(JdbcOperations::class)
     @Singleton
     fun createClientByLock(
         executor: Executor,
+        dialect: Dialect,
         operations: JdbcOperations,
         scalarProviders: List<ScalarProvider<*, *>>
     ): KSqlClient = JSqlClient.newBuilder()
-        .setDialect(PostgresDialect())
+        .setDialect(dialect)
         .apply {
             addScalarProvider(TPointProvider())
             addScalarProvider(TLineProvider())
