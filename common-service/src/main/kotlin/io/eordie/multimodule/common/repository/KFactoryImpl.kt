@@ -258,11 +258,13 @@ open class KFactoryImpl<T : Any, ID : Comparable<ID>>(
 
     override suspend fun truncateByIds(ids: Collection<ID>): Int {
         return if (ids.isEmpty()) 0 else {
-            return sql.createDelete(entityType) {
-                where(
-                    table.getId<ID>().valueIn(ids),
-                )
-            }.execute()
+            wrapped {
+                sql.createDelete(entityType) {
+                    where(
+                        table.getId<ID>().valueIn(ids)
+                    )
+                }.execute(it)
+            }
         }
     }
 
