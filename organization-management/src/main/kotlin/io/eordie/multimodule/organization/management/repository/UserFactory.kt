@@ -50,6 +50,9 @@ class UserFactory : KBaseFactory<UserModel, User, UUID, UsersFilter>(
     }
 
     override fun listPredicates(acl: ResourceAcl, table: KNonNullTable<UserModel>) = listOfNotNull(
+        table.firstName.isNotNull(),
+        table.lastName.isNotNull(),
+        table.enabled eq true,
         table.membership {
             organizationId valueIn acl.allOrganizationIds
         }
@@ -73,9 +76,6 @@ class UserFactory : KBaseFactory<UserModel, User, UUID, UsersFilter>(
         table: KNonNullTable<UserModel>
     ): List<KNonNullExpression<Boolean>> {
         return listOfNotNull(
-            table.firstName.isNotNull(),
-            table.lastName.isNotNull(),
-            table.enabled eq true,
             table.id.accept(filter.id),
             table.firstName.accept(filter.firstName),
             table.lastName.accept(filter.lastName),
