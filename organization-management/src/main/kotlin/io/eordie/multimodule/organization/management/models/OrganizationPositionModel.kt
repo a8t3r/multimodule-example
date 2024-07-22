@@ -43,6 +43,10 @@ interface OrganizationPositionModel :
     @IdView
     val parentId: UUID?
 
-    @Key
+    @IdView
     val organizationId: UUID
+
+    @Key
+    @ManyToOne
+    val organization: OrganizationModel
 }

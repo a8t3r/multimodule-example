@@ -37,8 +37,9 @@ class OrganizationStructureQueriesController(
         currentOrganization: CurrentOrganization,
         filter: OrganizationPositionFilter?
     ): List<OrganizationPosition> {
-        val filterBy = filter.orDefault()
-            .copy(organizationId = UUIDLiteralFilter(eq = currentOrganization.id))
+        val filterBy = filter.orDefault().run {
+            copy(organization = organization.orDefault().copy(id = UUIDLiteralFilter(eq = currentOrganization.id)))
+        }
 
         return positions.findAllByFilter(filterBy).map { it.convert() }.toList()
     }
