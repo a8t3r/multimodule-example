@@ -5,5 +5,5 @@ interface LiteralFilter<T> {
     var ne: T?
     var of: List<T>?
     var nof: List<T>?
-    var exists: Boolean?
+    var nil: Boolean?
 }

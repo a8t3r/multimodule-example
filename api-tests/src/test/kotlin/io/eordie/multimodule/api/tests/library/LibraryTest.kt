@@ -164,7 +164,7 @@ class LibraryTest : AbstractApplicationTest() {
                     ),
                     firstName = StringLiteralFilter(
                         of = listOf("John", "Foo", "Bar"),
-                        exists = true,
+                        nil = false,
                         startsWith = "Jo",
                         endsWith = "hn"
                     ),

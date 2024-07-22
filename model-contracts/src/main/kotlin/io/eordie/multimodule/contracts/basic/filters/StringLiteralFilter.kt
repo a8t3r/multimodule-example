@@ -13,7 +13,7 @@ data class StringLiteralFilter(
     override var ne: String? = null,
     override var of: List<String>? = null,
     override var nof: List<String>? = null,
-    override var exists: Boolean? = null,
+    override var nil: Boolean? = null,
     override var gt: String? = null,
     override var gte: String? = null,
     override var lt: String? = null,

@@ -21,7 +21,7 @@ interface ListEmbeddedSpecificationBuilder<F : LiteralFilter<T>, T : Any> : Spec
             filter.ne?.let { path.notContains(it) },
             filter.of?.let { path.overlap(it.asTypedArray()) },
             filter.nof?.let { path.overlap(it.asTypedArray()).not() },
-            filter.exists?.let { if (it) path.isNotNull() else path.isNull() }
+            filter.nil?.let { if (it) path.isNull() else path.isNotNull() }
         )
     }
 }

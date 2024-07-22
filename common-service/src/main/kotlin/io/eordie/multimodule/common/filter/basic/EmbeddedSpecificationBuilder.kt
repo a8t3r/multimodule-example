@@ -21,11 +21,10 @@ open class EmbeddedSpecificationBuilder<F : LiteralFilter<T>, T : Any> : Specifi
             filter.ne?.let { path.ne(it) },
             filter.of?.let { path.valueIn(it) },
             filter.nof?.let { path.valueNotIn(it) },
-            filter.exists?.let {
+            filter.nil?.let {
                 when {
-                    it -> path.isNotNull()
-                    path is KNonNullPropExpression<*> -> path.asNullable().isNull()
-                    else -> path.isNull()
+                    it -> (if (path is KNonNullPropExpression<*>) path.asNullable() else path).isNull()
+                    else -> path.isNotNull()
                 }
             }
         )

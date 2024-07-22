@@ -55,7 +55,7 @@ class RegionsTest : AbstractApplicationTest() {
         val filter = RegionsFilter(
             country = StringLiteralFilter(eq = "AD"),
             depth = IntNumericFilter(of = listOf(0, 1, 2, 3)),
-            parentId = LongNumericFilter(exists = false)
+            parentId = LongNumericFilter(nil = true)
         )
         val page = regions.regions(filter)
         assertThat(page.data).hasSize(1)

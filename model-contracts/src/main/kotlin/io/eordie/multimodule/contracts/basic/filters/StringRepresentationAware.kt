@@ -10,7 +10,7 @@ interface StringRepresentationAware<T : Comparable<T>> : ComparableFilter<T> {
             ne?.toString(),
             of?.map { it.toString() },
             nof?.map { it.toString() },
-            exists,
+            nil,
             gt?.toString(),
             gte?.toString(),
             lt?.toString(),

@@ -11,7 +11,7 @@ data class UUIDLiteralFilter(
     override var ne: UuidStr? = null,
     override var of: List<UuidStr>? = null,
     override var nof: List<UuidStr>? = null,
-    override var exists: Boolean? = null,
+    override var nil: Boolean? = null,
     override var gt: UuidStr? = null,
     override var gte: UuidStr? = null,
     override var lt: UuidStr? = null,
