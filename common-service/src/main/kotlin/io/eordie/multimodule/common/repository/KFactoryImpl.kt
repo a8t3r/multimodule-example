@@ -113,6 +113,8 @@ open class KFactoryImpl<T : Any, ID : Comparable<ID>>(
     internal lateinit var idProperty: KPropExpression<ID>
     private lateinit var sortingExpressionsValue: Map<String, KPropExpression<out Comparable<*>>>
 
+    internal class ConnectionWrapper(delegate: Connection, val context: CoroutineContext) : Connection by delegate
+
     private class ConnectionContextElement(
         val connection: Connection
     ) : CoroutineContext.Element {
