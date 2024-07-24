@@ -14,5 +14,6 @@ data class BooksFilter(
     val createdAt: OffsetDateTimeLiteralFilter? = null,
     val updatedAt: OffsetDateTimeLiteralFilter? = null,
     val authorIds: UUIDLiteralFilter? = null,
-    val authors: AuthorsFilter? = null
+    val authors: AuthorsFilter? = null,
+    val hasAuthors: Boolean? = null
 )

@@ -3,6 +3,7 @@ package io.eordie.multimodule.library.repository
 import io.eordie.multimodule.common.filter.accept
 import io.eordie.multimodule.common.repository.KBaseFactory
 import io.eordie.multimodule.common.repository.ResourceAcl
+import io.eordie.multimodule.common.repository.ext.negateUnless
 import io.eordie.multimodule.contracts.library.models.Author
 import io.eordie.multimodule.contracts.library.models.AuthorsFilter
 import io.eordie.multimodule.library.models.AuthorModel
@@ -32,7 +33,7 @@ class AuthorsFactory :
             table.id.accept(filter.id),
             table.firstName.accept(filter.firstName),
             table.lastName.accept(filter.lastName),
-            table.books { accept(filter.books) }
+            table.books { accept(filter.books) }.negateUnless(filter.hasBooks)
         )
     }
 }

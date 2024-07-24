@@ -4,6 +4,7 @@ import io.eordie.multimodule.common.filter.accept
 import io.eordie.multimodule.common.filter.acceptMany
 import io.eordie.multimodule.common.repository.KBaseFactory
 import io.eordie.multimodule.common.repository.ResourceAcl
+import io.eordie.multimodule.common.repository.ext.negateUnless
 import io.eordie.multimodule.contracts.library.models.Book
 import io.eordie.multimodule.contracts.library.models.BooksFilter
 import io.eordie.multimodule.library.models.BookModel
@@ -29,7 +30,7 @@ class BooksFactory : KBaseFactory<BookModel, Book, UUID, BooksFilter>(BookModel:
             table.id.accept(filter.id),
             table.name.accept(filter.name),
             table.authorIds.acceptMany(filter.authorIds),
-            table.authors { accept(filter.authors) }
+            table.authors { accept(filter.authors) }.negateUnless(filter.hasAuthors)
         )
     }
 }

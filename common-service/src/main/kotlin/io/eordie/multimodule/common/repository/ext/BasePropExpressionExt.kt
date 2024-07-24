@@ -4,6 +4,7 @@ import org.babyfish.jimmer.sql.ast.impl.table.TableImplementor
 import org.babyfish.jimmer.sql.ast.table.spi.PropExpressionImplementor
 import org.babyfish.jimmer.sql.kt.ast.expression.KExpression
 import org.babyfish.jimmer.sql.kt.ast.expression.KNonNullExpression
+import org.babyfish.jimmer.sql.kt.ast.expression.not
 import org.babyfish.jimmer.sql.kt.ast.expression.sql
 
 fun <T : Any> KExpression<T>.name(): String {
@@ -13,6 +14,10 @@ fun <T : Any> KExpression<T>.name(): String {
     return if (tableImplementor.joinProp == null) property.name else {
         "${tableImplementor.joinProp.name}.${property.name}"
     }
+}
+
+fun KNonNullExpression<Boolean>?.negateUnless(condition: Boolean?): KNonNullExpression<Boolean>? {
+    return if (this == null || condition != false) this else this.not()
 }
 
 private fun <T : Any> KExpression<List<T>>.operator(value: T, name: String): KNonNullExpression<Boolean> {
