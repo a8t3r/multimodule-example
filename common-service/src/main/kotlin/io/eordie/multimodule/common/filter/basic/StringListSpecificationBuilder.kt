@@ -15,7 +15,7 @@ class StringListSpecificationBuilder : ListEmbeddedSpecificationBuilder<StringLi
     ): List<KNonNullExpression<Boolean>> {
         val secondary = listOfNotNull(
             filter.like?.takeIf { it.isNotEmpty() }?.let { path.arrayLike("%$it%") },
-            filter.nlike?.takeIf { it.isNotEmpty() }?.let { path.arrayLike("%$it%").not() },
+            filter.nlike?.let { path.arrayLike("%$it%").not() },
             filter.startsWith?.takeIf { it.isNotEmpty() }?.let { path.arrayLike("$it%") },
             filter.endsWith?.takeIf { it.isNotEmpty() }?.let { path.arrayLike("%$it") }
         )
