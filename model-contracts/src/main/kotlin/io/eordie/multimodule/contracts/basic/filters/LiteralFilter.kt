@@ -1,9 +1,9 @@
 package io.eordie.multimodule.contracts.basic.filters
 
 interface LiteralFilter<T> {
-    var eq: T?
-    var ne: T?
-    var of: List<T>?
-    var nof: List<T>?
-    var nil: Boolean?
+    val eq: T?
+    val ne: T?
+    val of: List<T>?
+    val nof: List<T>?
+    val nil: Boolean?
 }

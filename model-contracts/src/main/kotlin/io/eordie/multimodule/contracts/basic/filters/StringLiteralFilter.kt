@@ -9,17 +9,17 @@ import kotlinx.serialization.Serializable
 @Introspected
 @Serializable
 data class StringLiteralFilter(
-    override var eq: String? = null,
-    override var ne: String? = null,
-    override var of: List<String>? = null,
-    override var nof: List<String>? = null,
-    override var nil: Boolean? = null,
-    override var gt: String? = null,
-    override var gte: String? = null,
-    override var lt: String? = null,
-    override var lte: String? = null,
-    var like: String? = null,
-    var nlike: String? = null,
-    var startsWith: String? = null,
-    var endsWith: String? = null
+    override val eq: String? = null,
+    override val ne: String? = null,
+    override val of: List<String>? = null,
+    override val nof: List<String>? = null,
+    override val nil: Boolean? = null,
+    override val gt: String? = null,
+    override val gte: String? = null,
+    override val lt: String? = null,
+    override val lte: String? = null,
+    val like: String? = null,
+    val nlike: String? = null,
+    val startsWith: String? = null,
+    val endsWith: String? = null
 ) : ComparableFilter<String>

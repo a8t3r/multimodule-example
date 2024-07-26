@@ -7,13 +7,13 @@ import kotlinx.serialization.Serializable
 @Introspected
 @Serializable
 data class UUIDLiteralFilter(
-    override var eq: UuidStr? = null,
-    override var ne: UuidStr? = null,
-    override var of: List<UuidStr>? = null,
-    override var nof: List<UuidStr>? = null,
-    override var nil: Boolean? = null,
-    override var gt: UuidStr? = null,
-    override var gte: UuidStr? = null,
-    override var lt: UuidStr? = null,
-    override var lte: UuidStr? = null
+    override val eq: UuidStr? = null,
+    override val ne: UuidStr? = null,
+    override val of: List<UuidStr>? = null,
+    override val nof: List<UuidStr>? = null,
+    override val nil: Boolean? = null,
+    override val gt: UuidStr? = null,
+    override val gte: UuidStr? = null,
+    override val lt: UuidStr? = null,
+    override val lte: UuidStr? = null
 ) : StringRepresentationAware<UuidStr>

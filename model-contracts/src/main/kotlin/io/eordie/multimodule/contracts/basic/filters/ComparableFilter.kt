@@ -9,10 +9,10 @@ import java.time.temporal.Temporal
  * https://www.gatsbyjs.com/docs/graphql-reference/#complete-list-of-possible-operators
  */
 interface ComparableFilter<T : Comparable<T>> : LiteralFilter<T> {
-    var gt: T?
-    var gte: T?
-    var lt: T?
-    var lte: T?
+    val gt: T?
+    val gte: T?
+    val lt: T?
+    val lte: T?
 }
 
 interface NumericFilter<T> : ComparableFilter<T> where T : Number, T : Comparable<T>
@@ -20,52 +20,52 @@ interface TemporalFilter<T> : ComparableFilter<T> where T : Temporal, T : Compar
 
 @Serializable
 data class IntNumericFilter(
-    override var eq: Int? = null,
-    override var ne: Int? = null,
-    override var of: List<Int>? = null,
-    override var nof: List<Int>? = null,
-    override var nil: Boolean? = null,
-    override var gt: Int? = null,
-    override var gte: Int? = null,
-    override var lt: Int? = null,
-    override var lte: Int? = null
+    override val eq: Int? = null,
+    override val ne: Int? = null,
+    override val of: List<Int>? = null,
+    override val nof: List<Int>? = null,
+    override val nil: Boolean? = null,
+    override val gt: Int? = null,
+    override val gte: Int? = null,
+    override val lt: Int? = null,
+    override val lte: Int? = null
 ) : NumericFilter<Int>
 
 @Serializable
 data class LongNumericFilter(
-    override var eq: Long? = null,
-    override var ne: Long? = null,
-    override var of: List<Long>? = null,
-    override var nof: List<Long>? = null,
-    override var nil: Boolean? = null,
-    override var gt: Long? = null,
-    override var gte: Long? = null,
-    override var lt: Long? = null,
-    override var lte: Long? = null
+    override val eq: Long? = null,
+    override val ne: Long? = null,
+    override val of: List<Long>? = null,
+    override val nof: List<Long>? = null,
+    override val nil: Boolean? = null,
+    override val gt: Long? = null,
+    override val gte: Long? = null,
+    override val lt: Long? = null,
+    override val lte: Long? = null
 ) : NumericFilter<Long>
 
 @Serializable
 data class BooleanLiteralFilter(
-    override var eq: Boolean? = null,
-    override var ne: Boolean? = null,
-    override var of: List<Boolean>? = null,
-    override var nof: List<Boolean>? = null,
-    override var nil: Boolean? = null,
-    override var gt: Boolean? = null,
-    override var gte: Boolean? = null,
-    override var lt: Boolean? = null,
-    override var lte: Boolean? = null
+    override val eq: Boolean? = null,
+    override val ne: Boolean? = null,
+    override val of: List<Boolean>? = null,
+    override val nof: List<Boolean>? = null,
+    override val nil: Boolean? = null,
+    override val gt: Boolean? = null,
+    override val gte: Boolean? = null,
+    override val lt: Boolean? = null,
+    override val lte: Boolean? = null
 ) : StringRepresentationAware<Boolean>
 
 @Serializable
 data class OffsetDateTimeLiteralFilter(
-    override var eq: OffsetDateTimeStr? = null,
-    override var ne: OffsetDateTimeStr? = null,
-    override var of: List<OffsetDateTimeStr>? = null,
-    override var nof: List<OffsetDateTimeStr>? = null,
-    override var nil: Boolean? = null,
-    override var gt: OffsetDateTimeStr? = null,
-    override var gte: OffsetDateTimeStr? = null,
-    override var lt: OffsetDateTimeStr? = null,
-    override var lte: OffsetDateTimeStr? = null
+    override val eq: OffsetDateTimeStr? = null,
+    override val ne: OffsetDateTimeStr? = null,
+    override val of: List<OffsetDateTimeStr>? = null,
+    override val nof: List<OffsetDateTimeStr>? = null,
+    override val nil: Boolean? = null,
+    override val gt: OffsetDateTimeStr? = null,
+    override val gte: OffsetDateTimeStr? = null,
+    override val lt: OffsetDateTimeStr? = null,
+    override val lte: OffsetDateTimeStr? = null
 ) : TemporalFilter<OffsetDateTime>
