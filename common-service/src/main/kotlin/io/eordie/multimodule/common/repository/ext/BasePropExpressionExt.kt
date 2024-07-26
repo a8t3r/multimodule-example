@@ -50,6 +50,13 @@ fun <T : Any> KExpression<List<T>>.overlap(values: Array<T>): KNonNullExpression
     }
 }
 
+fun <T : Any> KExpression<List<T>>.arraySize(): KNonNullExpression<Int> {
+    val expression = this
+    return sql(Int::class, "array_length(%e, 1)") {
+        expression(expression)
+    }
+}
+
 fun <T : Any> KExpression<List<T>>.arrayLike(pattern: String): KNonNullExpression<Boolean> {
     val expression = this
     return sql(Boolean::class, "(array_to_string(%e, ',') ilike %v or array_to_string(%e, ',') ilike ',' || %v)") {
