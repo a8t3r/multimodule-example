@@ -6,17 +6,28 @@ import io.eordie.multimodule.common.filter.basic.ListEmbeddedSpecificationBuilde
 import io.eordie.multimodule.common.filter.basic.StringListSpecificationBuilder
 import io.eordie.multimodule.common.filter.basic.StringLiteralSpecificationBuilder
 import io.eordie.multimodule.common.repository.ext.and
+import io.eordie.multimodule.common.repository.ext.arraySize
 import io.eordie.multimodule.common.utils.GenericTypes
 import io.eordie.multimodule.contracts.basic.filters.ComparableFilter
+import io.eordie.multimodule.contracts.basic.filters.IntNumericFilter
 import io.eordie.multimodule.contracts.basic.filters.LiteralFilter
 import io.eordie.multimodule.contracts.basic.filters.StringLiteralFilter
 import org.babyfish.jimmer.sql.kt.ast.expression.KExpression
 import org.babyfish.jimmer.sql.kt.ast.expression.KNonNullExpression
 
-fun <F : LiteralFilter<T>, T : Any> KExpression<List<T>>.acceptMany(filter: F?): KNonNullExpression<Boolean>? {
-    return if (filter == null) null else {
-        dispatchMany(filter).invoke(filter, this).and()
-    }
+fun <F : LiteralFilter<T>, T : Any> KExpression<List<T>>.acceptMany(
+    filter: F?,
+    arraySizeFilter: IntNumericFilter? = null
+): KNonNullExpression<Boolean>? {
+    val expression = this
+    return buildList {
+        if (filter != null) {
+            addAll(dispatchMany(filter).invoke(filter, expression))
+        }
+        if (arraySizeFilter != null) {
+            addAll(dispatchSingle(arraySizeFilter).invoke(arraySizeFilter, expression.arraySize))
+        }
+    }.and()
 }
 
 fun <F : LiteralFilter<T>, T : Any> KExpression<T>.accept(filter: F?): KNonNullExpression<Boolean>? {

@@ -29,7 +29,7 @@ class BooksFactory : KBaseFactory<BookModel, Book, UUID, BooksFilter>(BookModel:
         return listOfNotNull(
             table.id.accept(filter.id),
             table.name.accept(filter.name),
-            table.authorIds.acceptMany(filter.authorIds),
+            table.authorIds.acceptMany(filter.authorIds, filter.authorIdsSize),
             table.authors { accept(filter.authors) }.negateUnless(filter.hasAuthors)
         )
     }
