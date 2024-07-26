@@ -50,7 +50,7 @@ fun <T : Any> KExpression<List<T>>.overlap(values: Array<T>): KNonNullExpression
     }
 }
 
-fun <T : Any> KExpression<List<T>>.arraySize(): KNonNullExpression<Int> {
+val <T : Any> KExpression<List<T>>.arraySize: KNonNullExpression<Int> get() = run {
     val expression = this
     return sql(Int::class, "array_length(%e, 1)") {
         expression(expression)
