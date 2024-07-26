@@ -7,8 +7,6 @@ import io.eordie.multimodule.common.repository.ext.overlap
 import io.eordie.multimodule.contracts.basic.filters.LiteralFilter
 import org.babyfish.jimmer.sql.kt.ast.expression.KExpression
 import org.babyfish.jimmer.sql.kt.ast.expression.KNonNullExpression
-import org.babyfish.jimmer.sql.kt.ast.expression.isNotNull
-import org.babyfish.jimmer.sql.kt.ast.expression.isNull
 import org.babyfish.jimmer.sql.kt.ast.expression.not
 
 interface ListEmbeddedSpecificationBuilder<F : LiteralFilter<T>, T : Any> : SpecificationBuilder<F, List<T>> {
@@ -21,7 +19,6 @@ interface ListEmbeddedSpecificationBuilder<F : LiteralFilter<T>, T : Any> : Spec
             filter.ne?.let { path.notContains(it) },
             filter.of?.let { path.overlap(it.asTypedArray()) },
             filter.nof?.let { path.overlap(it.asTypedArray()).not() },
-            filter.nil?.let { if (it) path.isNull() else path.isNotNull() }
-        )
+        ) + super.invoke(filter, path)
     }
 }
