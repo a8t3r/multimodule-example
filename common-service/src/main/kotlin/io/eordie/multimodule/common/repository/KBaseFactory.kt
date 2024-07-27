@@ -25,7 +25,7 @@ abstract class KBaseFactory<T : Convertable<C>, C : Any, ID, F : Any>(
     @Inject
     private lateinit var eventPublisher: EventPublisher
 
-    override fun entityListener(): EntityListener<T> = EntityListener {
+    override val entityListener: EntityListener<T> = EntityListener {
         val (old, new) = it.oldEntity?.convert() to it.newEntity?.convert()
         val event = MutationEvent(it.id.toString(), old, new, difference(old, new))
 

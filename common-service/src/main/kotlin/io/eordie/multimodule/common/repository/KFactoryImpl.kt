@@ -101,7 +101,7 @@ open class KFactoryImpl<T : Any, ID : Comparable<ID>>(
 
     open val requireEmployeeAcl = true
     open val datasourceName = "default"
-    open fun entityListener(): EntityListener<T>? = null
+    open val entityListener: EntityListener<T>? = null
     open fun sortingExpressions(table: KNonNullTable<T>): List<KPropExpression<out Comparable<*>>> {
         return immutableType.selectableScalarProps.map { table.get(it.value) }
     }
@@ -148,7 +148,7 @@ open class KFactoryImpl<T : Any, ID : Comparable<ID>>(
     @PostConstruct
     fun init() {
         sql = context.getBean(KSqlClient::class.java, Qualifiers.byName(datasourceName)).apply {
-            val entityListener = entityListener()
+            val entityListener = entityListener
             if (entityListener != null) {
                 getTriggers(true).addEntityListener(entityType, entityListener)
             }
