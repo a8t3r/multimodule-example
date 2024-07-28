@@ -43,9 +43,9 @@ class LibraryMutationController(
     }
 
     override suspend fun author(input: AuthorInput): Author {
-        return authors.save<AuthorModelDraft> {
-            this.firstName = requireNotNull(input.firstName)
-            this.lastName = input.lastName
+        return authors.save<AuthorModelDraft>(input.id) { _, instance ->
+            instance.firstName = requireNotNull(input.firstName ?: instance.firstName)
+            instance.lastName = input.lastName
         }.convert()
     }
 }
