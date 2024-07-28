@@ -4,7 +4,9 @@ import org.babyfish.jimmer.sql.ast.impl.table.TableImplementor
 import org.babyfish.jimmer.sql.ast.table.spi.PropExpressionImplementor
 import org.babyfish.jimmer.sql.kt.ast.expression.KExpression
 import org.babyfish.jimmer.sql.kt.ast.expression.KNonNullExpression
+import org.babyfish.jimmer.sql.kt.ast.expression.and
 import org.babyfish.jimmer.sql.kt.ast.expression.not
+import org.babyfish.jimmer.sql.kt.ast.expression.or
 import org.babyfish.jimmer.sql.kt.ast.expression.sql
 
 fun <T : Any> KExpression<T>.name(): String {
@@ -65,11 +67,11 @@ fun <T : Any> KExpression<List<T>>.arrayLike(pattern: String): KNonNullExpressio
     }
 }
 
-fun List<KNonNullExpression<Boolean>?>?.and(): KNonNullExpression<Boolean>? {
-    return if (this.isNullOrEmpty()) null else {
-        org.babyfish.jimmer.sql.kt.ast.expression.and(*this.toTypedArray())
-    }
-}
+fun List<KNonNullExpression<Boolean>?>?.or(): KNonNullExpression<Boolean>? =
+    if (this.isNullOrEmpty()) null else or(*this.toTypedArray())
+
+fun List<KNonNullExpression<Boolean>?>?.and(): KNonNullExpression<Boolean>? =
+    if (this.isNullOrEmpty()) null else and(*this.toTypedArray())
 
 fun <T : Any> KExpression<T>.arrayAgg(distinct: Boolean = true): KNonNullExpression<out List<T>> {
     val property = this

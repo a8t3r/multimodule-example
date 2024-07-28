@@ -5,6 +5,7 @@ import io.eordie.multimodule.common.repository.entity.CreatedByIF
 import io.eordie.multimodule.common.repository.entity.OrganizationOwnerIF
 import io.eordie.multimodule.common.repository.entity.PermissionAwareIF
 import io.eordie.multimodule.common.repository.ext.name
+import io.eordie.multimodule.common.repository.ext.or
 import io.eordie.multimodule.common.rsocket.context.Microservices
 import io.eordie.multimodule.common.rsocket.context.getAuthenticationContext
 import io.eordie.multimodule.common.utils.asFlow
@@ -45,7 +46,6 @@ import org.babyfish.jimmer.sql.kt.KSqlClient
 import org.babyfish.jimmer.sql.kt.ast.expression.KNonNullExpression
 import org.babyfish.jimmer.sql.kt.ast.expression.KPropExpression
 import org.babyfish.jimmer.sql.kt.ast.expression.constant
-import org.babyfish.jimmer.sql.kt.ast.expression.or
 import org.babyfish.jimmer.sql.kt.ast.expression.valueIn
 import org.babyfish.jimmer.sql.kt.ast.mutation.KMutableUpdate
 import org.babyfish.jimmer.sql.kt.ast.mutation.KSimpleSaveResult
@@ -390,9 +390,7 @@ open class KFactoryImpl<T : Any, ID : Comparable<ID>>(
                 error("too many sort orders")
             }
             orderBy(orderBy)
-
-            val predicates = cursor.toPredicates(conversionService)
-            where(or(*predicates.toTypedArray()))
+            where(cursor.toPredicates(conversionService).or())
 
             val projection = orderBy.map { it.expression }.filterIsInstance<Selection<*>>()
             val (a, b, c, d, e) = projection + List(size = MAX_ALLOWED_SORTING - projection.size) { constant(1) }
