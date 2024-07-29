@@ -18,9 +18,9 @@ interface Library : Query {
     suspend fun bookById(id: UUID): Book?
 
     suspend fun books(
-        @GraphQLIgnore selectionSet: SelectionSet,
         filter: BooksFilter?,
-        pageable: Pageable? = null
+        pageable: Pageable? = null,
+        @GraphQLIgnore selectionSet: SelectionSet? = null
     ): Page<Book>
 
     suspend fun bookSummary(filter: BooksFilter?): BookSummary

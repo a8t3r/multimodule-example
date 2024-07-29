@@ -37,11 +37,11 @@ class LibraryController(
     }
 
     override suspend fun books(
-        selectionSet: SelectionSet,
         filter: BooksFilter?,
-        pageable: Pageable?
+        pageable: Pageable?,
+        selectionSet: SelectionSet?
     ): Page<Book> {
-        return books.findByFilter(filter.orDefault(), pageable, selectionSet.asPageFetcher()).convert()
+        return books.findByFilter(filter.orDefault(), pageable, selectionSet?.asPageFetcher()).convert()
     }
 
     override suspend fun bookSummary(filter: BooksFilter?): BookSummary {
