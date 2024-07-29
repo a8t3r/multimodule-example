@@ -1,5 +1,6 @@
 package io.eordie.multimodule.common.repository
 
+import com.google.common.base.Defaults
 import io.eordie.multimodule.common.repository.entity.PermissionAwareIF
 import io.eordie.multimodule.common.utils.GenericTypes
 import io.eordie.multimodule.contracts.basic.Permission
@@ -11,12 +12,10 @@ import java.time.OffsetDateTime
 object EntityConverter {
 
     private val defaults: Map<Class<out Any>, Any> = mapOf(
-        Int::class.java to 0,
-        Long::class.java to 0L,
-        Boolean::class.java to true,
-        OffsetDateTime::class.java to OffsetDateTime.now(),
+        String::class.java to "",
+        Set::class.java to emptySet<Any>(),
         List::class.java to emptyList<Any>(),
-        Set::class.java to emptySet<Any>()
+        OffsetDateTime::class.java to OffsetDateTime.now()
     )
 
     fun <T : Any> convert(convertable: Convertable<T>): T {
@@ -36,6 +35,7 @@ object EntityConverter {
                 from.__isLoaded(prop.id) -> from.__get(prop.id)
                 argument.isNullable -> null
                 argument.name == PermissionAwareIF::permissions.name -> emptyList<Permission>()
+                argument.isPrimitive -> Defaults.defaultValue(argument.type)
                 else -> defaults[argument.type] ?: run { error("required argument '${argument.name}' is not loaded") }
             }
         }
