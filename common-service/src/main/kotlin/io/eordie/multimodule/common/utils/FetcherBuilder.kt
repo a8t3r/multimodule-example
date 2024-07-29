@@ -6,7 +6,7 @@ import org.babyfish.jimmer.sql.fetcher.Fetcher
 import org.babyfish.jimmer.sql.fetcher.impl.FetcherImpl
 import org.babyfish.jimmer.sql.fetcher.impl.FetcherImplementor
 
-class FetcherBuilder<T>(private val type: Class<T>) {
+internal class FetcherBuilder<T>(private val type: Class<T>) {
 
     fun newFetcher(fields: List<String>, failOnUnknown: Boolean): Fetcher<T> {
         val propertiesMap = ImmutableType.get(type).selectableScalarProps
