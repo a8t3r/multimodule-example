@@ -15,9 +15,13 @@ object GenericTypes {
             .arguments.map { requireNotNull(it.type?.jvmErasure) }
     }
 
-    fun <T : Any> getTypeArgument(instance: Any, targetType: KClass<T>): KClass<*> {
-        return cache.getOrPut(instance::class to targetType) {
-            val result = instance::class.allSupertypes
+    fun <T : Any> getTypeArgument(instance: T, targetType: KClass<T>): KClass<*> {
+        return getTypeArgumentFromClass(instance::class, targetType)
+    }
+
+    fun <T : Any> getTypeArgumentFromClass(instanceType: KClass<out T>, targetType: KClass<T>): KClass<*> {
+        return cache.getOrPut(instanceType to targetType) {
+            val result = instanceType.allSupertypes
                 .single { it.classifier == targetType }
                 .arguments.single().type?.jvmErasure
 

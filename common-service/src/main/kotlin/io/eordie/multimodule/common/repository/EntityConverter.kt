@@ -8,6 +8,7 @@ import io.eordie.multimodule.contracts.utils.getIntrospection
 import io.micronaut.core.beans.BeanIntrospection
 import org.babyfish.jimmer.runtime.ImmutableSpi
 import java.time.OffsetDateTime
+import kotlin.reflect.KClass
 
 object EntityConverter {
 
@@ -19,9 +20,13 @@ object EntityConverter {
     )
 
     fun <T : Any> convert(convertable: Convertable<T>): T {
-        val targetType = GenericTypes.getTypeArgument(convertable, Convertable::class)
-        val introspection = getIntrospection<T>(targetType)
+        val introspection = this.getIntrospection(convertable::class)
         return convert(convertable as ImmutableSpi, introspection)
+    }
+
+    fun <T : Any, C : Convertable<out T>> getIntrospection(type: KClass<out C>): BeanIntrospection<T> {
+        val targetType = GenericTypes.getTypeArgumentFromClass(type, Convertable::class)
+        return getIntrospection(targetType)
     }
 
     private fun <T : Any> convert(
