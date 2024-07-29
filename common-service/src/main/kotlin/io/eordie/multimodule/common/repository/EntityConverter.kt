@@ -8,11 +8,13 @@ import io.eordie.multimodule.contracts.utils.getIntrospection
 import io.micronaut.core.beans.BeanIntrospection
 import org.babyfish.jimmer.runtime.ImmutableSpi
 import java.time.OffsetDateTime
+import java.util.*
 import kotlin.reflect.KClass
 
 object EntityConverter {
 
     private val defaults: Map<Class<out Any>, Any> = mapOf(
+        UUID::class.java to UUID(0, 0),
         String::class.java to "",
         Set::class.java to emptySet<Any>(),
         List::class.java to emptyList<Any>(),
