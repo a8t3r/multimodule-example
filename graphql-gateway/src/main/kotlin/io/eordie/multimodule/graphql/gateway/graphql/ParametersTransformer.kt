@@ -1,6 +1,7 @@
 package io.eordie.multimodule.graphql.gateway.graphql
 
 import graphql.schema.DataFetchingEnvironment
+import io.eordie.multimodule.contracts.basic.paging.SelectionSet
 import io.eordie.multimodule.contracts.identitymanagement.models.AuthenticationDetails
 import io.eordie.multimodule.contracts.identitymanagement.models.CurrentOrganization
 import io.eordie.multimodule.contracts.identitymanagement.models.OAuthToken
@@ -23,6 +24,7 @@ class ParametersTransformer(
             Headers::class -> { param to environment.graphQlContext.get(ContextKeys.HEADERS) }
             MutableHeaders::class -> { param to environment.graphQlContext.get(ContextKeys.RESPONSE_HEADERS) }
             DataFetchingEnvironment::class -> param to environment
+            SelectionSet::class -> param to SelectionSetExtractor.from(environment)
             AuthenticationDetails::class -> {
                 val value = environment.graphQlContext.authenticationDetailsOrNull()
                     ?: if (param.type.isMarkedNullable) null else {
