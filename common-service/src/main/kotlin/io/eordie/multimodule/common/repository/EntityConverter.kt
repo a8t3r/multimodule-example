@@ -6,8 +6,18 @@ import io.eordie.multimodule.contracts.basic.Permission
 import io.eordie.multimodule.contracts.utils.getIntrospection
 import io.micronaut.core.beans.BeanIntrospection
 import org.babyfish.jimmer.runtime.ImmutableSpi
+import java.time.OffsetDateTime
 
 object EntityConverter {
+
+    private val defaults: Map<Class<out Any>, Any> = mapOf(
+        Int::class.java to 0,
+        Long::class.java to 0L,
+        Boolean::class.java to true,
+        OffsetDateTime::class.java to OffsetDateTime.now(),
+        List::class.java to emptyList<Any>(),
+        Set::class.java to emptySet<Any>()
+    )
 
     fun <T : Any> convert(convertable: Convertable<T>): T {
         val targetType = GenericTypes.getTypeArgument(convertable, Convertable::class)
@@ -26,7 +36,7 @@ object EntityConverter {
                 from.__isLoaded(prop.id) -> from.__get(prop.id)
                 argument.isNullable -> null
                 argument.name == PermissionAwareIF::permissions.name -> emptyList<Permission>()
-                else -> error("required argument '${argument.name}' is not loaded")
+                else -> defaults[argument.type] ?: run { error("required argument '${argument.name}' is not loaded") }
             }
         }
         return introspection.instantiate(*constructorArgs.toTypedArray())
