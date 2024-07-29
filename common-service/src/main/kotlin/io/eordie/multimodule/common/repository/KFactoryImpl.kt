@@ -24,6 +24,8 @@ import io.micronaut.transaction.exceptions.UnexpectedRollbackException
 import jakarta.annotation.PostConstruct
 import jakarta.inject.Inject
 import jakarta.inject.Provider
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.flow
@@ -124,10 +126,10 @@ open class KFactoryImpl<T : Any, ID : Comparable<ID>>(
 
     private suspend fun currentConnection() = coroutineContext[ConnectionContextElement.Key]?.connection
 
-    suspend fun <R : Any> transaction(block: suspend (Connection) -> R): R {
+    suspend fun <R : Any> transaction(block: suspend CoroutineScope.(Connection) -> R): R {
         val context = coroutineContext
         val previous = currentConnection()
-        return if (previous != null) block(previous) else {
+        return if (previous != null) coroutineScope { block(previous) } else {
             noCacheSql.javaClient.connectionManager.execute { connection ->
                 connection.autoCommit = false
                 runBlocking(context + ConnectionContextElement(connection)) {
@@ -142,7 +144,7 @@ open class KFactoryImpl<T : Any, ID : Comparable<ID>>(
     context(ResourceAcl)
     fun KNonNullTable<*>.accept(filter: Any?): KNonNullExpression<Boolean>? {
         val resourceAcl: ResourceAcl = this@ResourceAcl
-        return filter?.let { registry.toPredicates(resourceAcl, it, this.asTableEx()) }
+        return filter?.let { registry.toPredicates(resourceAcl, it, this) }
     }
 
     @PostConstruct
