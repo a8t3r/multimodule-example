@@ -7,9 +7,9 @@ import org.babyfish.jimmer.sql.fetcher.impl.FetcherImpl
 import org.babyfish.jimmer.sql.fetcher.impl.FetcherImplementor
 
 class FetcherBuilder<T>(private val type: Class<T>) {
-    private val propertiesMap = ImmutableType.get(type).selectableScalarProps
 
     fun newFetcher(fields: List<String>): Fetcher<T> {
+        val propertiesMap = ImmutableType.get(type).selectableScalarProps
         return fields.fold(FetcherImpl(type) as FetcherImplementor<T>) { acc, field ->
             if (field.contains('.')) acc else {
                 val property = propertiesMap[field]?.takeIf { it.isScalar(TargetLevel.OBJECT) }
