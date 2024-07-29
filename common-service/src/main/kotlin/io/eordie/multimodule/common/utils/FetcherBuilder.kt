@@ -12,7 +12,7 @@ import kotlin.reflect.KClass
 internal class FetcherBuilder<T : Convertable<out Any>>(private val type: KClass<T>) {
 
     fun newFetcher(fields: List<String>): Fetcher<T> {
-        val propertiesMap = ImmutableType.get(type.java).selectableScalarProps
+        val propertiesMap = ImmutableType.get(type.java).props
         val constructorArgumentNames = EntityConverter.getIntrospection(type)
             .constructorArguments.map { it.name }
             .toSet()

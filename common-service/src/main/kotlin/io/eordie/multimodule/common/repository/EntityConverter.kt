@@ -6,6 +6,7 @@ import io.eordie.multimodule.common.utils.GenericTypes
 import io.eordie.multimodule.contracts.basic.Permission
 import io.eordie.multimodule.contracts.utils.getIntrospection
 import io.micronaut.core.beans.BeanIntrospection
+import kotlinx.serialization.Required
 import org.babyfish.jimmer.runtime.ImmutableSpi
 import java.time.OffsetDateTime
 import java.util.*
@@ -42,8 +43,11 @@ object EntityConverter {
                 from.__isLoaded(prop.id) -> from.__get(prop.id)
                 argument.isNullable -> null
                 argument.name == PermissionAwareIF::permissions.name -> emptyList<Permission>()
+                argument.isAnnotationPresent(Required::class.java) -> {
+                    error("required argument '${argument.name}' is not loaded")
+                }
                 argument.isPrimitive -> Defaults.defaultValue(argument.type)
-                else -> defaults[argument.type] ?: run { error("required argument '${argument.name}' is not loaded") }
+                else -> defaults[argument.type] ?: run { error("no default value for type ${argument.type}") }
             }
         }
         return introspection.instantiate(*constructorArgs.toTypedArray())
