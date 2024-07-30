@@ -1,14 +1,12 @@
 package io.eordie.multimodule.organization.management.controllers
 
 import io.eordie.multimodule.common.rsocket.context.getAuthentication
-import io.eordie.multimodule.common.utils.asPageFetcher
 import io.eordie.multimodule.common.utils.associateBy
 import io.eordie.multimodule.common.utils.associateFlattenById
 import io.eordie.multimodule.common.utils.convert
 import io.eordie.multimodule.contracts.basic.filters.UUIDLiteralFilter
 import io.eordie.multimodule.contracts.basic.paging.Page
 import io.eordie.multimodule.contracts.basic.paging.Pageable
-import io.eordie.multimodule.contracts.basic.paging.SelectionSet
 import io.eordie.multimodule.contracts.organization.models.User
 import io.eordie.multimodule.contracts.organization.models.UsersFilter
 import io.eordie.multimodule.contracts.organization.models.structure.OrganizationEmployeeFilter
@@ -30,12 +28,8 @@ class UserQueriesController(
     private val employees: OrganizationEmployeeFactory
 ) : UserQueries {
 
-    override suspend fun users(
-        filter: UsersFilter?,
-        pageable: Pageable?,
-        selectionSet: SelectionSet?
-    ): Page<User> {
-        return users.findByFilter(filter.orDefault(), pageable, selectionSet?.asPageFetcher()).convert()
+    override suspend fun users(filter: UsersFilter?, pageable: Pageable?): Page<User> {
+        return users.query(filter.orDefault(), pageable).convert()
     }
 
     override suspend fun loadUserByIds(ids: List<UUID>): Map<UUID, User> {

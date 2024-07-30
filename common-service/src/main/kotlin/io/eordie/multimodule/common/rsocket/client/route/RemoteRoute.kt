@@ -3,11 +3,13 @@ package io.eordie.multimodule.common.rsocket.client.route
 import io.eordie.multimodule.common.rsocket.client.rsocket.RSocketLocalFactory
 import io.eordie.multimodule.common.rsocket.context.AclContextElement
 import io.eordie.multimodule.common.rsocket.context.AuthenticationContextElement
+import io.eordie.multimodule.common.rsocket.context.SelectionSetContextElement
 import io.eordie.multimodule.common.rsocket.meta.AclMetadata
 import io.eordie.multimodule.common.rsocket.meta.AuthenticationMetadata
 import io.eordie.multimodule.common.rsocket.meta.ExceptionalMetadata
 import io.eordie.multimodule.common.rsocket.meta.OpenTelemetrySpanContextMetadata
 import io.eordie.multimodule.common.rsocket.meta.ProtobufPayloadBuilder
+import io.eordie.multimodule.common.rsocket.meta.SelectionSetMetadata
 import io.eordie.multimodule.common.utils.extendWith
 import io.eordie.multimodule.contracts.basic.ModuleDefinition
 import io.micronaut.context.BeanLocator
@@ -54,6 +56,7 @@ open class RemoteRoute(
         val routeId = buildRouteId(method)
         val authentication = context[AuthenticationContextElement]?.details
         val previousAcl = context[AclContextElement.Key]
+        val selectionSet = context[SelectionSetContextElement.Key]
 
         val span = tracer.spanBuilder("(Client) $routeId")
             .setParent(context.getOpenTelemetryContext())
@@ -70,7 +73,8 @@ open class RemoteRoute(
                         RoutingMetadata(routeId),
                         authentication?.let { AuthenticationMetadata(it) },
                         OpenTelemetrySpanContextMetadata(span.spanContext),
-                        previousAcl?.takeIf { it.isInitialized() }?.let { AclMetadata(it.resource) }
+                        previousAcl?.takeIf { it.isInitialized() }?.let { AclMetadata(it.resource) },
+                        selectionSet?.selectionSet?.let { SelectionSetMetadata(it) }
                     )
                 )
             )

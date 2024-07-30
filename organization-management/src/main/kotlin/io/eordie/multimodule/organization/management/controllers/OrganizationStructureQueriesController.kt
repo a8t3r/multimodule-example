@@ -1,12 +1,10 @@
 package io.eordie.multimodule.organization.management.controllers
 
-import io.eordie.multimodule.common.utils.asFetcher
 import io.eordie.multimodule.common.utils.associateFlattenById
 import io.eordie.multimodule.common.utils.convert
 import io.eordie.multimodule.contracts.basic.filters.UUIDLiteralFilter
 import io.eordie.multimodule.contracts.basic.paging.Page
 import io.eordie.multimodule.contracts.basic.paging.Pageable
-import io.eordie.multimodule.contracts.basic.paging.SelectionSet
 import io.eordie.multimodule.contracts.identitymanagement.models.CurrentOrganization
 import io.eordie.multimodule.contracts.organization.models.acl.BindingCriterion
 import io.eordie.multimodule.contracts.organization.models.acl.GlobalCriterion
@@ -36,13 +34,12 @@ class OrganizationStructureQueriesController(
 
     override suspend fun positions(
         currentOrganization: CurrentOrganization,
-        filter: OrganizationPositionFilter?,
-        selectionSet: SelectionSet?
+        filter: OrganizationPositionFilter?
     ): List<OrganizationPosition> {
         val filterBy = filter.orDefault()
             .copy(organizationId = UUIDLiteralFilter(eq = currentOrganization.id))
 
-        return positions.findAllByFilter(filterBy, selectionSet?.asFetcher()).map { it.convert() }.toList()
+        return positions.queryAll(filterBy).map { it.convert() }.toList()
     }
 
     override suspend fun loadSubordinates(parentIds: List<UUID>): Map<UUID, List<OrganizationPosition>> {

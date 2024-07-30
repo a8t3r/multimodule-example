@@ -7,7 +7,6 @@ import io.eordie.multimodule.contracts.Query
 import io.eordie.multimodule.contracts.annotations.Secured
 import io.eordie.multimodule.contracts.basic.paging.Page
 import io.eordie.multimodule.contracts.basic.paging.Pageable
-import io.eordie.multimodule.contracts.basic.paging.SelectionSet
 import io.eordie.multimodule.contracts.identitymanagement.models.CurrentOrganization
 import io.eordie.multimodule.contracts.organization.models.acl.BindingCriterion
 import io.eordie.multimodule.contracts.organization.models.structure.OrganizationDepartment
@@ -27,8 +26,7 @@ import java.util.*
 interface OrganizationStructureQueries : Query {
     suspend fun positions(
         @GraphQLIgnore currentOrganization: CurrentOrganization,
-        filter: OrganizationPositionFilter? = null,
-        @GraphQLIgnore selectionSet: SelectionSet? = null
+        filter: OrganizationPositionFilter? = null
     ): List<OrganizationPosition>
 
     suspend fun loadSubordinates(parentIds: List<UUID>): Map<UUID, List<OrganizationPosition>>

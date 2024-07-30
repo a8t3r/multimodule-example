@@ -19,7 +19,7 @@ abstract class KBaseFactory<T : Convertable<C>, C : Any, ID, F : Any>(
     entityType: KClass<T>
 ) :
     KFactoryImpl<T, ID>(entityType),
-    FilterSupportTrait<T, ID, F>,
+    ProjectionSupportTrait<T, ID, F>,
     EntityLoader<C, ID> where ID : Any, ID : Comparable<ID> {
 
     @Inject

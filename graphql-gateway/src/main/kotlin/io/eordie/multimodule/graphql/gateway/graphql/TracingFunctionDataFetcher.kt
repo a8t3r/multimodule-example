@@ -42,7 +42,8 @@ class TracingFunctionDataFetcher(
         environment: DataFetchingEnvironment,
         parameterValues: Map<KParameter, Any?>
     ): CompletableFuture<Any?> {
-        return CoroutineScope(environment.graphQlContext.newCoroutineContext()).future {
+        val coroutineContext = environment.newCoroutineContext()
+        return CoroutineScope(coroutineContext).future {
             interfaceFn.callSuspendBy(parameterValues)
         }
     }
@@ -51,7 +52,7 @@ class TracingFunctionDataFetcher(
         environment: DataFetchingEnvironment,
         parameterValues: Map<KParameter, Any?>
     ): Any? {
-        val coroutineContext = environment.graphQlContext.newCoroutineContext()
+        val coroutineContext = environment.newCoroutineContext()
         val parameters = parameterValues.mapValues { (key, value) ->
             if (key.type.classifier != CoroutineContext::class) value else coroutineContext
         }

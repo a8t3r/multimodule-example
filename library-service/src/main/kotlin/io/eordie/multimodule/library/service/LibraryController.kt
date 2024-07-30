@@ -1,12 +1,10 @@
 package io.eordie.multimodule.library.service
 
-import io.eordie.multimodule.common.utils.asPageFetcher
 import io.eordie.multimodule.common.utils.associateByIds
 import io.eordie.multimodule.common.utils.convert
 import io.eordie.multimodule.contracts.basic.filters.UUIDLiteralFilter
 import io.eordie.multimodule.contracts.basic.paging.Page
 import io.eordie.multimodule.contracts.basic.paging.Pageable
-import io.eordie.multimodule.contracts.basic.paging.SelectionSet
 import io.eordie.multimodule.contracts.library.models.Author
 import io.eordie.multimodule.contracts.library.models.AuthorsFilter
 import io.eordie.multimodule.contracts.library.models.Book
@@ -36,12 +34,8 @@ class LibraryController(
         return authors.findById(id)?.convert()
     }
 
-    override suspend fun books(
-        filter: BooksFilter?,
-        pageable: Pageable?,
-        selectionSet: SelectionSet?
-    ): Page<Book> {
-        return books.findByFilter(filter.orDefault(), pageable, selectionSet?.asPageFetcher()).convert()
+    override suspend fun books(filter: BooksFilter?, pageable: Pageable?): Page<Book> {
+        return books.query(filter.orDefault(), pageable).convert()
     }
 
     override suspend fun bookSummary(filter: BooksFilter?): BookSummary {
