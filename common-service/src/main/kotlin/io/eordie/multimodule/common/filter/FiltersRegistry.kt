@@ -11,6 +11,7 @@ import io.eordie.multimodule.common.repository.entity.VersionedEntityIF
 import io.eordie.multimodule.common.repository.entity.VersionedEntityIFProps
 import io.eordie.multimodule.common.repository.ext.and
 import io.eordie.multimodule.common.repository.ext.name
+import io.eordie.multimodule.common.utils.GenericTypes
 import io.eordie.multimodule.contracts.basic.filters.LiteralFilter
 import io.eordie.multimodule.contracts.basic.filters.NumericFilter
 import io.eordie.multimodule.contracts.basic.filters.OffsetDateTimeLiteralFilter
@@ -25,7 +26,6 @@ import java.time.OffsetDateTime
 import kotlin.jvm.optionals.toList
 import kotlin.reflect.KClass
 import kotlin.reflect.full.isSuperclassOf
-import kotlin.reflect.jvm.jvmErasure
 
 @Singleton
 class FiltersRegistry(
@@ -33,9 +33,8 @@ class FiltersRegistry(
 ) {
 
     private val index = filterSupportTraits.associate {
-        val kType = it::class.supertypes[0]
-        val arguments = kType.arguments
-        requireNotNull(arguments[3].type).jvmErasure to (it to requireNotNull(arguments[0].type).jvmErasure)
+        val arguments = GenericTypes.getTypeArguments(it, KBaseFactory::class)
+        arguments[3] to (it to arguments[0])
     }
 
     private inline fun <F, reified S : LiteralFilter<X>, X : Any> derived(
