@@ -37,6 +37,7 @@ test-resources:
       hostnames:
         - datasources.keycloak.host
       image-name: postgres:14
+      command: ["postgres", "-c", "max_connections=20000"]
       network: custom
       network-aliases: postgres-keycloak
       startup-timeout: 60
