@@ -21,7 +21,6 @@ import io.eordie.multimodule.organization.management.repository.OrganizationDepa
 import io.eordie.multimodule.organization.management.repository.OrganizationEmployeeFactory
 import io.eordie.multimodule.organization.management.repository.OrganizationPositionFactory
 import jakarta.inject.Singleton
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.toList
 import java.util.*
 
@@ -39,7 +38,7 @@ class OrganizationStructureQueriesController(
         val filterBy = filter.orDefault()
             .copy(organizationId = UUIDLiteralFilter(eq = currentOrganization.id))
 
-        return positions.queryAll(filterBy).map { it.convert() }.toList()
+        return positions.queryAll(filterBy).toList()
     }
 
     override suspend fun loadSubordinates(parentIds: List<UUID>): Map<UUID, List<OrganizationPosition>> {

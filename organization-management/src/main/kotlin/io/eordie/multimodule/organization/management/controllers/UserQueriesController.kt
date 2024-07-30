@@ -3,7 +3,6 @@ package io.eordie.multimodule.organization.management.controllers
 import io.eordie.multimodule.common.rsocket.context.getAuthentication
 import io.eordie.multimodule.common.utils.associateBy
 import io.eordie.multimodule.common.utils.associateFlattenById
-import io.eordie.multimodule.common.utils.convert
 import io.eordie.multimodule.contracts.basic.filters.UUIDLiteralFilter
 import io.eordie.multimodule.contracts.basic.paging.Page
 import io.eordie.multimodule.contracts.basic.paging.Pageable
@@ -29,7 +28,7 @@ class UserQueriesController(
 ) : UserQueries {
 
     override suspend fun users(filter: UsersFilter?, pageable: Pageable?): Page<User> {
-        return users.query(filter.orDefault(), pageable).convert()
+        return users.query(filter.orDefault(), pageable)
     }
 
     override suspend fun loadUserByIds(ids: List<UUID>): Map<UUID, User> {

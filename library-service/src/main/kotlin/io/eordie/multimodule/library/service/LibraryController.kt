@@ -35,7 +35,7 @@ class LibraryController(
     }
 
     override suspend fun books(filter: BooksFilter?, pageable: Pageable?): Page<Book> {
-        return books.query(filter.orDefault(), pageable).convert()
+        return books.query(filter.orDefault(), pageable)
     }
 
     override suspend fun bookSummary(filter: BooksFilter?): BookSummary {
