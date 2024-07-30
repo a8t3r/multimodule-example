@@ -2,7 +2,6 @@ package io.eordie.multimodule.regions.controllers
 
 import io.eordie.multimodule.common.rsocket.context.getAuthentication
 import io.eordie.multimodule.common.utils.associateById
-import io.eordie.multimodule.common.utils.convert
 import io.eordie.multimodule.contracts.basic.geometry.TMultiPolygon
 import io.eordie.multimodule.contracts.basic.geometry.TPoint
 import io.eordie.multimodule.contracts.basic.paging.Page
@@ -28,7 +27,7 @@ class RegionQueriesController(
     }
 
     override suspend fun regions(filter: RegionsFilter?, pageable: Pageable?): Page<Region> {
-        return regions.findByFilter(filter.orDefault(), pageable).convert()
+        return regions.query(filter.orDefault(), pageable)
     }
 
     override suspend fun loadRegionByParentIds(parentIds: List<Long>): Map<Long, List<Region>> {

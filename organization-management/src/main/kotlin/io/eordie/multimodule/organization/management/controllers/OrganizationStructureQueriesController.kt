@@ -1,7 +1,6 @@
 package io.eordie.multimodule.organization.management.controllers
 
 import io.eordie.multimodule.common.utils.associateFlattenById
-import io.eordie.multimodule.common.utils.convert
 import io.eordie.multimodule.contracts.basic.filters.UUIDLiteralFilter
 import io.eordie.multimodule.contracts.basic.paging.Page
 import io.eordie.multimodule.contracts.basic.paging.Pageable
@@ -67,7 +66,7 @@ class OrganizationStructureQueriesController(
         val filterBy = filter.orDefault()
             .copy(organizationId = UUIDLiteralFilter(eq = currentOrganization.id))
 
-        return departments.findByFilter(filterBy, pageable).convert()
+        return departments.query(filterBy, pageable)
     }
 
     override suspend fun employees(
@@ -78,6 +77,6 @@ class OrganizationStructureQueriesController(
         val filterBy = filter.orDefault()
             .copy(organizationId = UUIDLiteralFilter(eq = currentOrganization.id))
 
-        return employees.findByFilter(filterBy, pageable).convert()
+        return employees.query(filterBy, pageable)
     }
 }

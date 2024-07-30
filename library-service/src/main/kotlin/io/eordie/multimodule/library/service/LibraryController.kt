@@ -1,7 +1,6 @@
 package io.eordie.multimodule.library.service
 
 import io.eordie.multimodule.common.utils.associateByIds
-import io.eordie.multimodule.common.utils.convert
 import io.eordie.multimodule.contracts.basic.filters.UUIDLiteralFilter
 import io.eordie.multimodule.contracts.basic.paging.Page
 import io.eordie.multimodule.contracts.basic.paging.Pageable
@@ -43,7 +42,7 @@ class LibraryController(
     }
 
     override suspend fun authors(filter: AuthorsFilter?, pageable: Pageable?): Page<Author> {
-        return authors.findByFilter(filter.orDefault(), pageable).convert()
+        return authors.query(filter.orDefault(), pageable)
     }
 
     override suspend fun loadBooksByAuthors(authorIds: List<UUID>, filter: BooksFilter?): Map<UUID, List<Book>> {

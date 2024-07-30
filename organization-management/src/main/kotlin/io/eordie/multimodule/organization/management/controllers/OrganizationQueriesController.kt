@@ -1,7 +1,6 @@
 package io.eordie.multimodule.organization.management.controllers
 
 import io.eordie.multimodule.common.utils.associateById
-import io.eordie.multimodule.common.utils.convert
 import io.eordie.multimodule.contracts.basic.filters.UUIDLiteralFilter
 import io.eordie.multimodule.contracts.basic.paging.Page
 import io.eordie.multimodule.contracts.basic.paging.Pageable
@@ -31,7 +30,7 @@ class OrganizationQueriesController(
     }
 
     override suspend fun organizations(filter: OrganizationsFilter?, pageable: Pageable?): Page<Organization> {
-        return organizations.findByFilter(filter.orDefault(), pageable).convert()
+        return organizations.query(filter.orDefault(), pageable)
     }
 
     override suspend fun organizationSummary(filter: OrganizationsFilter?): OrganizationSummary {
