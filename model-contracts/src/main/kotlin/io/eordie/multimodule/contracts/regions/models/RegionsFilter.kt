@@ -9,6 +9,7 @@ import kotlinx.serialization.Serializable
 @Introspected
 @Serializable
 data class RegionsFilter(
+    val id: LongNumericFilter? = null,
     val parentId: LongNumericFilter? = null,
     val country: StringLiteralFilter? = null,
     val depth: IntNumericFilter? = null,

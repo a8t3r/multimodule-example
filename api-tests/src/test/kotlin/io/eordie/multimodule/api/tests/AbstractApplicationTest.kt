@@ -22,6 +22,7 @@ import kotlinx.coroutines.test.runTest
 import org.dataloader.DataLoaderRegistry
 import org.junit.jupiter.api.TestInstance
 import java.util.*
+import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.coroutineContext
 import kotlin.time.Duration
 
@@ -40,7 +41,7 @@ abstract class AbstractApplicationTest {
     }
 
     fun test(
-        auth: AuthenticationContextElement = authorization,
+        auth: CoroutineContext = authorization,
         block: suspend TestScope.() -> Unit
     ) = runTest(auth, Duration.parse("10s"), block)
 
