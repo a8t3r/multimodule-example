@@ -2,6 +2,7 @@ package io.eordie.multimodule.common.utils
 
 import io.eordie.multimodule.common.repository.Convertable
 import io.eordie.multimodule.common.repository.EntityConverter
+import kotlinx.serialization.Required
 import org.babyfish.jimmer.meta.ImmutableType
 import org.babyfish.jimmer.meta.TargetLevel
 import org.babyfish.jimmer.sql.fetcher.Fetcher
@@ -13,11 +14,16 @@ internal class FetcherBuilder<T : Convertable<out Any>>(private val type: KClass
 
     fun newFetcher(fields: List<String>): Fetcher<T> {
         val propertiesMap = ImmutableType.get(type.java).props
-        val constructorArgumentNames = EntityConverter.getIntrospection(type)
-            .constructorArguments.map { it.name }
-            .toSet()
+        val constructorArguments = EntityConverter.getIntrospection(type).constructorArguments
+        val constructorArgumentNames = constructorArguments.map { it.name }.toSet()
 
-        return fields.fold(FetcherImpl(type.java) as FetcherImplementor<T>) { acc, field ->
+        val initial = (FetcherImpl(type.java) as FetcherImplementor<T>).apply {
+            constructorArguments
+                .filter { it.isAnnotationPresent(Required::class.java) }
+                .forEach { add(it.name) }
+        }
+
+        return fields.fold(initial) { acc, field ->
             if (field.contains('.')) acc else {
                 val property = propertiesMap[field]?.takeIf { it.isScalar(TargetLevel.OBJECT) }
                     ?: propertiesMap[field + "Id"]
