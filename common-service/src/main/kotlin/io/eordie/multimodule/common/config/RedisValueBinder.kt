@@ -27,15 +27,8 @@ class RedisValueBinder<K, V>(
     }
 
     override fun read(keys: MutableCollection<String>): MutableList<ByteArray?> {
-        val keysArray = keys.map { it.toByteArray() }.toTypedArray()
-        val resultIndex = operations.mget(*keysArray).associateBy { it.key }
-        return keysArray.foldIndexed(MutableList(keysArray.size) { null }) { index, acc, key ->
-            val value = resultIndex[key]
-            if (value?.hasValue() == true) {
-                acc[index] = value.value
-            }
-            acc
-        }
+        return operations.mget(*keys.map { it.toByteArray() }.toTypedArray())
+            .mapTo(MutableList(keys.size) { null }) { if (it.hasValue()) it.value else null }
     }
 
     override fun write(map: MutableMap<String, ByteArray>) {
