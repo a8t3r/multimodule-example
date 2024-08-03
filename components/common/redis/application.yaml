@@ -2,6 +2,9 @@ redis:
   io-thread-pool-size: 5
   computation-thread-pool-size: 4
   caches:
+    jimmer:
+      expire-after-write: 10m
+      value-serializer: io.eordie.multimodule.common.utils.ProtobufObjectSerializer
     dataloader:
       expire-after-write: 1d
       value-serializer: io.eordie.multimodule.common.utils.ProtobufObjectSerializer

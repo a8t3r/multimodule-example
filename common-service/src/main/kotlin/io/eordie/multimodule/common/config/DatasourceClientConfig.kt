@@ -5,11 +5,13 @@ import io.eordie.multimodule.common.repository.interceptor.DeletedEntityDraftInt
 import io.eordie.multimodule.common.repository.interceptor.UpdatedEntityDraftInterceptor
 import io.eordie.multimodule.common.repository.interceptor.VersionEntityDraftInterceptor
 import io.eordie.multimodule.common.utils.OpenTelemetryExecutorLog
+import io.micronaut.configuration.lettuce.cache.RedisCache
 import io.micronaut.context.annotation.EachBean
 import io.micronaut.context.annotation.Factory
 import io.micronaut.context.env.Environment
 import io.micronaut.data.jdbc.runtime.JdbcOperations
 import io.opentelemetry.api.OpenTelemetry
+import jakarta.inject.Named
 import jakarta.inject.Singleton
 import org.babyfish.jimmer.meta.ImmutableType
 import org.babyfish.jimmer.sql.JSqlClient
@@ -59,7 +61,8 @@ class DatasourceClientConfig {
         executor: Executor,
         dialect: Dialect,
         operations: JdbcOperations,
-        scalarProviders: List<ScalarProvider<*, *>>
+        scalarProviders: List<ScalarProvider<*, *>>,
+        @Named("jimmer") cache: RedisCache
     ): KSqlClient = JSqlClient.newBuilder()
         .setDialect(dialect)
         .apply {
@@ -81,7 +84,7 @@ class DatasourceClientConfig {
         .setCacheFactory(object : KCacheFactory {
             override fun createObjectCache(type: ImmutableType): Cache<*, *> {
                 return ChainCacheBuilder<Any, Any>()
-                    .add(GuavaCacheBinder())
+                    .add(RedisValueBinder<Any, Any>(type, cache))
                     .build()
             }
         })

@@ -16,6 +16,7 @@ dependencies {
     implementation(libs.kotlinx.serialization.protobuf)
     implementation(libs.kotlin.rsocket.transport.ktor.tcp)
 
+    implementation("io.micronaut.redis:micronaut-redis-lettuce")
     implementation("io.opentelemetry:opentelemetry-exporter-otlp")
     implementation("io.micronaut.tracing:micronaut-tracing-opentelemetry-http")
     implementation("io.micronaut.tracing:micronaut-tracing-opentelemetry-kafka")
