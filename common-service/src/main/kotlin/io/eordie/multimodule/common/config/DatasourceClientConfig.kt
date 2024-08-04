@@ -28,6 +28,7 @@ import org.babyfish.jimmer.sql.runtime.Executor
 import org.babyfish.jimmer.sql.runtime.ScalarProvider
 import java.sql.Connection
 import java.sql.Types
+import java.util.*
 import java.util.function.Function
 
 @Factory
@@ -62,7 +63,7 @@ class DatasourceClientConfig {
         dialect: Dialect,
         operations: JdbcOperations,
         scalarProviders: List<ScalarProvider<*, *>>,
-        @Named("jimmer") cache: RedisCache
+        @Named("jimmer") cache: Optional<RedisCache>
     ): KSqlClient = JSqlClient.newBuilder()
         .setDialect(dialect)
         .apply {
@@ -81,13 +82,17 @@ class DatasourceClientConfig {
             VersionEntityDraftInterceptor()
         )
         .setExecutor(executor)
-        .setCacheFactory(object : KCacheFactory {
-            override fun createObjectCache(type: ImmutableType): Cache<*, *> {
-                return ChainCacheBuilder<Any, Any>()
-                    .add(RedisValueBinder<Any, Any>(type, cache))
-                    .build()
+        .apply {
+            cache.ifPresent {
+                setCacheFactory(object : KCacheFactory {
+                    override fun createObjectCache(type: ImmutableType): Cache<*, *> {
+                        return ChainCacheBuilder<Any, Any>()
+                            .add(RedisValueBinder<Any, Any>(type, cache.get()))
+                            .build()
+                    }
+                })
             }
-        })
+        }
         .setConnectionManager(object : ConnectionManager {
             override fun <R : Any> execute(block: Function<Connection, R>): R? {
                 return operations.execute {
