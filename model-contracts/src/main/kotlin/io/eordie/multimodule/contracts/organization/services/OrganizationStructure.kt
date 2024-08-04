@@ -75,7 +75,7 @@ interface OrganizationStructureMutations : Mutation {
     @Secured(value = [ Roles.MANAGE_MEMBERS ])
     suspend fun deleteEmployee(
         @GraphQLIgnore currentOrganization: CurrentOrganization,
-        departmentId: UUID,
+        departmentId: UUID?,
         userId: UUID
     ): Boolean
 }

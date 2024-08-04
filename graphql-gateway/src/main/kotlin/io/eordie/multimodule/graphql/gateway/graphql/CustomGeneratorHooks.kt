@@ -15,6 +15,7 @@ import io.eordie.multimodule.graphql.gateway.graphql.scalars.TMultiPolygonScalar
 import io.eordie.multimodule.graphql.gateway.graphql.scalars.TPointScalarCoercing
 import io.eordie.multimodule.graphql.gateway.graphql.scalars.TPolygonScalarCoercing
 import java.math.BigDecimal
+import java.net.URL
 import java.time.LocalDate
 import java.time.LocalTime
 import java.time.OffsetDateTime
@@ -48,6 +49,8 @@ internal class CustomGeneratorHooks(customConverters: List<TypeConverter>) : Flo
 
     @Suppress("CyclomaticComplexMethod")
     override fun willGenerateGraphQLType(type: KType): GraphQLType? = when (type.classifier as? KClass<*>) {
+        Unit::class -> Scalars.GraphQLBoolean
+        URL::class -> ExtendedScalars.Url
         UUID::class -> ExtendedScalars.UUID
         BigDecimal::class -> ExtendedScalars.GraphQLBigDecimal
         Byte::class -> ExtendedScalars.GraphQLByte

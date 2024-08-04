@@ -112,6 +112,7 @@ class ProtobufPayloadBuilderTest {
             "foobar",
             listOf(Roles.MANAGE_ORGANIZATIONS, Roles.VIEW_MEMBERS),
             active = false,
+            email = "foobar@nowhere",
             emailVerified = true,
             currentOrganizationId = UUID.randomUUID(),
             organizationRoles = null,

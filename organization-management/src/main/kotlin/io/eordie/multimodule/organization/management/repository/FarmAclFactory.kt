@@ -7,6 +7,7 @@ import io.eordie.multimodule.contracts.basic.Permission
 import io.eordie.multimodule.contracts.basic.Permission.MANAGE
 import io.eordie.multimodule.contracts.basic.Permission.PURGE
 import io.eordie.multimodule.contracts.basic.Permission.VIEW
+import io.eordie.multimodule.contracts.basic.filters.Direction
 import io.eordie.multimodule.contracts.organization.models.acl.FarmAcl
 import io.eordie.multimodule.contracts.organization.models.acl.FarmAclFilter
 import io.eordie.multimodule.organization.management.models.acl.FarmAclModel
@@ -50,6 +51,10 @@ class FarmAclFactory : BaseOrganizationFactory<FarmAclModel, FarmAcl, UUID, Farm
         table: KNonNullTable<FarmAclModel>
     ): List<KNonNullExpression<Boolean>> {
         return listOfNotNull(
+            filter.direction?.let {
+                val field = if (it == Direction.INCOME) table.organizationId else table.farmOwnerOrganizationId
+                field eq auth.currentOrganizationId
+            },
             table.farmId.accept(filter.farmId),
             table.fieldIds.acceptMany(filter.fieldId),
             table.organization.accept(filter.organization),

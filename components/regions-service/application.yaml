@@ -1,4 +1,4 @@
-#include postgres-osm, logback-template, bootstrap, kubernetes
+#include postgres-osm, logback-template, bootstrap, kubernetes, redis
 
 micronaut:
   application:

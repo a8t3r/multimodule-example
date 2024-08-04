@@ -8,6 +8,6 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class OrganizationEmployeeInput(
     val userId: UuidStr,
-    val departmentId: UuidStr,
+    val departmentId: UuidStr? = null,
     val positionId: UuidStr
 )

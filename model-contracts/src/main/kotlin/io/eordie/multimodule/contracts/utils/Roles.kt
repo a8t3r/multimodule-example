@@ -38,5 +38,9 @@ enum class Roles(val index: Int) {
         fun supportedFrom(roles: Collection<String>): List<Roles> {
             return Roles.entries.filter { it.humanName() in roles }
         }
+
+        fun idsFromNames(roles: Collection<String>?): List<Int> {
+            return supportedFrom(roles.orEmpty()).map { it.index }
+        }
     }
 }

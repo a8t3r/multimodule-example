@@ -1,6 +1,7 @@
 package io.eordie.multimodule.organization.management.controllers
 
-import io.eordie.multimodule.contracts.basic.exception.ValidationException
+import io.eordie.multimodule.common.validation.Cycle
+import io.eordie.multimodule.common.validation.error
 import io.eordie.multimodule.contracts.identitymanagement.models.CurrentOrganization
 import io.eordie.multimodule.contracts.organization.models.structure.OrganizationDepartment
 import io.eordie.multimodule.contracts.organization.models.structure.OrganizationDepartmentInput
@@ -21,6 +22,7 @@ import io.eordie.multimodule.organization.management.repository.OrganizationEmpl
 import io.eordie.multimodule.organization.management.repository.OrganizationMemberFactory
 import io.eordie.multimodule.organization.management.repository.OrganizationPositionFactory
 import io.eordie.multimodule.organization.management.repository.OrganizationPositionsRepository
+import io.eordie.multimodule.organization.management.validation.MissingMembership
 import jakarta.inject.Singleton
 import org.babyfish.jimmer.sql.kt.ast.expression.eq
 import java.util.*
@@ -40,7 +42,7 @@ class OrganizationStructureMutationsController(
     ): OrganizationPosition {
         return positions.save<OrganizationPositionModelDraft>(position.id) { _, value ->
             value.parentId = position.parentId
-            value.roleIds = Roles.supportedFrom(position.roles).map { it.index }
+            value.roleIds = Roles.idsFromNames(position.roles)
             value.name = position.name
         }.convert()
     }
@@ -55,9 +57,7 @@ class OrganizationStructureMutationsController(
             positions.findIdsBySpecification {
                 where(table.parentId eq previousParentId)
             }.collect {
-                if (parentIds.contains(it)) {
-                    throw ValidationException("cycle detected between parent and child")
-                }
+                if (parentIds.contains(it)) Cycle.error()
             }
         }
         return positions.changeParent(previousParentId, newParentId)
@@ -83,7 +83,7 @@ class OrganizationStructureMutationsController(
                 table.userId eq employeeInput.userId,
                 table.organizationId eq currentOrganization.id
             )
-        } ?: throw ValidationException("missing membership between organization and user")
+        } ?: MissingMembership.error()
 
         return employees.save<OrganizationEmployeeModelDraft>(null) { _, value ->
             value.memberId = membership.id
@@ -95,7 +95,7 @@ class OrganizationStructureMutationsController(
 
     override suspend fun deleteEmployee(
         currentOrganization: CurrentOrganization,
-        departmentId: UUID,
+        departmentId: UUID?,
         userId: UUID
     ): Boolean {
         val employee = employees.findOneBySpecification {

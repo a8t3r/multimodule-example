@@ -14,6 +14,9 @@ micronaut:
       - pattern: /oauth/login/keycloak
         access:
           - isAnonymous()
+      - pattern: /events
+        access:
+          - isAnonymous()
     token:
       jwt:
         enabled: true
@@ -32,6 +35,8 @@ micronaut:
           token:
             url: ${keycloak.baseUri}/protocol/openid-connect/token
           openid:
+            registration:
+              url: ${keycloak.baseUri}/protocol/openid-connect/registrations
             authorization:
               prompt: select_account
             issuer: '${keycloak.baseUri}'

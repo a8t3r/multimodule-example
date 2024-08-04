@@ -36,6 +36,7 @@ class AuthenticationDetailsBuilder(mapper: ObjectMapper) {
                     username = attributes["name"] as? String ?: attributes["preferred_username"] as String,
                     roles = Roles.supportedFrom(authentication.roles),
                     active = false,
+                    email = attributes.getValue("email") as String,
                     emailVerified = attributes["email_verified"] as? Boolean ?: false,
                     locale = LocaleBinding("RU", localeLanguage ?: "en"),
                     currentOrganizationId = holder.activeOrganization?.id?.let { UUID.fromString(it) },

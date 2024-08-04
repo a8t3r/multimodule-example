@@ -57,12 +57,14 @@ fun <A : Any, B : Any?, V> DataFetchingEnvironment.getValueBy(
     arg1: B
 ): CompletableFuture<V> = this.getSingleValueBy(function as KCallable<*>, id, arg1)
 
-inline fun <reified V : Any?> DataFetchingEnvironment.byId(id: Any): CompletableFuture<V> {
-    val (loader, dispatch) = entityDataLoader<V>()
-    val key = arrayOf(id, V::class.qualifiedName)
+inline fun <reified V : Any?> DataFetchingEnvironment.byId(id: Any?): CompletableFuture<V> {
+    return if (id == null) CompletableFuture.completedFuture(null) else {
+        val (loader, dispatch) = entityDataLoader<V>()
+        val key = arrayOf(id, V::class.qualifiedName)
 
-    return loader.load(key, this.graphQlContext)
-        .apply { if (dispatch) loader.dispatch() }
+        loader.load(key, this.graphQlContext)
+            .apply { if (dispatch) loader.dispatch() }
+    }
 }
 
 inline fun <reified V : Any?> DataFetchingEnvironment.byIds(ids: List<Any>): CompletableFuture<List<V>> {

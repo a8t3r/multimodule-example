@@ -1,7 +1,7 @@
 package io.eordie.multimodule.organization.management.controllers
 
 import io.eordie.multimodule.common.rsocket.context.getAuthenticationContext
-import io.eordie.multimodule.contracts.basic.exception.ValidationException
+import io.eordie.multimodule.common.validation.error
 import io.eordie.multimodule.contracts.organization.models.acl.BindingCriterion
 import io.eordie.multimodule.contracts.organization.models.acl.ByFarmCriterion
 import io.eordie.multimodule.contracts.organization.models.acl.ByRegionCriterion
@@ -12,6 +12,7 @@ import io.eordie.multimodule.organization.management.models.OrganizationDepartme
 import io.eordie.multimodule.organization.management.models.acl.ByFarmCriterionModel
 import io.eordie.multimodule.organization.management.models.acl.ByRegionCriterionModel
 import io.eordie.multimodule.organization.management.models.acl.by
+import io.eordie.multimodule.organization.management.validation.DepartmentNotBelongsToOrganization
 import jakarta.inject.Singleton
 import org.babyfish.jimmer.kt.new
 import java.util.*
@@ -26,7 +27,7 @@ class OrganizationDepartmentMutationsController(
     private suspend fun getDepartmentById(departmentId: UUID): OrganizationDepartmentModel {
         return departments.getById(departmentId)
             .takeIf { it.organizationId == coroutineContext.getAuthenticationContext().currentOrganizationId }
-            ?: throw ValidationException("department must belong to the organization")
+            ?: DepartmentNotBelongsToOrganization.error()
     }
 
     private suspend fun departmentBindings(departmentId: UUID): List<BindingCriterion> =

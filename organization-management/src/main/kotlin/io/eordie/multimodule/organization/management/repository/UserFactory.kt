@@ -6,6 +6,7 @@ import io.eordie.multimodule.common.repository.ResourceAcl
 import io.eordie.multimodule.contracts.basic.filters.StringLiteralFilter
 import io.eordie.multimodule.contracts.organization.models.User
 import io.eordie.multimodule.contracts.organization.models.UsersFilter
+import io.eordie.multimodule.contracts.utils.Roles
 import io.eordie.multimodule.organization.management.models.UserModel
 import io.eordie.multimodule.organization.management.models.`attributes?`
 import io.eordie.multimodule.organization.management.models.email
@@ -55,7 +56,7 @@ class UserFactory : KBaseFactory<UserModel, User, UUID, UsersFilter>(
         table.enabled eq true,
         table.membership {
             organizationId valueIn acl.allOrganizationIds
-        }
+        }.takeUnless { acl.hasAnyOrganizationRole(Roles.VIEW_USERS) }
     )
 
     private fun observeAttributes(

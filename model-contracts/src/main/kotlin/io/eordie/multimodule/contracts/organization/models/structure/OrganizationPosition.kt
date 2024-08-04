@@ -25,12 +25,7 @@ data class OrganizationPosition(
     override val updatedAt: OffsetDateTimeStr
 ) : Auditable {
     fun organization(env: DataFetchingEnvironment): CompletableFuture<Organization> = env.byId(organizationId)
-
-    fun parent(env: DataFetchingEnvironment): CompletableFuture<OrganizationPosition?> {
-        return if (parentId == null) CompletableFuture.completedFuture(null) else {
-            env.byId(parentId)
-        }
-    }
+    fun parent(env: DataFetchingEnvironment) = env.byId<OrganizationPosition?>(parentId)
 
     fun subordinates(env: DataFetchingEnvironment): CompletableFuture<List<OrganizationPosition>> {
         return env.getValueBy(OrganizationStructureQueries::loadSubordinates, id)

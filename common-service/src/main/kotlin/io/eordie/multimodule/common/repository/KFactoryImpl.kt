@@ -6,13 +6,13 @@ import io.eordie.multimodule.common.repository.entity.OrganizationOwnerIF
 import io.eordie.multimodule.common.repository.entity.PermissionAwareIF
 import io.eordie.multimodule.common.repository.ext.name
 import io.eordie.multimodule.common.repository.ext.or
+import io.eordie.multimodule.common.rsocket.client.route.ValidationCheck.toErrors
 import io.eordie.multimodule.common.rsocket.context.Microservices
 import io.eordie.multimodule.common.rsocket.context.getAuthenticationContext
 import io.eordie.multimodule.common.utils.asFlow
 import io.eordie.multimodule.common.validation.EntityValidator
 import io.eordie.multimodule.contracts.basic.Permission
 import io.eordie.multimodule.contracts.basic.exception.EntityNotFoundException
-import io.eordie.multimodule.contracts.basic.exception.ValidationError
 import io.eordie.multimodule.contracts.basic.exception.ValidationException
 import io.eordie.multimodule.contracts.basic.paging.Page
 import io.eordie.multimodule.contracts.basic.paging.Pageable
@@ -55,7 +55,6 @@ import org.babyfish.jimmer.sql.kt.ast.query.KConfigurableRootQuery
 import org.babyfish.jimmer.sql.kt.ast.query.KMutableRootQuery
 import org.babyfish.jimmer.sql.kt.ast.table.KNonNullTable
 import org.valiktor.ConstraintViolationException
-import org.valiktor.i18n.mapToMessage
 import java.sql.Connection
 import java.util.concurrent.atomic.AtomicBoolean
 import kotlin.coroutines.CoroutineContext
@@ -287,8 +286,8 @@ open class KFactoryImpl<T : Any, ID : Comparable<ID>>(
         return applyPermissions(data)
     }
 
-    override suspend fun findOneBySpecification(block: KMutableRootQuery<T>.() -> Unit): T? {
-        return findBySpecificationPager(block).asFlow().singleOrNull()
+    override suspend fun findOneBySpecification(fetcher: Fetcher<T>?, block: KMutableRootQuery<T>.() -> Unit): T? {
+        return findBySpecificationPager(block, fetcher).asFlow().singleOrNull()
     }
 
     override suspend fun findAllBySpecification(fetcher: Fetcher<T>?, block: KMutableRootQuery<T>.() -> Unit): Flow<T> =
@@ -407,15 +406,6 @@ open class KFactoryImpl<T : Any, ID : Comparable<ID>>(
         }.first
     }
 
-    private fun ConstraintViolationException.check(): Nothing {
-        val result = this
-        throw ValidationException(
-            result.constraintViolations
-                .mapToMessage("custom_messages")
-                .map { ValidationError(it.property, it.message) }
-        )
-    }
-
     private suspend fun persist(entity: T): T {
         if (applyPermissions(entity, Permission.MANAGE) == null) {
             missingPermission(Permission.MANAGE)
@@ -425,8 +415,8 @@ open class KFactoryImpl<T : Any, ID : Comparable<ID>>(
             try {
                 it.onCreate(entity)
                 it.onUpdate(entity)
-            } catch (e: ConstraintViolationException) {
-                e.check()
+            } catch (ignored: ConstraintViolationException) {
+                throw ValidationException(ignored.toErrors(coroutineContext))
             }
         }
 
@@ -443,8 +433,8 @@ open class KFactoryImpl<T : Any, ID : Comparable<ID>>(
         validator?.let {
             try {
                 it.onUpdate(entity)
-            } catch (e: ConstraintViolationException) {
-                e.check()
+            } catch (ignored: ConstraintViolationException) {
+                throw ValidationException(ignored.toErrors(coroutineContext))
             }
         }
 

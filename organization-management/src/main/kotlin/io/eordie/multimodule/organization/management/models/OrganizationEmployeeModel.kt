@@ -1,6 +1,7 @@
 package io.eordie.multimodule.organization.management.models
 
 import io.eordie.multimodule.common.repository.Convertable
+import io.eordie.multimodule.common.repository.entity.CreatedByIF
 import io.eordie.multimodule.common.repository.entity.OrganizationOwnerIF
 import io.eordie.multimodule.common.repository.entity.UUIDIdentityIF
 import io.eordie.multimodule.contracts.organization.models.structure.OrganizationEmployee
@@ -16,7 +17,11 @@ import java.util.*
 
 @Entity
 @Table(name = "organization_employees")
-interface OrganizationEmployeeModel : UUIDIdentityIF, OrganizationOwnerIF, Convertable<OrganizationEmployee> {
+interface OrganizationEmployeeModel :
+    UUIDIdentityIF,
+    OrganizationOwnerIF,
+    CreatedByIF,
+    Convertable<OrganizationEmployee> {
 
     @IdView
     val memberId: UUID?

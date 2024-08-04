@@ -2,6 +2,7 @@ package io.eordie.multimodule.common.filter
 
 import io.eordie.multimodule.common.filter.basic.ComparableListSpecificationBuilder
 import io.eordie.multimodule.common.filter.basic.ComparableLiteralSpecificationBuilder
+import io.eordie.multimodule.common.filter.basic.EmbeddedSpecificationBuilder
 import io.eordie.multimodule.common.filter.basic.ListEmbeddedSpecificationBuilder
 import io.eordie.multimodule.common.filter.basic.StringListSpecificationBuilder
 import io.eordie.multimodule.common.filter.basic.StringLiteralSpecificationBuilder
@@ -41,7 +42,7 @@ private fun <F : LiteralFilter<T>, T : Any> dispatchSingle(filter: F): Specifica
     return when (filter) {
         is StringLiteralFilter -> StringLiteralSpecificationBuilder()
         is ComparableFilter<*> -> ComparableLiteralSpecificationBuilder()
-        else -> error("unknown filter type: ${filter::class.simpleName}")
+        else -> EmbeddedSpecificationBuilder()
     } as SpecificationBuilder<F, T>
 }
 

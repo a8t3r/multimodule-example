@@ -36,6 +36,7 @@ data class AuthenticationDetails(
     val username: String,
     @GraphQLIgnore val roles: List<Roles>,
     val active: Boolean,
+    val email: String,
     val emailVerified: Boolean,
     val locale: LocaleBinding,
     val currentOrganizationId: UuidStr? = null,
@@ -57,9 +58,5 @@ data class AuthenticationDetails(
         .map { it.humanName() }
         .filter { role == null || role == it }
 
-    fun currentOrganization(env: DataFetchingEnvironment): CompletableFuture<Organization?> {
-        return if (currentOrganizationId == null) CompletableFuture.completedFuture(null) else {
-            env.byId<Organization?>(currentOrganizationId)
-        }
-    }
+    fun currentOrganization(env: DataFetchingEnvironment) = env.byId<Organization?>(currentOrganizationId)
 }

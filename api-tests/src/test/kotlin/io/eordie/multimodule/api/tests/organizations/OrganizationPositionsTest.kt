@@ -68,6 +68,7 @@ class OrganizationPositionsTest : AbstractOrganizationTest() {
             )
         }
         assertThat(e.errors).hasSize(1)
+        assertThat(e.errors[0].constraint).isEqualTo("Cycle")
         assertThat(e.errors[0].message).isEqualTo("Cycle detected between parent and child")
     }
 

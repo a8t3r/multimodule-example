@@ -18,19 +18,27 @@ suspend fun <T, R : Any, E> Validator<E>.Property<Iterable<T>?>.ensureAllAccessi
 
 suspend fun <T, R : Any, E> Validator<E>.Property<T?>.ensureIsAccessible(
     loader: EntityLoader<R, T>,
-    optional: Boolean = false
-) = ensureIsPresent(coroutineContext, loader, optional)
+    optional: Boolean = false,
+    test: (R) -> Boolean = { true }
+) = ensureIsPresent(coroutineContext, loader, optional, test)
 
 suspend fun <T, R : Any, E> Validator<E>.Property<T?>.ensureIsPresent(
     loader: EntityLoader<R, T>,
-    optional: Boolean = false
-) = ensureIsPresent(systemContext, loader, optional)
+    optional: Boolean = false,
+    test: (R) -> Boolean = { true }
+) = ensureIsPresent(systemContext, loader, optional, test)
 
 private suspend fun <T, R : Any, E> Validator<E>.Property<T?>.ensureIsPresent(
     context: CoroutineContext,
     loader: EntityLoader<R, T>,
-    optional: Boolean = false
+    optional: Boolean = false,
+    test: (R) -> Boolean
 ) =
     this.coValidate(IsPresent) {
-        (optional && it == null) || (it != null && loader.loadOne(context, it) != null)
+        if (optional && it == null) true else {
+            it != null && run {
+                val instance = loader.loadOne(context, it)
+                instance != null && test(instance)
+            }
+        }
     }

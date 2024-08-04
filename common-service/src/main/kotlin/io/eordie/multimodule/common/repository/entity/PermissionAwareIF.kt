@@ -7,6 +7,11 @@ import org.babyfish.jimmer.sql.Transient
 
 @MappedSuperclass
 interface PermissionAwareIF {
+
+    companion object {
+        val ALL = Permission.entries.toSet()
+    }
+
     @Transient
     val permissions: List<Permission>?
 

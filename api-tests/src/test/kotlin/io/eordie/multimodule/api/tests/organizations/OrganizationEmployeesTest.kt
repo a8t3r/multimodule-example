@@ -35,6 +35,42 @@ class OrganizationEmployeesTest : AbstractOrganizationTest() {
     }
 
     @Test
+    fun `should create new employee without department`() = test(organizationManager) {
+        val position = structure.getValue("Senior Developer")
+
+        newEmployee(developersOrg, developer1, null, position)
+
+        val employees = structureQueries.employees(developersOrg).data
+        assertThat(employees).hasSize(1)
+        val employee = employees[0]
+        assertThat(employee.organizationId).isEqualTo(developersOrg.id)
+        assertThat(employee.departmentId).isNull()
+        assertThat(employee.positionId).isEqualTo(position.id)
+        assertThat(employee.userId).isEqualTo(developer1)
+    }
+
+    @Test
+    fun `should create new employee with two departments`() = test(organizationManager) {
+        val position = structure.getValue("Senior Developer")
+
+        newEmployee(developersOrg, developer1, null, position)
+        newEmployee(developersOrg, developer1, department, position)
+
+        val employees = structureQueries.employees(developersOrg).data
+        assertThat(employees).hasSize(2)
+
+        assertThat(employees[0].organizationId).isEqualTo(developersOrg.id)
+        assertThat(employees[0].departmentId).isAnyOf(null, department.id)
+        assertThat(employees[0].positionId).isEqualTo(position.id)
+        assertThat(employees[0].userId).isEqualTo(developer1)
+
+        assertThat(employees[1].organizationId).isEqualTo(developersOrg.id)
+        assertThat(employees[0].departmentId).isAnyOf(null, department.id)
+        assertThat(employees[1].positionId).isEqualTo(position.id)
+        assertThat(employees[1].userId).isEqualTo(developer1)
+    }
+
+    @Test
     fun `should delete employee`() = test(organizationManager) {
         val position = structure.getValue("Senior Developer")
         val employee = newEmployee(developersOrg, developer1, department, position)

@@ -2,6 +2,7 @@ package io.eordie.multimodule.common.rsocket.server
 
 import io.eordie.multimodule.common.rsocket.client.route.AuthorizationCheck
 import io.eordie.multimodule.common.rsocket.client.route.ValidationCheck
+import io.eordie.multimodule.common.rsocket.client.route.ValidationCheck.toErrors
 import io.eordie.multimodule.common.rsocket.context.AclContextElement
 import io.eordie.multimodule.common.rsocket.context.AuthenticationContextElement
 import io.eordie.multimodule.common.rsocket.context.SelectionSetContextElement
@@ -17,6 +18,7 @@ import io.eordie.multimodule.contracts.annotations.Valid
 import io.eordie.multimodule.contracts.basic.exception.BaseRuntimeException
 import io.eordie.multimodule.contracts.basic.exception.ExceptionDefinition
 import io.eordie.multimodule.contracts.basic.exception.UnexpectedInvocationException
+import io.eordie.multimodule.contracts.basic.exception.ValidationException
 import io.github.oshai.kotlinlogging.KotlinLogging
 import io.ktor.utils.io.core.*
 import io.micronaut.context.BeanLocator
@@ -37,6 +39,7 @@ import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
+import org.valiktor.ConstraintViolationException
 import kotlin.coroutines.CoroutineContext
 import kotlin.reflect.KParameter
 import kotlin.reflect.full.callSuspendBy
@@ -136,9 +139,13 @@ class InvocationHelper(private val beanLocator: BeanLocator, private val tracer:
         } catch (ex: Exception) {
             val reason = ex.cause ?: ex
             span.recordException(reason)
-            if (reason is BaseRuntimeException) reason else {
-                logger.error(ex) { "unexpected exception" }
-                UnexpectedInvocationException(ExceptionDefinition(reason))
+            when (reason) {
+                is BaseRuntimeException -> reason
+                is ConstraintViolationException -> ValidationException(reason.toErrors(context))
+                else -> {
+                    logger.error(ex) { "unexpected exception" }
+                    UnexpectedInvocationException(ExceptionDefinition(reason))
+                }
             }
         } finally {
             span.end()

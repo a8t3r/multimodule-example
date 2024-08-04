@@ -3,7 +3,9 @@ package io.eordie.multimodule.api.tests.organizations
 import com.google.common.truth.Truth.assertThat
 import io.eordie.multimodule.api.tests.AbstractApplicationTest
 import io.eordie.multimodule.api.tests.AuthUtils.authWith
+import io.eordie.multimodule.contracts.basic.filters.UUIDLiteralFilter
 import io.eordie.multimodule.contracts.identitymanagement.models.CurrentOrganization
+import io.eordie.multimodule.contracts.organization.models.invitation.InvitationFilter
 import io.eordie.multimodule.contracts.organization.models.structure.OrganizationDepartment
 import io.eordie.multimodule.contracts.organization.models.structure.OrganizationDepartmentInput
 import io.eordie.multimodule.contracts.organization.models.structure.OrganizationEmployee
@@ -12,6 +14,8 @@ import io.eordie.multimodule.contracts.organization.models.structure.Organizatio
 import io.eordie.multimodule.contracts.organization.models.structure.OrganizationPositionFilter
 import io.eordie.multimodule.contracts.organization.models.structure.OrganizationPositionInput
 import io.eordie.multimodule.contracts.organization.services.EmployeeAclQueries
+import io.eordie.multimodule.contracts.organization.services.InvitationMutations
+import io.eordie.multimodule.contracts.organization.services.InvitationQueries
 import io.eordie.multimodule.contracts.organization.services.OrganizationDepartmentMutations
 import io.eordie.multimodule.contracts.organization.services.OrganizationStructureMutations
 import io.eordie.multimodule.contracts.organization.services.OrganizationStructureQueries
@@ -47,6 +51,16 @@ abstract class AbstractOrganizationTest : AbstractApplicationTest() {
     @Inject
     lateinit var departmentMutations: OrganizationDepartmentMutations
 
+    @Inject
+    lateinit var invitationQueries: InvitationQueries
+
+    @Inject
+    lateinit var invitationMutations: InvitationMutations
+
+    protected suspend fun truncateInvitations(currentOrganization: CurrentOrganization) =
+        invitationQueries.invitations(InvitationFilter(organizationId = UUIDLiteralFilter(eq = currentOrganization.id)))
+            .data.forEach { invitationMutations.deleteInvitation(it.id) }
+
     protected suspend fun truncateDepartments(currentOrganization: CurrentOrganization) =
         structureQueries.departments(currentOrganization)
             .data.forEach { structureMutations.deleteDepartment(it.id) }
@@ -76,10 +90,10 @@ abstract class AbstractOrganizationTest : AbstractApplicationTest() {
     suspend fun newEmployee(
         currentOrganization: CurrentOrganization,
         userId: UUID,
-        department: OrganizationDepartment,
+        department: OrganizationDepartment?,
         position: OrganizationPosition
     ): OrganizationEmployee {
-        val input = OrganizationEmployeeInput(userId, department.id, position.id)
+        val input = OrganizationEmployeeInput(userId, department?.id, position.id)
         return structureMutations.employee(currentOrganization, input)
     }
 

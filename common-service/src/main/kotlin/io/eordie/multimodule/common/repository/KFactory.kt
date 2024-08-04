@@ -11,7 +11,11 @@ interface KFactory<T : Any, ID> {
 
     suspend fun findByIds(ids: Collection<ID>, fetcher: Fetcher<T>? = null): Flow<T>
 
-    suspend fun findOneBySpecification(block: KMutableRootQuery<T>.() -> Unit): T?
+    suspend fun findOneBySpecification(block: KMutableRootQuery<T>.() -> Unit): T? =
+        findOneBySpecification(null, block)
+
+    suspend fun findOneBySpecification(fetcher: Fetcher<T>? = null, block: KMutableRootQuery<T>.() -> Unit): T?
+
     suspend fun findBySpecification(block: KMutableRootQuery<T>.() -> Unit): Page<T> =
         findBySpecification(Pageable(), block)
 

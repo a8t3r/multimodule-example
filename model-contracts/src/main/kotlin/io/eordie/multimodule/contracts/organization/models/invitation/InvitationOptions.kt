@@ -1,4 +1,4 @@
-package io.eordie.multimodule.contracts.organization.models
+package io.eordie.multimodule.contracts.organization.models.invitation
 
 import io.eordie.multimodule.contracts.utils.Roles
 import io.micronaut.core.annotation.Introspected

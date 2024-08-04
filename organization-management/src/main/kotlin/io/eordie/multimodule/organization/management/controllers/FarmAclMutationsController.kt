@@ -21,7 +21,7 @@ class FarmAclMutationsController(private val factory: FarmAclFactory) : FarmAclM
             }
 
             value.fieldIds = farmAcl.fieldIds
-            value.roleIds = Roles.supportedFrom(farmAcl.roles).map { it.index }
+            value.roleIds = Roles.idsFromNames(farmAcl.roles)
         }.convert()
     }
 

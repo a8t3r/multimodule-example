@@ -13,11 +13,11 @@ import kotlinx.serialization.Serializable
 data class OrganizationEmployee(
     val userId: UuidStr,
     val organizationId: UuidStr,
-    val departmentId: UuidStr,
+    val departmentId: UuidStr?,
     val positionId: UuidStr
 ) {
     fun user(env: DataFetchingEnvironment) = env.byId<User>(userId)
     fun organization(env: DataFetchingEnvironment) = env.byId<Organization>(organizationId)
     fun position(env: DataFetchingEnvironment) = env.byId<OrganizationPosition>(positionId)
-    fun department(env: DataFetchingEnvironment) = env.byId<OrganizationDepartment>(departmentId)
+    fun department(env: DataFetchingEnvironment) = env.byId<OrganizationDepartment?>(departmentId)
 }

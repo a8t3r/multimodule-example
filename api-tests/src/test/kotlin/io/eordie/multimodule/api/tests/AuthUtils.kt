@@ -16,6 +16,7 @@ object AuthUtils {
             "api-tests",
             roles = emptyList(),
             active = true,
+            email = "test",
             emailVerified = true,
             currentOrganizationId = null,
             locale = LocaleBinding.default(),
@@ -24,10 +25,12 @@ object AuthUtils {
         return AuthenticationContextElement(builder.invoke(initial))
     }
 
-    fun authWith(currentOrganization: CurrentOrganization, vararg roles: Roles) = authWith {
-        this.copy(
+    fun authWith(
+        currentOrganization: CurrentOrganization,
+        builder: AuthenticationDetails.() -> AuthenticationDetails
+    ) = authWith {
+        builder.invoke(this).copy(
             currentOrganizationId = currentOrganization.id,
-            roles = roles.toList(),
             organizationRoles = listOf(
                 OrganizationRoleBinding(
                     currentOrganization.id,
@@ -36,5 +39,9 @@ object AuthUtils {
                 )
             )
         )
+    }
+
+    fun authWith(currentOrganization: CurrentOrganization, vararg roles: Roles) = authWith(currentOrganization) {
+        this.copy(roles = roles.toList())
     }
 }

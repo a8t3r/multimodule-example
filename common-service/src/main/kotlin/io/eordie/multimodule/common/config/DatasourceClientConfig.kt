@@ -14,6 +14,7 @@ import io.opentelemetry.api.OpenTelemetry
 import jakarta.inject.Named
 import jakarta.inject.Singleton
 import org.babyfish.jimmer.meta.ImmutableType
+import org.babyfish.jimmer.sql.EnumType
 import org.babyfish.jimmer.sql.JSqlClient
 import org.babyfish.jimmer.sql.cache.Cache
 import org.babyfish.jimmer.sql.cache.chain.ChainCacheBuilder
@@ -82,6 +83,7 @@ class DatasourceClientConfig {
             VersionEntityDraftInterceptor()
         )
         .setExecutor(executor)
+        .setDefaultEnumStrategy(EnumType.Strategy.ORDINAL)
         .apply {
             cache.ifPresent {
                 setCacheFactory(object : KCacheFactory {

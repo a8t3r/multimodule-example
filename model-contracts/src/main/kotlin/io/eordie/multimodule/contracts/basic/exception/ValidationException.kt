@@ -1,19 +1,20 @@
 package io.eordie.multimodule.contracts.basic.exception
 
+import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
 
 @Serializable
 data class ValidationError(
-    val dataPath: String,
-    val message: String
+    val dataPath: String?,
+    val message: String,
+    val constraint: String,
+    val params: Map<String, @Contextual Any?>
 )
 
 @Serializable
 class ValidationException(
     val errors: List<ValidationError>
 ) : BaseRuntimeException() {
-
-    constructor(message: String) : this(listOf(ValidationError(".", message)))
 
     override val message get() = "validation errors occurred: $errors"
 

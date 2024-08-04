@@ -17,6 +17,7 @@ interface ComparableFilter<T : Comparable<T>> : LiteralFilter<T> {
 
 interface NumericFilter<T> : ComparableFilter<T> where T : Number, T : Comparable<T>
 interface TemporalFilter<T> : ComparableFilter<T> where T : Temporal, T : Comparable<T>
+interface EnumLiteralFilter<T> : LiteralFilter<T> where T : Enum<T>
 
 @Serializable
 data class IntNumericFilter(

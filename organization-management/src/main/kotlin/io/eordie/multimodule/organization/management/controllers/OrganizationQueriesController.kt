@@ -14,6 +14,7 @@ import io.eordie.multimodule.contracts.utils.orDefault
 import io.eordie.multimodule.organization.management.models.OrganizationEmployeeModel
 import io.eordie.multimodule.organization.management.models.by
 import io.eordie.multimodule.organization.management.repository.OrganizationEmployeeFactory
+import io.eordie.multimodule.organization.management.repository.OrganizationFactory
 import io.eordie.multimodule.organization.management.repository.OrganizationRepository
 import jakarta.inject.Singleton
 import org.babyfish.jimmer.sql.kt.fetcher.newFetcher
@@ -21,8 +22,9 @@ import java.util.*
 
 @Singleton
 class OrganizationQueriesController(
-    private val organizations: OrganizationRepository,
-    private val employees: OrganizationEmployeeFactory
+    private val organizations: OrganizationFactory,
+    private val employees: OrganizationEmployeeFactory,
+    private val organizationRepository: OrganizationRepository
 ) : OrganizationQueries {
 
     override suspend fun organization(id: UUID): Organization? {
@@ -34,7 +36,7 @@ class OrganizationQueriesController(
     }
 
     override suspend fun organizationSummary(filter: OrganizationsFilter?): OrganizationSummary {
-        return organizations.getOrganizationSummary(filter.orDefault())
+        return organizationRepository.getOrganizationSummary(filter.orDefault())
     }
 
     override suspend fun loadOrganizationEmployedUsers(
