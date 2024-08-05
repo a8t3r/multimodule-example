@@ -26,7 +26,7 @@ class KubernetesRSocketFactory(beanLocator: BeanLocator) : RSocketLocalFactory {
         private const val MAX_RETRIES = 3
     }
 
-    private val client = beanLocator.getBean<KubernetesDiscoveryClient>()
+    private val client by lazy { beanLocator.getBean<KubernetesDiscoveryClient>() }
 
     private val rsocketCache = CacheBuilder.newBuilder()
         .expireAfterAccess(Duration.ofMinutes(EXPIRATION_MINUTES))
