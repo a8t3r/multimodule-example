@@ -12,7 +12,7 @@ interface FilterSupportTrait<T : Any, ID, F : Any> {
     fun ResourceAcl.toPredicates(filter: F, table: KNonNullTable<T>): List<KNonNullExpression<Boolean>> =
         emptyList()
 
-    suspend fun findById(id: ID): T?
+    suspend fun findById(id: ID, fetcher: Fetcher<T>? = null): T?
     suspend fun findIdsByFilter(filter: F): Flow<ID>
     suspend fun findAllByFilter(filter: F, fetcher: Fetcher<T>? = null): Flow<T>
     suspend fun findByFilter(filter: F, pageable: Pageable? = null, fetcher: Fetcher<T>? = null): Page<T>

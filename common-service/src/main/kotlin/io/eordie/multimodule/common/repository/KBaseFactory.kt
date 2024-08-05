@@ -51,7 +51,6 @@ abstract class KBaseFactory<T : Convertable<C>, C : Any, ID, F : Any>(
         }
     }
 
-    override suspend fun findById(id: ID): T? = findById(id, null)
     override suspend fun findIdsByFilter(filter: F): Flow<ID> = findIdsBySpecification(where(filter))
     override suspend fun findAllByFilter(filter: F, fetcher: Fetcher<T>?): Flow<T> =
         findAllBySpecification(fetcher, where(filter))
