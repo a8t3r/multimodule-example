@@ -6,8 +6,8 @@ import io.micronaut.context.event.BeanCreatedEvent
 import io.micronaut.context.event.BeanCreatedEventListener
 import io.micronaut.core.naming.NameResolver
 import io.micronaut.flyway.FlywayConfigurationProperties
-import io.micronaut.inject.qualifiers.Qualifiers
 import io.micronaut.jdbc.DataSourceResolver
+import io.micronaut.kotlin.context.getBean
 import jakarta.inject.Singleton
 import java.util.*
 import javax.sql.DataSource
@@ -25,12 +25,7 @@ class DataSourceMigrationRunner(
         if (event.beanDefinition is NameResolver) {
             (event.beanDefinition as NameResolver)
                 .resolveName()
-                .flatMap {
-                    applicationContext.findBean(
-                        FlywayConfigurationProperties::class.java,
-                        Qualifiers.byName(it)
-                    )
-                }
+                .map { applicationContext.getBean<FlywayConfigurationProperties>(it) }
                 .ifPresent { flywayConfig: FlywayConfigurationProperties ->
                     val unwrappedDataSource = dataSourceResolver.map { it.resolve(dataSource) }.orElse(dataSource)
                     run(flywayConfig, unwrappedDataSource)
