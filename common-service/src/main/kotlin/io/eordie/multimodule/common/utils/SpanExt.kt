@@ -1,6 +1,6 @@
 package io.eordie.multimodule.common.utils
 
-import io.eordie.multimodule.common.rsocket.context.AuthenticationContextElement
+import io.eordie.multimodule.common.security.context.AuthenticationContextElement
 import io.opentelemetry.api.trace.SpanBuilder
 import kotlin.coroutines.CoroutineContext
 

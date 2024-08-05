@@ -7,8 +7,8 @@ import io.eordie.multimodule.common.repository.entity.PermissionAwareIF
 import io.eordie.multimodule.common.repository.ext.name
 import io.eordie.multimodule.common.repository.ext.or
 import io.eordie.multimodule.common.rsocket.client.route.ValidationCheck.toErrors
-import io.eordie.multimodule.common.rsocket.context.Microservices
-import io.eordie.multimodule.common.rsocket.context.getAuthenticationContext
+import io.eordie.multimodule.common.security.context.Microservices
+import io.eordie.multimodule.common.security.context.getAuthenticationContext
 import io.eordie.multimodule.common.utils.asFlow
 import io.eordie.multimodule.common.validation.EntityValidator
 import io.eordie.multimodule.contracts.basic.Permission

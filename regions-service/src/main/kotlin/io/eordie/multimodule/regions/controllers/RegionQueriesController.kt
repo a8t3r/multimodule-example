@@ -1,6 +1,6 @@
 package io.eordie.multimodule.regions.controllers
 
-import io.eordie.multimodule.common.rsocket.context.getAuthentication
+import io.eordie.multimodule.common.security.context.getAuthentication
 import io.eordie.multimodule.common.utils.associateById
 import io.eordie.multimodule.contracts.basic.geometry.TMultiPolygon
 import io.eordie.multimodule.contracts.basic.geometry.TPoint

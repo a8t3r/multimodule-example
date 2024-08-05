@@ -1,6 +1,6 @@
 package io.eordie.multimodule.graphql.gateway.security
 
-import io.eordie.multimodule.graphql.gateway.graphql.AuthenticationDetailsBuilder
+import io.eordie.multimodule.common.security.AuthenticationDetailsBuilder
 import io.micronaut.context.annotation.Primary
 import io.micronaut.security.token.RolesFinder
 import jakarta.inject.Singleton

@@ -1,7 +1,7 @@
 package io.eordie.multimodule.graphql.gateway.controllers
 
 import io.eordie.multimodule.common.rsocket.client.route.LocalRouteOnly
-import io.eordie.multimodule.common.rsocket.context.getAuthenticationContext
+import io.eordie.multimodule.common.security.context.getAuthenticationContext
 import io.eordie.multimodule.contracts.identitymanagement.models.OAuthToken
 import io.eordie.multimodule.contracts.identitymanagement.services.TokenEnhancer
 import io.micronaut.core.type.MutableHeaders

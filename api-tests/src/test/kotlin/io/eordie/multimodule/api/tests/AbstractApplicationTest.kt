@@ -5,8 +5,8 @@ import graphql.execution.ExecutionId
 import graphql.schema.DataFetchingEnvironment
 import graphql.schema.DataFetchingEnvironmentImpl
 import io.eordie.multimodule.common.SyntheticSupport
-import io.eordie.multimodule.common.rsocket.context.AuthenticationContextElement
-import io.eordie.multimodule.common.rsocket.context.getAuthenticationContext
+import io.eordie.multimodule.common.security.context.AuthenticationContextElement
+import io.eordie.multimodule.common.security.context.getAuthenticationContext
 import io.eordie.multimodule.contracts.identitymanagement.models.CurrentOrganization
 import io.eordie.multimodule.contracts.utils.Roles
 import io.eordie.multimodule.graphql.gateway.graphql.ContextKeys

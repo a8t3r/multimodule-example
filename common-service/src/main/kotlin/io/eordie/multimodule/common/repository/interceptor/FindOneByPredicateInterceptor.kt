@@ -1,7 +1,7 @@
 package io.eordie.multimodule.common.repository.interceptor
 
 import io.eordie.multimodule.common.filter.FiltersRegistry
-import io.eordie.multimodule.common.rsocket.context.Microservices
+import io.eordie.multimodule.common.security.context.Microservices
 import io.eordie.multimodule.common.utils.OpenTelemetryExecutorLog
 import io.micronaut.aop.MethodInvocationContext
 import io.micronaut.context.ApplicationContext

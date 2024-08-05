@@ -1,4 +1,4 @@
-package io.eordie.multimodule.common.rsocket.context
+package io.eordie.multimodule.common.security.context
 
 import io.eordie.multimodule.contracts.basic.exception.UnauthenticatedException
 import io.eordie.multimodule.contracts.identitymanagement.models.AuthenticationDetails
@@ -20,7 +20,7 @@ class AuthenticationContextElement(
 }
 
 fun CoroutineContext.getAuthenticationContext(): AuthenticationDetails {
-    return get(AuthenticationContextElement.Key)?.details ?: throw UnauthenticatedException()
+    return get(AuthenticationContextElement)?.details ?: throw UnauthenticatedException()
 }
 
 suspend fun getAuthentication() = coroutineContext.getAuthenticationContext()

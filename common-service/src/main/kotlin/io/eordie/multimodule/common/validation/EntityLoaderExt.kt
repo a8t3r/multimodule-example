@@ -1,6 +1,6 @@
 package io.eordie.multimodule.common.validation
 
-import io.eordie.multimodule.common.rsocket.context.systemContext
+import io.eordie.multimodule.common.security.context.systemContext
 import io.eordie.multimodule.contracts.basic.loader.EntityLoader
 import io.eordie.multimodule.contracts.basic.loader.loadOne
 import org.valiktor.Validator

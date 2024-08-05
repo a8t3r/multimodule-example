@@ -1,7 +1,7 @@
 package io.eordie.multimodule.graphql.gateway.graphql
 
 import graphql.schema.DataFetchingEnvironment
-import io.eordie.multimodule.common.rsocket.context.SelectionSetContextElement
+import io.eordie.multimodule.common.security.context.SelectionSetContextElement
 import kotlin.coroutines.CoroutineContext
 
 fun DataFetchingEnvironment.newCoroutineContext(): CoroutineContext {

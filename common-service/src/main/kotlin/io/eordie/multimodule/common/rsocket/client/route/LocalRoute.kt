@@ -1,6 +1,6 @@
 package io.eordie.multimodule.common.rsocket.client.route
 
-import io.eordie.multimodule.common.rsocket.context.AuthenticationContextElement
+import io.eordie.multimodule.common.security.context.AuthenticationContextElement
 import io.eordie.multimodule.common.utils.extendWith
 import io.eordie.multimodule.contracts.annotations.Secured
 import io.eordie.multimodule.contracts.annotations.Valid

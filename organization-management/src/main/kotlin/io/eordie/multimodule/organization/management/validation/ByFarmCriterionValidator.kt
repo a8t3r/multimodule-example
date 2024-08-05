@@ -1,6 +1,6 @@
 package io.eordie.multimodule.organization.management.validation
 
-import io.eordie.multimodule.common.rsocket.context.getAuthentication
+import io.eordie.multimodule.common.security.context.getAuthentication
 import io.eordie.multimodule.common.validation.EntityValidator
 import io.eordie.multimodule.common.validation.IsPresent
 import io.eordie.multimodule.contracts.organization.models.acl.ByFarmCriterion

@@ -1,13 +1,15 @@
 package io.eordie.multimodule.graphql.gateway.graphql
 
 import graphql.GraphQLContext
-import io.eordie.multimodule.common.rsocket.context.AclContextElement
+import io.eordie.multimodule.common.security.AuthenticationDetailsBuilder
+import io.eordie.multimodule.common.security.context.AclContextElement
 import io.micronaut.http.HttpAttributes
 import io.micronaut.http.HttpRequest
 import io.micronaut.runtime.http.scope.RequestAware
 import io.micronaut.runtime.http.scope.RequestScope
 import io.micronaut.security.authentication.Authentication
 import io.opentelemetry.context.Context
+import java.util.*
 
 @RequestScope
 open class GraphqlContextBuilder : RequestAware {
@@ -21,7 +23,10 @@ open class GraphqlContextBuilder : RequestAware {
     }
 
     private fun processContext(builder: GraphQLContext.Builder): GraphQLContext.Builder {
-        val auth = getAuthentication()?.let { AuthenticationDetailsBuilder.of(it) }
+        val auth = getAuthentication()?.let {
+            val userId = UUID.fromString(it.name)
+            AuthenticationDetailsBuilder.of(userId, it.attributes)
+        }
         builder.put(ContextKeys.TELEMETRY, Context.current())
         builder.put(ContextKeys.HEADERS, request.headers)
         builder.put(ContextKeys.ACL, AclContextElement())

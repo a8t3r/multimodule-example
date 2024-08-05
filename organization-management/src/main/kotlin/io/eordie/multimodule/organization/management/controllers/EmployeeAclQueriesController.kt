@@ -1,6 +1,6 @@
 package io.eordie.multimodule.organization.management.controllers
 
-import io.eordie.multimodule.common.rsocket.context.Microservices
+import io.eordie.multimodule.common.security.context.Microservices
 import io.eordie.multimodule.contracts.organization.models.acl.EmployeeAcl
 import io.eordie.multimodule.contracts.organization.services.EmployeeAclQueries
 import io.eordie.multimodule.organization.management.repository.EmployeeAclRepository

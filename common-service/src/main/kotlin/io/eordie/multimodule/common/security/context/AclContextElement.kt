@@ -1,4 +1,4 @@
-package io.eordie.multimodule.common.rsocket.context
+package io.eordie.multimodule.common.security.context
 
 import io.eordie.multimodule.contracts.organization.models.acl.EmployeeAcl
 import kotlin.coroutines.CoroutineContext
@@ -25,4 +25,4 @@ class AclContextElement : CoroutineContext.Element {
     override val key: CoroutineContext.Key<*> = Key
 }
 
-fun CoroutineContext.getOrCreateAclElement() = this[AclContextElement.Key] ?: AclContextElement()
+fun CoroutineContext.getOrCreateAclElement() = this[AclContextElement] ?: AclContextElement()

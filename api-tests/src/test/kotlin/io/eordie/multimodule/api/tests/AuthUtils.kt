@@ -1,6 +1,6 @@
 package io.eordie.multimodule.api.tests
 
-import io.eordie.multimodule.common.rsocket.context.AuthenticationContextElement
+import io.eordie.multimodule.common.security.context.AuthenticationContextElement
 import io.eordie.multimodule.contracts.identitymanagement.models.AuthenticationDetails
 import io.eordie.multimodule.contracts.identitymanagement.models.CurrentOrganization
 import io.eordie.multimodule.contracts.identitymanagement.models.LocaleBinding

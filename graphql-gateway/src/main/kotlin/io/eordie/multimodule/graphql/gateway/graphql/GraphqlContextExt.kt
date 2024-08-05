@@ -1,8 +1,8 @@
 package io.eordie.multimodule.graphql.gateway.graphql
 
 import graphql.GraphQLContext
-import io.eordie.multimodule.common.rsocket.context.AclContextElement
-import io.eordie.multimodule.common.rsocket.context.AuthenticationContextElement
+import io.eordie.multimodule.common.security.context.AclContextElement
+import io.eordie.multimodule.common.security.context.AuthenticationContextElement
 import io.eordie.multimodule.contracts.basic.exception.UnauthenticatedException
 import io.eordie.multimodule.contracts.identitymanagement.models.AuthenticationDetails
 import io.opentelemetry.context.Context

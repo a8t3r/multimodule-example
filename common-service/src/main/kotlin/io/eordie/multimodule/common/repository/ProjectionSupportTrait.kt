@@ -1,6 +1,6 @@
 package io.eordie.multimodule.common.repository
 
-import io.eordie.multimodule.common.rsocket.context.getSelectionSet
+import io.eordie.multimodule.common.security.context.getSelectionSet
 import io.eordie.multimodule.common.utils.FetcherBuilder
 import io.eordie.multimodule.common.utils.convert
 import io.eordie.multimodule.contracts.basic.paging.Page

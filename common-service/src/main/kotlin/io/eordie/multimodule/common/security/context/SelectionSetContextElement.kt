@@ -1,4 +1,4 @@
-package io.eordie.multimodule.common.rsocket.context
+package io.eordie.multimodule.common.security.context
 
 import io.eordie.multimodule.contracts.basic.paging.SelectionSet
 import kotlin.coroutines.CoroutineContext
@@ -12,5 +12,5 @@ class SelectionSetContextElement(
 }
 
 fun CoroutineContext.getSelectionSet(): SelectionSet? {
-    return get(SelectionSetContextElement.Key)?.selectionSet
+    return get(SelectionSetContextElement)?.selectionSet
 }

@@ -2,7 +2,7 @@ package io.eordie.multimodule.api.tests.regions
 
 import com.google.common.truth.Truth.assertThat
 import io.eordie.multimodule.api.tests.AbstractApplicationTest
-import io.eordie.multimodule.common.rsocket.context.SelectionSetContextElement
+import io.eordie.multimodule.common.security.context.SelectionSetContextElement
 import io.eordie.multimodule.contracts.basic.filters.LongNumericFilter
 import io.eordie.multimodule.contracts.basic.paging.SelectionSet
 import io.eordie.multimodule.contracts.regions.models.Region

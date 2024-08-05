@@ -2,7 +2,7 @@ package io.eordie.multimodule.common.kafka
 
 import com.google.common.base.CaseFormat
 import io.eordie.multimodule.common.repository.event.EventPublisher
-import io.eordie.multimodule.common.rsocket.context.getAuthenticationContext
+import io.eordie.multimodule.common.security.context.getAuthenticationContext
 import io.eordie.multimodule.contracts.basic.event.MutationEvent
 import io.eordie.multimodule.contracts.utils.JsonModule
 import kotlinx.serialization.serializer

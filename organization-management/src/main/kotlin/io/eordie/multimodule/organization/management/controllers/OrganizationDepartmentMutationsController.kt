@@ -1,6 +1,6 @@
 package io.eordie.multimodule.organization.management.controllers
 
-import io.eordie.multimodule.common.rsocket.context.getAuthenticationContext
+import io.eordie.multimodule.common.security.context.getAuthenticationContext
 import io.eordie.multimodule.common.validation.error
 import io.eordie.multimodule.contracts.organization.models.acl.BindingCriterion
 import io.eordie.multimodule.contracts.organization.models.acl.ByFarmCriterion

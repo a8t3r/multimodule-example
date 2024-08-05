@@ -1,6 +1,6 @@
 package io.eordie.multimodule.organization.management.controllers
 
-import io.eordie.multimodule.common.rsocket.context.getAuthentication
+import io.eordie.multimodule.common.security.context.getAuthentication
 import io.eordie.multimodule.common.utils.associateBy
 import io.eordie.multimodule.common.utils.associateFlattenById
 import io.eordie.multimodule.contracts.basic.filters.UUIDLiteralFilter
