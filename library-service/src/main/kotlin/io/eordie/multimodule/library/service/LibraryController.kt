@@ -26,11 +26,11 @@ class LibraryController(
 ) : Library {
 
     override suspend fun bookById(id: UUID): Book? {
-        return booksRepository.findById(id)?.convert()
+        return books.queryById(id)
     }
 
     override suspend fun authorById(id: UUID): Author? {
-        return authors.findById(id)?.convert()
+        return authors.queryById(id)
     }
 
     override suspend fun books(filter: BooksFilter?, pageable: Pageable?): Page<Book> {

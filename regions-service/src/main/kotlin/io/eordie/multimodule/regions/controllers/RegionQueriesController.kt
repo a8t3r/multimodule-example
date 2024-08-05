@@ -23,7 +23,7 @@ class RegionQueriesController(
 ) : RegionQueries {
 
     override suspend fun region(regionId: Long): Region? {
-        return regions.findById(regionId)?.convert()
+        return regions.queryById(regionId)
     }
 
     override suspend fun regions(filter: RegionsFilter?, pageable: Pageable?): Page<Region> {

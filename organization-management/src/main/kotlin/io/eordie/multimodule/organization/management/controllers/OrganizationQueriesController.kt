@@ -28,7 +28,7 @@ class OrganizationQueriesController(
 ) : OrganizationQueries {
 
     override suspend fun organization(id: UUID): Organization? {
-        return organizations.findById(id)?.convert()
+        return organizations.queryById(id)
     }
 
     override suspend fun organizations(filter: OrganizationsFilter?, pageable: Pageable?): Page<Organization> {
