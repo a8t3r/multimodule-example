@@ -1,4 +1,4 @@
-#include logback-template, bootstrap, keycloak, keycloak-security, redis
+#include logback-template, bootstrap, keycloak-security, redis
 
 # strictly required for graphql introspection
 # otherwise empty lists wouldn't be serialized

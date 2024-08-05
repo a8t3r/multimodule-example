@@ -5,6 +5,7 @@ keycloak:
   password: admin
   clientId: admin-cli
   clientSecret: undefinedvalue
+  baseUri: ${this@keycloak.serverUrl}/realms/${this@keycloak.realm}
 
 test-resources:
   containers:

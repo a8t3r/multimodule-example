@@ -8,7 +8,6 @@ import io.eordie.multimodule.contracts.identitymanagement.models.AuthenticationD
 import io.eordie.multimodule.contracts.identitymanagement.models.LocaleBinding
 import io.eordie.multimodule.contracts.identitymanagement.models.OrganizationRoleBinding
 import io.eordie.multimodule.contracts.utils.Roles
-import io.eordie.multimodule.contracts.utils.UuidStr
 import java.util.*
 
 class AuthenticationDetailsBuilder {
@@ -62,31 +61,29 @@ class AuthenticationDetailsBuilder {
         }
 
         fun of(
-            userId: UuidStr?,
+            userId: UUID,
             attributes: MutableMap<String, Any>
-        ): AuthenticationDetails? {
-            return if (userId == null) null else {
-                val holder = getRolesHolder(attributes)
+        ): AuthenticationDetails {
+            val holder = getRolesHolder(attributes)
 
-                AuthenticationDetails(
-                    userId = userId,
-                    username = attributes["name"] as? String ?: attributes["preferred_username"] as String,
-                    roles = holder.roles(),
-                    active = false,
-                    email = attributes.getValue("email") as String,
-                    emailVerified = attributes["email_verified"] as? Boolean ?: false,
-                    locale = LocaleBinding("RU", attributes["locale"] as? String ?: "en"),
-                    currentOrganizationId = holder.activeOrganization?.id?.let { UUID.fromString(it) },
-                    organizationRoles = holder.organizationRoles?.entries
-                        ?.map {
-                            OrganizationRoleBinding(
-                                UUID.fromString(it.key),
-                                it.value.name,
-                                Roles.supportedFrom(it.value.roles)
-                            )
-                        }
-                )
-            }
+            return AuthenticationDetails(
+                userId = userId,
+                username = attributes["name"] as? String ?: attributes["preferred_username"] as String,
+                roles = holder.roles(),
+                active = false,
+                email = attributes.getValue("email") as String,
+                emailVerified = attributes["email_verified"] as? Boolean ?: false,
+                locale = LocaleBinding("RU", attributes["locale"] as? String ?: "en"),
+                currentOrganizationId = holder.activeOrganization?.id?.let { UUID.fromString(it) },
+                organizationRoles = holder.organizationRoles?.entries
+                    ?.map {
+                        OrganizationRoleBinding(
+                            UUID.fromString(it.key),
+                            it.value.name,
+                            Roles.supportedFrom(it.value.roles)
+                        )
+                    }
+            )
         }
     }
 }

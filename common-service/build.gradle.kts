@@ -17,6 +17,7 @@ dependencies {
     implementation(libs.kotlin.rsocket.transport.ktor.tcp)
 
     implementation("io.micronaut.redis:micronaut-redis-lettuce")
+    implementation("io.micronaut.security:micronaut-security-jwt")
     implementation("io.opentelemetry:opentelemetry-exporter-otlp")
     implementation("io.micronaut.tracing:micronaut-tracing-opentelemetry-http")
     implementation("io.micronaut.tracing:micronaut-tracing-opentelemetry-kafka")

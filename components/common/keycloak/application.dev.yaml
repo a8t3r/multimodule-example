@@ -5,3 +5,4 @@ keycloak:
   password: admin
   clientId: micronaut
   clientSecret: UCcbKWfOJjRLoufnVf2Zr1yxoceeLjWs
+  baseUri: ${this@keycloak.serverUrl}/realms/${this@keycloak.realm}

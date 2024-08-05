@@ -1,4 +1,4 @@
-#include logback-template, bootstrap, keycloak, keycloak-security, redis, kubernetes
+#include logback-template, bootstrap, keycloak-security, redis, kubernetes
 
 dekorate:
   kubernetes:

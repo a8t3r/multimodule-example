@@ -1,0 +1,19 @@
+#include keycloak
+
+micronaut:
+  security:
+    enabled: true
+    authentication: cookie
+    intercept-url-map:
+      - pattern: /*
+        access:
+          - isAuthenticated()
+
+    token:
+      jwt:
+        signatures:
+          jwks:
+            keycloak:
+              url: ${this@keycloak.baseUri}/protocol/openid-connect/certs
+              cache-expiration: 60
+              key-type: RSA

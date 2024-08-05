@@ -1,3 +1,5 @@
+#include keycloak
+
 micronaut:
   security:
     enabled: true
@@ -25,24 +27,21 @@ micronaut:
     oauth2:
       clients:
         keycloak:
-          clientId: ${keycloak.clientId}
-          clientSecret: ${keycloak.clientSecret}
+          clientId: ${this@keycloak.clientId}
+          clientSecret: ${this@keycloak.clientSecret}
           scopes:
             - openid
             - email
             - phone
             - roles
           token:
-            url: ${keycloak.baseUri}/protocol/openid-connect/token
+            url: ${this@keycloak.baseUri}/protocol/openid-connect/token
           openid:
             registration:
-              url: ${keycloak.baseUri}/protocol/openid-connect/registrations
+              url: ${this@keycloak.baseUri}/protocol/openid-connect/registrations
             authorization:
               prompt: select_account
             issuer: '${keycloak.baseUri}'
     endpoints:
       logout:
         get-allowed: true
-
-keycloak:
-  baseUri: ${keycloak.serverUrl}/realms/${keycloak.realm}
