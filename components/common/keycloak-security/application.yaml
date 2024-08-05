@@ -41,7 +41,7 @@ micronaut:
               url: ${this@keycloak.baseUri}/protocol/openid-connect/registrations
             authorization:
               prompt: select_account
-            issuer: '${keycloak.baseUri}'
+            issuer: '${this@keycloak.baseUri}'
     endpoints:
       logout:
         get-allowed: true
