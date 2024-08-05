@@ -16,7 +16,7 @@ class InvitationQueriesController(
 ) : InvitationQueries {
 
     override suspend fun invitation(invitationId: UuidStr): Invitation? {
-        return invitations.findById(invitationId)?.convert()
+        return invitations.queryById(invitationId)
     }
 
     override suspend fun invitations(filter: InvitationFilter?, pageable: Pageable?): Page<Invitation> {
