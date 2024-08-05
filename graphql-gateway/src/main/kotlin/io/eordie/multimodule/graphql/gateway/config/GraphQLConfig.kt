@@ -1,5 +1,7 @@
 package io.eordie.multimodule.graphql.gateway.config
 
+import com.expediagroup.graphql.apq.cache.DefaultAutomaticPersistedQueriesCache
+import com.expediagroup.graphql.apq.provider.AutomaticPersistedQueriesProvider
 import com.expediagroup.graphql.dataloader.KotlinDataLoader
 import com.expediagroup.graphql.dataloader.KotlinDataLoaderRegistryFactory
 import com.expediagroup.graphql.generator.SchemaGeneratorConfig
@@ -11,6 +13,7 @@ import graphql.GraphQLContext
 import graphql.analysis.MaxQueryComplexityInstrumentation
 import graphql.analysis.MaxQueryDepthInstrumentation
 import graphql.execution.instrumentation.ChainedInstrumentation
+import graphql.execution.preparsed.PreparsedDocumentProvider
 import graphql.schema.DataFetcherFactory
 import io.eordie.multimodule.common.rsocket.client.getServiceInterface
 import io.eordie.multimodule.common.rsocket.client.route.Synthesized
@@ -121,6 +124,11 @@ class GraphQLConfig {
     }
 
     @Bean
+    fun preparsedDocumentProvider(): PreparsedDocumentProvider {
+        return AutomaticPersistedQueriesProvider(DefaultAutomaticPersistedQueriesCache())
+    }
+
+    @Bean
     @Requires(classes = [TypeConverter::class])
     fun graphqlSchema(
         instrumentation: ChainedInstrumentation,
@@ -137,6 +145,7 @@ class GraphQLConfig {
             topObjects(mutations)
         )
         return GraphQL.newGraphQL(graphQLSchema)
+            .preparsedDocumentProvider(preparsedDocumentProvider())
             .defaultDataFetcherExceptionHandler(DataFetcherExceptionHandler())
             .instrumentation(instrumentation)
             .build()

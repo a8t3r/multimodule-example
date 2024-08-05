@@ -11,4 +11,5 @@ dependencies {
 
     implementation(libs.kotlin.graphql)
     implementation(libs.graphql.scalars)
+    implementation(libs.kotlin.graphql.persisted.queries)
 }
