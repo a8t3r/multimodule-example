@@ -9,7 +9,6 @@ import io.micronaut.runtime.http.scope.RequestAware
 import io.micronaut.runtime.http.scope.RequestScope
 import io.micronaut.security.authentication.Authentication
 import io.opentelemetry.context.Context
-import java.util.*
 
 @RequestScope
 open class GraphqlContextBuilder : RequestAware {
@@ -24,8 +23,7 @@ open class GraphqlContextBuilder : RequestAware {
 
     private fun processContext(builder: GraphQLContext.Builder): GraphQLContext.Builder {
         val auth = getAuthentication()?.let {
-            val userId = UUID.fromString(it.name)
-            AuthenticationDetailsBuilder.of(userId, it.attributes)
+            AuthenticationDetailsBuilder.of(it)
         }
         builder.put(ContextKeys.TELEMETRY, Context.current())
         builder.put(ContextKeys.HEADERS, request.headers)

@@ -8,6 +8,7 @@ import io.eordie.multimodule.contracts.identitymanagement.models.AuthenticationD
 import io.eordie.multimodule.contracts.identitymanagement.models.LocaleBinding
 import io.eordie.multimodule.contracts.identitymanagement.models.OrganizationRoleBinding
 import io.eordie.multimodule.contracts.utils.Roles
+import io.micronaut.security.authentication.Authentication
 import java.util.*
 
 class AuthenticationDetailsBuilder {
@@ -60,7 +61,12 @@ class AuthenticationDetailsBuilder {
             return mapper.convertValue(attributes, RolesHolder::class.java)
         }
 
-        fun of(
+        fun of(authentication: Authentication): AuthenticationDetails = of(
+            UUID.fromString(authentication.name),
+            authentication.attributes
+        )
+
+        private fun of(
             userId: UUID,
             attributes: MutableMap<String, Any>
         ): AuthenticationDetails {

@@ -6,7 +6,6 @@ import io.micronaut.http.bind.binders.HttpCoroutineContextFactory
 import io.micronaut.runtime.http.scope.RequestAware
 import io.micronaut.runtime.http.scope.RequestScope
 import io.micronaut.security.authentication.Authentication
-import java.util.*
 import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.EmptyCoroutineContext
 
@@ -17,7 +16,7 @@ open class AuthenticationCoroutineContextFactory : HttpCoroutineContextFactory<C
 
     override fun create(): CoroutineContext {
         return request.getUserPrincipal(Authentication::class.java)
-            .map { AuthenticationDetailsBuilder.of(UUID.fromString(it.name), it.attributes) }
+            .map { AuthenticationDetailsBuilder.of(it) }
             .map<CoroutineContext> { AuthenticationContextElement(it) }
             .orElse(EmptyCoroutineContext)
     }
