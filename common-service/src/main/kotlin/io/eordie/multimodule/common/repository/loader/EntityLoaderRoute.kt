@@ -39,11 +39,13 @@ class EntityLoaderRoute(
     )
 
     suspend fun load(ids: List<Any>, context: CoroutineContext): Map<Any, Any> {
-        return invoke(requireNotNull(suspendedLoad.javaMethod), context, arrayOf(ids)) as Map<Any, Any>
+        val method = requireNotNull(suspendedLoad.javaMethod)
+        return invoke(method, context, arrayOf(ids)) as Map<Any, Any>
     }
 
     suspend fun loadPermissions(ids: List<Any>, context: CoroutineContext): Map<Any, List<Permission>> {
-        return invoke(requireNotNull(suspendedLoadPermissions.javaMethod), context, arrayOf(ids)) as Map<Any, List<Permission>>
+        val method = requireNotNull(suspendedLoadPermissions.javaMethod)
+        return invoke(method, context, arrayOf(ids)) as Map<Any, List<Permission>>
     }
 
     override fun getReturnType(method: Method): KType = returnType
