@@ -41,10 +41,8 @@ class OrganizationDepartmentMutationsController(
         val department = departments.save<OrganizationDepartmentModelDraft>(
             departmentId,
             departments.defaultFetcher
-        ) { state, value ->
-            state.ifExists {
-                ensureEquality(currentOrganization, value.organizationId)
-            }
+        ) { _, value ->
+            ensureEquality(currentOrganization, value.organizationId)
 
             value.globalBinding = includeAll
             value.regionBindings = emptyList()
@@ -68,10 +66,8 @@ class OrganizationDepartmentMutationsController(
         val department = departments.save<OrganizationDepartmentModelDraft>(
             departmentId,
             departments.defaultFetcher
-        ) { state, value ->
-            state.ifExists {
-                ensureEquality(currentOrganization, value.organizationId)
-            }
+        ) { _, value ->
+            ensureEquality(currentOrganization, value.organizationId)
 
             value.globalBinding = null
             value.regionBindings = if (plus) {
@@ -102,10 +98,8 @@ class OrganizationDepartmentMutationsController(
         val department = departments.save<OrganizationDepartmentModelDraft>(
             departmentId,
             departments.defaultFetcher
-        ) { state, value ->
-            state.ifExists {
-                ensureEquality(currentOrganization, value.organizationId)
-            }
+        ) { _, value ->
+            ensureEquality(currentOrganization, value.organizationId)
 
             value.globalBinding = null
             value.farmBindings = if (plus) {

@@ -185,7 +185,6 @@ open class KFactoryImpl<T : Any, ID : Comparable<ID>>(
     private suspend fun <D> produce(base: T? = null, block: (D) -> Unit): D where D : T {
         val context = coroutineContext
         val consumer = DraftConsumer<D> {
-            block(it)
             if (base == null) {
                 val auth = context.getAuthenticationContext()
                 if (isCreatedByAware && !(it as DraftSpi).__isLoaded(CREATED_BY_PROPERTY)) {
@@ -195,6 +194,8 @@ open class KFactoryImpl<T : Any, ID : Comparable<ID>>(
                     it.__set("organizationId", auth.currentOrganizationId)
                 }
             }
+
+            block(it)
         }
         return Internal.produce(immutableType, base, consumer) as D
     }
