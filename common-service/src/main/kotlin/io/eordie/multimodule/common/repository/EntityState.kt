@@ -8,7 +8,13 @@ enum class EntityState {
 
     fun isNotExists(): Boolean = this != EXISTING
 
-    fun ifNotExist(block: () -> Unit) {
+    fun ifExists(block: () -> Unit) {
+        if (this == EXISTING) {
+            block.invoke()
+        }
+    }
+
+    fun ifNotExists(block: () -> Unit) {
         if (this != EXISTING) {
             block.invoke()
         }

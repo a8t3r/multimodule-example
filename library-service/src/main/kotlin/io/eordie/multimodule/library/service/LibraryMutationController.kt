@@ -27,7 +27,7 @@ class LibraryMutationController(
         }.map { it.id }
 
         books.save<BookModelDraft>(input.id) { state, instance ->
-            state.ifNotExist {
+            state.ifNotExists {
                 instance.authorIds = emptyList()
             }
 

@@ -14,7 +14,7 @@ import java.util.*
 class FarmAclMutationsController(private val factory: FarmAclFactory) : FarmAclMutations {
     override suspend fun farmAcl(currentOrganization: CurrentOrganization, farmAcl: FarmAclInput): FarmAcl {
         return factory.save<FarmAclModelDraft>(farmAcl.id) { state, value ->
-            state.ifNotExist {
+            state.ifNotExists {
                 value.farmId = farmAcl.farmId
                 value.organizationId = farmAcl.organisationId
                 value.farmOwnerOrganizationId = currentOrganization.id

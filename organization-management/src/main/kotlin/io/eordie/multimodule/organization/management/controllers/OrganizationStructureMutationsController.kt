@@ -18,6 +18,7 @@ import io.eordie.multimodule.organization.management.models.departmentId
 import io.eordie.multimodule.organization.management.models.organizationId
 import io.eordie.multimodule.organization.management.models.parentId
 import io.eordie.multimodule.organization.management.models.userId
+import io.eordie.multimodule.organization.management.repository.OrganizationDepartmentFactory
 import io.eordie.multimodule.organization.management.repository.OrganizationEmployeeFactory
 import io.eordie.multimodule.organization.management.repository.OrganizationMemberFactory
 import io.eordie.multimodule.organization.management.repository.OrganizationPositionFactory
@@ -32,7 +33,7 @@ class OrganizationStructureMutationsController(
     private val members: OrganizationMemberFactory,
     private val employees: OrganizationEmployeeFactory,
     private val positions: OrganizationPositionFactory,
-    private val departments: io.eordie.multimodule.organization.management.repository.OrganizationDepartmentFactory,
+    private val departments: OrganizationDepartmentFactory,
     private val positionsRepository: OrganizationPositionsRepository
 ) : OrganizationStructureMutations {
 
