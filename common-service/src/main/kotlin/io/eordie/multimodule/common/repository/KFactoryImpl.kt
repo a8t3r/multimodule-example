@@ -4,6 +4,7 @@ import io.eordie.multimodule.common.filter.FiltersRegistry
 import io.eordie.multimodule.common.repository.entity.CreatedByIF
 import io.eordie.multimodule.common.repository.entity.OrganizationOwnerIF
 import io.eordie.multimodule.common.repository.entity.PermissionAwareIF
+import io.eordie.multimodule.common.repository.ext.and
 import io.eordie.multimodule.common.repository.ext.name
 import io.eordie.multimodule.common.repository.ext.or
 import io.eordie.multimodule.common.rsocket.client.route.ValidationCheck.toErrors
@@ -34,6 +35,7 @@ import kotlinx.coroutines.runBlocking
 import org.babyfish.jimmer.DraftConsumer
 import org.babyfish.jimmer.kt.toImmutableProp
 import org.babyfish.jimmer.meta.ImmutableType
+import org.babyfish.jimmer.meta.TargetLevel
 import org.babyfish.jimmer.runtime.DraftSpi
 import org.babyfish.jimmer.runtime.ImmutableSpi
 import org.babyfish.jimmer.runtime.Internal
@@ -48,6 +50,8 @@ import org.babyfish.jimmer.sql.kt.KSqlClient
 import org.babyfish.jimmer.sql.kt.ast.expression.KNonNullExpression
 import org.babyfish.jimmer.sql.kt.ast.expression.KPropExpression
 import org.babyfish.jimmer.sql.kt.ast.expression.constant
+import org.babyfish.jimmer.sql.kt.ast.expression.eq
+import org.babyfish.jimmer.sql.kt.ast.expression.isNull
 import org.babyfish.jimmer.sql.kt.ast.expression.valueIn
 import org.babyfish.jimmer.sql.kt.ast.mutation.KMutableUpdate
 import org.babyfish.jimmer.sql.kt.ast.mutation.KSimpleSaveResult
@@ -101,6 +105,7 @@ open class KFactoryImpl<T : Any, ID : Comparable<ID>>(
     }
 
     open val requireEmployeeAcl = true
+    open val prefetchByKeysEnabled = true
     open val datasourceName = "default"
     open val entityListener: EntityListener<T>? = null
     open fun sortingExpressions(table: KNonNullTable<T>): List<KPropExpression<out Comparable<*>>> {
@@ -480,12 +485,54 @@ open class KFactoryImpl<T : Any, ID : Comparable<ID>>(
         return if (mutate.get()) update(draft) to true else value to false
     }
 
+    private suspend fun <S : ImmutableSpi> loadByKeys(prefetch: S): T? {
+        return if (immutableType.keyProps.isEmpty()) null else {
+            loadByKeys(prefetch, null)
+        }
+    }
+
+    private suspend fun <S : T> loadByKeys(block: (Boolean, S) -> Boolean, fetcher: Fetcher<T>?): T? {
+        return if (immutableType.keyProps.isEmpty()) null else {
+            val prefetch = produce<S>(null) { block.invoke(true, it) } as ImmutableSpi
+            loadByKeys(prefetch, fetcher)
+        }
+    }
+
+    private suspend fun <S : ImmutableSpi> loadByKeys(prefetch: S, fetcher: Fetcher<T>?): T? {
+        return if (prefetchByKeysEnabled && immutableType.keyProps.any { !prefetch.__isLoaded(it.id) }) null else {
+            sql.createQuery(entityType) {
+                val predicate = immutableType.keyProps.map { keyProp ->
+                    val propertyValue = prefetch.__get(keyProp.id)
+                    if (keyProp.isReference(TargetLevel.ENTITY)) {
+                        val targetIdExpression = table.getAssociatedId<Any>(keyProp)
+                        val target = propertyValue as ImmutableSpi?
+                        if (target == null) {
+                            targetIdExpression.isNull()
+                        } else {
+                            targetIdExpression.eq(target.__get(keyProp.targetType.idProp.id))
+                        }
+                    } else {
+                        if (propertyValue == null) {
+                            table.get<Any>(keyProp).isNull()
+                        } else {
+                            table.get<Any>(keyProp).eq(propertyValue)
+                        }
+                    }
+                }.and()
+
+                where(predicate)
+                val selection = fetcher?.let { table.fetch(it) } ?: table
+                select(selection)
+            }.fetchOneOrNull(currentConnection())
+        }
+    }
+
     override suspend fun <S : T> saveIf(
         id: ID?,
         fetcher: Fetcher<T>?,
         block: (Boolean, S) -> Boolean
     ): Pair<T, Boolean> {
-        val value = id?.let { findById(id, fetcher) }
+        val value = if (id != null) findById(id, fetcher) else loadByKeys(block, fetcher)
         val mutate = AtomicBoolean()
         val draft = produce<S>(value) {
             mutate.set(block(value == null, it))
@@ -511,7 +558,7 @@ open class KFactoryImpl<T : Any, ID : Comparable<ID>>(
         val id = if (!(draft as ImmutableSpi).__isLoaded(idProperty.name())) null else {
             draft.__get(idProperty.name()) as ID?
         }
-        val value = id?.let { findById(id) }
+        val value = if (id != null) findById(id) else loadByKeys(draft)
         val function: suspend (T) -> T = if (value == null) ::persist else ::update
         return function(draft)
     }

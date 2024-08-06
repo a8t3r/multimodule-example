@@ -6,6 +6,7 @@ import io.eordie.multimodule.contracts.organization.models.Organization
 import org.babyfish.jimmer.sql.Column
 import org.babyfish.jimmer.sql.Entity
 import org.babyfish.jimmer.sql.Id
+import org.babyfish.jimmer.sql.Key
 import org.babyfish.jimmer.sql.OneToMany
 import org.babyfish.jimmer.sql.Table
 import java.util.*
@@ -18,6 +19,7 @@ interface OrganizationModel : Convertable<Organization>, PermissionAwareIF {
     @Column(name = "uid")
     val id: UUID
 
+    @Key
     val name: String
 
     val displayName: String

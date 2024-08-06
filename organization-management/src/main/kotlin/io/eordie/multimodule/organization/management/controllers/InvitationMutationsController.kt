@@ -54,14 +54,7 @@ class InvitationMutationsController(
             UserAlreadyEmployed.error()
         }
 
-        val previousInstance = invitations.findOneBySpecification {
-            where(
-                table.email eq input.email,
-                table.organizationId eq currentOrganizationId
-            )
-        }
-
-        return invitations.save<InvitationModelDraft>(previousInstance?.id ?: input.id) { isNew, instance ->
+        return invitations.save<InvitationModelDraft>(input.id) { isNew, instance ->
             if (isNew) {
                 instance.status = if (invited == null) InvitationStatus.CREATED else InvitationStatus.PENDING
             } else if (instance.status != InvitationStatus.CREATED) {
