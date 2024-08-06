@@ -1,11 +1,13 @@
 package io.eordie.multimodule.organization.management.controllers
 
+import io.eordie.multimodule.common.utils.associateBy
 import io.eordie.multimodule.common.utils.associateById
 import io.eordie.multimodule.contracts.basic.filters.UUIDLiteralFilter
 import io.eordie.multimodule.contracts.basic.paging.Page
 import io.eordie.multimodule.contracts.basic.paging.Pageable
+import io.eordie.multimodule.contracts.organization.OrganizationDigest
 import io.eordie.multimodule.contracts.organization.models.Organization
-import io.eordie.multimodule.contracts.organization.models.OrganizationSummary
+import io.eordie.multimodule.contracts.organization.models.OrganizationFilterSummary
 import io.eordie.multimodule.contracts.organization.models.OrganizationsFilter
 import io.eordie.multimodule.contracts.organization.models.User
 import io.eordie.multimodule.contracts.organization.models.structure.OrganizationEmployeeFilter
@@ -35,7 +37,7 @@ class OrganizationQueriesController(
         return organizations.query(filter.orDefault(), pageable)
     }
 
-    override suspend fun organizationSummary(filter: OrganizationsFilter?): OrganizationSummary {
+    override suspend fun organizationSummary(filter: OrganizationsFilter?): OrganizationFilterSummary {
         return organizationRepository.getOrganizationSummary(filter.orDefault())
     }
 
@@ -56,5 +58,11 @@ class OrganizationQueriesController(
 
         return employees.findAllByFilter(filterBy, fetcher = fetcher)
             .associateById(organizationIds, { it.organizationId }, { it.user.convert() })
+    }
+
+    override suspend fun loadOrganizationDigest(organizationIds: List<UUID>): Map<UUID, OrganizationDigest> {
+        val filter = OrganizationsFilter(id = UUIDLiteralFilter(of = organizationIds))
+        return organizationRepository.getOrganizationsDigest(filter)
+            .associateBy(OrganizationDigest::organizationId) { it }
     }
 }

@@ -12,6 +12,12 @@ class AccessDeniedException(
 ) : SecurityException() {
     constructor(subjectUserId: UUID?, missingRole: Roles) : this(subjectUserId, setOf(missingRole))
 
+    override fun createCopy(): BaseRuntimeException {
+        val exception = AccessDeniedException(subjectUserId, missingRoles)
+        exception.initCause(this)
+        return exception
+    }
+
     override fun extensions(): Map<String, Any> = listOfNotNull(
         subjectUserId?.let { "subjectUserId" to it },
         "missingRoles" to missingRoles

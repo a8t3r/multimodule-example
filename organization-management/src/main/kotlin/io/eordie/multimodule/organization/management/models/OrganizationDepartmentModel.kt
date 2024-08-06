@@ -6,10 +6,12 @@ import io.eordie.multimodule.common.repository.entity.UUIDIdentityIF
 import io.eordie.multimodule.contracts.organization.models.structure.OrganizationDepartment
 import io.eordie.multimodule.organization.management.models.acl.ByFarmCriterionModel
 import io.eordie.multimodule.organization.management.models.acl.ByRegionCriterionModel
+import org.babyfish.jimmer.sql.DissociateAction
 import org.babyfish.jimmer.sql.Entity
 import org.babyfish.jimmer.sql.IdView
 import org.babyfish.jimmer.sql.Key
 import org.babyfish.jimmer.sql.ManyToOne
+import org.babyfish.jimmer.sql.OnDissociate
 import org.babyfish.jimmer.sql.OneToMany
 import org.babyfish.jimmer.sql.Table
 import java.util.*
@@ -26,6 +28,7 @@ interface OrganizationDepartmentModel : UUIDIdentityIF, OrganizationOwnerIF, Con
 
     @Key
     @ManyToOne
+    @OnDissociate(DissociateAction.DELETE)
     val organization: OrganizationModel
 
     @OneToMany(mappedBy = "department")

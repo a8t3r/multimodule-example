@@ -133,7 +133,7 @@ test-resources:
           KC_DB_PASSWORD: "test"
       exposed-ports:
         - keycloak.gui: 8080
-      image-name: quay.io/phasetwo/phasetwo-keycloak:latest
+      image-name: quay.io/phasetwo/phasetwo-keycloak:24.0.5
       network: custom
       network-aliases: keycloak-server
       startup-timeout: 60

@@ -4,6 +4,7 @@ import io.eordie.multimodule.common.filter.FiltersRegistry
 import io.eordie.multimodule.common.repository.entity.CreatedByIF
 import io.eordie.multimodule.common.repository.entity.OrganizationOwnerIF
 import io.eordie.multimodule.common.repository.entity.PermissionAwareIF
+import io.eordie.multimodule.common.repository.entity.UpdatedByIF
 import io.eordie.multimodule.common.repository.ext.and
 import io.eordie.multimodule.common.repository.ext.name
 import io.eordie.multimodule.common.repository.ext.or
@@ -12,6 +13,8 @@ import io.eordie.multimodule.common.security.context.Microservices
 import io.eordie.multimodule.common.security.context.getAuthenticationContext
 import io.eordie.multimodule.common.utils.asFlow
 import io.eordie.multimodule.common.validation.EntityValidator
+import io.eordie.multimodule.common.validation.MissingPermission
+import io.eordie.multimodule.common.validation.error
 import io.eordie.multimodule.contracts.basic.Permission
 import io.eordie.multimodule.contracts.basic.exception.EntityNotFoundException
 import io.eordie.multimodule.contracts.basic.exception.ValidationException
@@ -101,6 +104,7 @@ open class KFactoryImpl<T : Any, ID : Comparable<ID>>(
         private const val MAX_ALLOWED_SORTING = 5
         private const val MAX_LIMIT = 100
         private val CREATED_BY_PROPERTY = CreatedByIF::createdBy.toImmutableProp().id
+        private val UPDATED_BY_PROPERTY = UpdatedByIF::updatedBy.toImmutableProp().id
         private val PERMISSIONS_PROPERTY = PermissionAwareIF::permissions.toImmutableProp().id
     }
 
@@ -113,6 +117,7 @@ open class KFactoryImpl<T : Any, ID : Comparable<ID>>(
     }
 
     private val isCreatedByAware = entityType.isSubclassOf(CreatedByIF::class)
+    private val isUpdatedByAware = entityType.isSubclassOf(UpdatedByIF::class)
     private val isPermissionAware = entityType.isSubclassOf(PermissionAwareIF::class)
     private val isOrganizationOwnerAware = entityType.isSubclassOf(OrganizationOwnerIF::class)
 
@@ -125,6 +130,7 @@ open class KFactoryImpl<T : Any, ID : Comparable<ID>>(
         val connection: Connection
     ) : CoroutineContext.Element {
         companion object Key : CoroutineContext.Key<ConnectionContextElement>
+
         override val key: CoroutineContext.Key<*> = Key
     }
 
@@ -195,6 +201,10 @@ open class KFactoryImpl<T : Any, ID : Comparable<ID>>(
                 }
             }
 
+            if (isUpdatedByAware && !(it as DraftSpi).__isLoaded(UPDATED_BY_PROPERTY)) {
+                it.__set(UPDATED_BY_PROPERTY, context.getAuthenticationContext().userId)
+            }
+
             block(it)
         }
         return Internal.produce(immutableType, base, consumer) as D
@@ -221,10 +231,11 @@ open class KFactoryImpl<T : Any, ID : Comparable<ID>>(
         }
     }
 
-    private suspend fun applyPermissions(
-        value: T,
-        permission: Permission = Permission.VIEW
-    ): T? = applyPermissions(listOf(value), permission).firstOrNull()
+    suspend fun checkPermission(value: T, permission: Permission): T {
+        return applyPermissions(listOf(value), permission).firstOrNull() ?: kotlin.run {
+            MissingPermission(permission).error()
+        }
+    }
 
     override suspend fun existsById(id: ID): Boolean {
         return findById(id) != null
@@ -244,7 +255,7 @@ open class KFactoryImpl<T : Any, ID : Comparable<ID>>(
             entities().findById(entityType, id)
         }
 
-        return value?.let { applyPermissions(it) }
+        return value?.let { checkPermission(it, Permission.VIEW) }
     }
 
     override suspend fun getById(id: ID, fetcher: Fetcher<T>?): T {
@@ -257,11 +268,15 @@ open class KFactoryImpl<T : Any, ID : Comparable<ID>>(
 
     override suspend fun deleteByIds(ids: Collection<ID>): Int {
         return if (ids.isEmpty()) 0 else {
+            internalFindByIds(ids, null).forEach {
+                checkPermission(it, Permission.PURGE)
+            }
+
             wrapped {
                 sql.entities.deleteAll(entityType, ids, it) {
                     setMode(DeleteMode.AUTO)
-                }
-            }.totalAffectedRowCount
+                }.totalAffectedRowCount
+            }
         }
     }
 
@@ -413,9 +428,7 @@ open class KFactoryImpl<T : Any, ID : Comparable<ID>>(
     }
 
     private suspend fun persist(entity: T): T {
-        if (applyPermissions(entity, Permission.MANAGE) == null) {
-            missingPermission(Permission.MANAGE)
-        }
+        checkPermission(entity, Permission.MANAGE)
 
         validator?.let {
             try {
@@ -432,9 +445,7 @@ open class KFactoryImpl<T : Any, ID : Comparable<ID>>(
     }
 
     override suspend fun <S : T> update(entity: S): T {
-        if (applyPermissions(entity, Permission.MANAGE) == null) {
-            missingPermission(Permission.MANAGE)
-        }
+        checkPermission(entity, Permission.MANAGE)
 
         validator?.let {
             try {
@@ -465,17 +476,13 @@ open class KFactoryImpl<T : Any, ID : Comparable<ID>>(
     }
 
     private suspend fun <S : T> KSimpleSaveResult<S>.get(): T {
-        return applyPermissions(modifiedEntity) ?: missingPermission(Permission.VIEW)
+        return checkPermission(modifiedEntity, Permission.VIEW)
     }
 
     protected suspend fun rawUpdate(block: KMutableUpdate<T>.() -> Unit): Boolean {
         return wrapped {
             sql.createUpdate(entityType, block).execute(it)
         } > 0
-    }
-
-    private fun missingPermission(permission: Permission): Nothing {
-        error("subject has no '$permission' permission")
     }
 
     override suspend fun <S : T> updateIf(id: ID, block: S.() -> Boolean): Pair<T, Boolean> {

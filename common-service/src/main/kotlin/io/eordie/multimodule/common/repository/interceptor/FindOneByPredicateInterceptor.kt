@@ -11,6 +11,7 @@ import io.micronaut.core.reflect.ReflectionUtils
 import io.micronaut.data.annotation.Query
 import io.micronaut.kotlin.context.getBean
 import jakarta.inject.Singleton
+import kotlinx.coroutines.flow.asFlow
 import org.babyfish.jimmer.sql.ast.impl.AstContext
 import org.babyfish.jimmer.sql.ast.impl.query.ConfigurableRootQueryImpl
 import org.babyfish.jimmer.sql.ast.impl.query.UseTableVisitor
@@ -76,16 +77,23 @@ class FindOneByPredicateInterceptor(
 
         val binding = baseQuery.asNative().prepare(query)
         val (finalQuery, parameters, positions: List<Int>?) = binding.copy(_2 = binding._2.drop(1).toMutableList())
-        val returnType = context.executableMethod.returnType.wrapperType
 
         val block: () -> Any? = {
             sql.javaClient.connectionManager.execute { connection ->
                 val jdbcTemplate = JdbcTemplate(SingleConnectionDataSource(connection, false))
-                jdbcTemplate.queryForObject(
-                    finalQuery,
-                    IntrospectedRowMapper(returnType, conversionService),
-                    *parameters.toTypedArray()
-                )
+                if (context.returnType.isSingleResult) {
+                    jdbcTemplate.queryForObject(
+                        finalQuery,
+                        IntrospectedRowMapper(context.returnType.wrapperType, conversionService),
+                        *parameters.toTypedArray()
+                    )
+                } else {
+                    jdbcTemplate.query(
+                        finalQuery,
+                        IntrospectedRowMapper(context.returnType.typeParameters[0].type, conversionService),
+                        *parameters.toTypedArray()
+                    ).asFlow()
+                }
             }
         }
 

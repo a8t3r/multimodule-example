@@ -2,6 +2,7 @@ package io.eordie.multimodule.organization.management.models
 
 import io.eordie.multimodule.common.repository.entity.CreatedAtIF
 import org.babyfish.jimmer.sql.Column
+import org.babyfish.jimmer.sql.DissociateAction
 import org.babyfish.jimmer.sql.Entity
 import org.babyfish.jimmer.sql.GeneratedValue
 import org.babyfish.jimmer.sql.GenerationType
@@ -10,6 +11,7 @@ import org.babyfish.jimmer.sql.IdView
 import org.babyfish.jimmer.sql.JoinColumn
 import org.babyfish.jimmer.sql.Key
 import org.babyfish.jimmer.sql.ManyToOne
+import org.babyfish.jimmer.sql.OnDissociate
 import org.babyfish.jimmer.sql.Table
 import org.babyfish.jimmer.sql.meta.UUIDIdGenerator
 import java.util.*
@@ -33,6 +35,7 @@ interface OrganizationMemberModel : CreatedAtIF {
 
     @Key
     @ManyToOne
+    @OnDissociate(DissociateAction.DELETE)
     @JoinColumn(name = "organization_uid", referencedColumnName = "uid")
     val organization: OrganizationModel
 

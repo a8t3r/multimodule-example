@@ -58,6 +58,7 @@ interface OrganizationEmployeeModel :
     val organizationId: UUID
 
     @ManyToOne
+    @OnDissociate(DissociateAction.DELETE)
     @JoinColumn(referencedColumnName = "uid")
     val organization: OrganizationModel
 }

@@ -1,6 +1,5 @@
 package io.eordie.multimodule.organization.management.models.acl
 
-import io.eordie.multimodule.common.repository.AuditableAware
 import io.eordie.multimodule.common.repository.Convertable
 import io.eordie.multimodule.common.repository.entity.OrganizationOwnerIF
 import io.eordie.multimodule.common.repository.entity.PermissionAwareIF
@@ -9,22 +8,25 @@ import io.eordie.multimodule.contracts.organization.models.acl.FarmAcl
 import io.eordie.multimodule.contracts.utils.Roles
 import io.eordie.multimodule.organization.management.models.OrganizationModel
 import org.babyfish.jimmer.Formula
+import org.babyfish.jimmer.sql.DissociateAction
 import org.babyfish.jimmer.sql.Entity
 import org.babyfish.jimmer.sql.IdView
 import org.babyfish.jimmer.sql.Key
 import org.babyfish.jimmer.sql.ManyToOne
+import org.babyfish.jimmer.sql.OnDissociate
 import org.babyfish.jimmer.sql.Table
 import java.util.*
 
 @Entity
 @Table(name = "farm_acl")
-interface FarmAclModel : UUIDIdentityIF, AuditableAware, OrganizationOwnerIF, PermissionAwareIF, Convertable<FarmAcl> {
+interface FarmAclModel : UUIDIdentityIF, OrganizationOwnerIF, PermissionAwareIF, Convertable<FarmAcl> {
 
     @IdView
     val organizationId: UUID
 
     @Key
     @ManyToOne
+    @OnDissociate(DissociateAction.DELETE)
     val organization: OrganizationModel
 
     @Key
@@ -35,6 +37,7 @@ interface FarmAclModel : UUIDIdentityIF, AuditableAware, OrganizationOwnerIF, Pe
 
     @Key
     @ManyToOne
+    @OnDissociate(DissociateAction.DELETE)
     val farmOwnerOrganization: OrganizationModel
 
     val roleIds: List<Int>

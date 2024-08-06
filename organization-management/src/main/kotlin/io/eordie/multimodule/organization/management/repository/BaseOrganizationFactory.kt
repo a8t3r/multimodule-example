@@ -23,10 +23,12 @@ abstract class BaseOrganizationFactory<T : Convertable<C>, C : Any, ID, F : Any>
     open val manageRoles: Set<Roles> = setOf(Roles.MANAGE_ORGANIZATION)
 
     override fun listPredicates(acl: ResourceAcl, table: KNonNullTable<T>) = listOf(
-        if (acl.hasAllOrganizationRoles(viewRoles)) {
-            table.get<UUID>(organizationId.name).valueIn(acl.allOrganizationIds)
-        } else {
-            value(false)
+        when {
+            acl.hasOrganizationRole(Roles.MANAGE_ORGANIZATIONS) -> value(true)
+            acl.hasAllOrganizationRoles(viewRoles) -> {
+                table.get<UUID>(organizationId.name).valueIn(acl.allOrganizationIds)
+            }
+            else -> value(false)
         }
     )
 

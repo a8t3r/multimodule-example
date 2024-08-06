@@ -10,6 +10,7 @@ import kotlinx.serialization.Serializable
 data class OrganizationsFilter(
     val id: UUIDLiteralFilter? = null,
     val name: StringLiteralFilter? = null,
+    val createdBy: UUIDLiteralFilter? = null,
     val members: UsersFilter? = null,
     val domains: DomainFilter? = null
 )

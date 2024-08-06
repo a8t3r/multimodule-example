@@ -19,6 +19,7 @@ import io.eordie.multimodule.contracts.organization.services.InvitationQueries
 import io.eordie.multimodule.contracts.organization.services.OrganizationDepartmentMutations
 import io.eordie.multimodule.contracts.organization.services.OrganizationStructureMutations
 import io.eordie.multimodule.contracts.organization.services.OrganizationStructureQueries
+import io.eordie.multimodule.contracts.organization.services.UserQueries
 import io.eordie.multimodule.contracts.utils.Roles
 import io.micronaut.test.annotation.Sql
 import jakarta.inject.Inject
@@ -38,6 +39,9 @@ abstract class AbstractOrganizationTest : AbstractApplicationTest() {
             Roles.MANAGE_MEMBERS
         )
     }
+
+    @Inject
+    lateinit var userQueries: UserQueries
 
     @Inject
     lateinit var structureQueries: OrganizationStructureQueries

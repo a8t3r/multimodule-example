@@ -27,6 +27,8 @@ enum class Roles(val index: Int) {
 
     fun isSystemRole() = index >= 50
 
+    fun isOrganizationRole() = index <= 10
+
     companion object {
 
         private val index = entries.associateBy { it.index }

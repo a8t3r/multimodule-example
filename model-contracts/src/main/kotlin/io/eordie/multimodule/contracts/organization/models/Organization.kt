@@ -21,4 +21,6 @@ data class Organization(
 ) : PermissionAware, ShortDescription {
     fun employedUsers(env: DataFetchingEnvironment, filter: OrganizationEmployeeFilter? = null) =
         env.getValueBy(OrganizationQueries::loadOrganizationEmployedUsers, id, filter)
+
+    fun digest(env: DataFetchingEnvironment) = env.getValueBy(OrganizationQueries::loadOrganizationDigest, id)
 }

@@ -10,7 +10,7 @@ keycloak:
 test-resources:
   containers:
     keycloak:
-      image-name: quay.io/phasetwo/phasetwo-keycloak:latest
+      image-name: quay.io/phasetwo/phasetwo-keycloak:24.0.5
       depends-on: postgresql
       exposed-ports:
         - keycloak.gui: 8080

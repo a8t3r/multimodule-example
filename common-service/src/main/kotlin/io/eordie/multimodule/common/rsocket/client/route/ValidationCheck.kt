@@ -33,6 +33,8 @@ object ValidationCheck {
                     violation.message,
                     violation.constraint.name,
                     violation.constraint.messageParams
+                        .filter { it.value != null }
+                        .mapValues { it.value.toString() }
                 )
             }
     }

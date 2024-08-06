@@ -10,6 +10,11 @@ import java.util.*
 @AutoService(Mutation::class)
 interface TokenEnhancer : Mutation {
 
+    suspend fun updateToken(
+        @GraphQLIgnore headers: MutableHeaders,
+        @GraphQLIgnore token: OAuthToken
+    )
+
     suspend fun switchOrganization(
         @GraphQLIgnore headers: MutableHeaders,
         @GraphQLIgnore token: OAuthToken,

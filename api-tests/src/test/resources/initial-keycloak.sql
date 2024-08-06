@@ -1,8 +1,5 @@
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
-DELETE FROM public.credential WHERE user_label = 'My password';
-DELETE FROM public.user_entity WHERE email like '%@nowhere.com' or email like '%@noreply.phasetwo.io';
-
 TRUNCATE TABLE public.organization cascade;
 TRUNCATE TABLE public.organization_domain cascade;
 TRUNCATE TABLE public.organization_member cascade;
@@ -26,12 +23,14 @@ INSERT INTO public.user_entity VALUES
     ('94c3c352-215e-47cb-b580-649c887b1fa3', 'org-admin-c55e2b54-a0f9-425b-bd2e-e64f9e441eb8@noreply.phasetwo.io', 'org-admin-c55e2b54-a0f9-425b-bd2e-e64f9e441eb8@noreply.phasetwo.io', true, true, NULL, NULL, NULL, realm(), 'org-admin-c55e2b54-a0f9-425b-bd2e-e64f9e441eb8', 1706043395033, NULL, 0),
     ('84cad478-66db-40ba-ad1a-4be516ff14d0', 'org-admin-d11e0aee-be2c-413a-9001-0856430a8d71@noreply.phasetwo.io', 'org-admin-d11e0aee-be2c-413a-9001-0856430a8d71@noreply.phasetwo.io', true, true, NULL, NULL, NULL, realm(), 'org-admin-d11e0aee-be2c-413a-9001-0856430a8d71', 1706043406609, NULL, 0),
     ('bd918ec6-7b7d-49a6-93fa-824191ba261f', 'developer1@nowhere.com', 'eda4b88c-b35e-4523-9856-2a129270025f', false, true, NULL, '', '', realm(), 'developer1', 1706043425311, NULL, 0),
-    ('fb51139c-2348-417a-b486-ae5bba6a34cf', 'developer2@nowhere.com', '4b7375ed-90fe-4950-9f10-568480c5bca6', false, true, NULL, '', '', realm(), 'developer2', 1706043434282, NULL, 0);
+    ('fb51139c-2348-417a-b486-ae5bba6a34cf', 'developer2@nowhere.com', '4b7375ed-90fe-4950-9f10-568480c5bca6', false, true, NULL, '', '', realm(), 'developer2', 1706043434282, NULL, 0)
+on conflict do nothing;
 
 INSERT INTO public.credential VALUES
     ('f64275c0-d82e-40a0-8797-bbc577e0bfae', NULL, 'password', 'cb082bb6-d7f3-4052-b43a-fff7547dc3b4', 1718980794154, 'My password', '{"value":"6lIlcvqGE49C6Ywz1bI89HoNngRHgFYKtnklKwFTx5ZU5+a34V0mJMZRiiCbkSGKT2IWX7BxQ6QQPyaD7ba+ww==","salt":"BARCWUTuK9zGtgB2M2hCIg==","additionalParameters":{}}', '{"hashIterations":27500,"algorithm":"pbkdf2-sha256","additionalParameters":{}}', 10),
     ('2cfb67a8-ed4a-47bd-b7bc-fcaa5cb8127e', NULL, 'password', 'bd918ec6-7b7d-49a6-93fa-824191ba261f', 1718980817786, 'My password', '{"value":"Xdnz7Mze+XUB9obbZZdUB0Da59uBOrEiPG7evAeBdKuwaZYuPofBaPqUV/NBI5XlG3VtlgRtDnrIZZckYycsow==","salt":"/rlXBO4rs5ddHtP4vmL11w==","additionalParameters":{}}', '{"hashIterations":27500,"algorithm":"pbkdf2-sha256","additionalParameters":{}}', 10),
-    ('4ae0a3de-8c2b-4991-b535-df9362a47a71', NULL, 'password', 'fb51139c-2348-417a-b486-ae5bba6a34cf', 1718980831388, 'My password', '{"value":"0QQzwWMwEOqUdCpVIM7QzGgSSNIZvyHwX2fVa64ecDKin/43Y5nkafW+OzT92ql94V/K0G7PUw1ApY2XnX8VKA==","salt":"QZb1QYDzfgDW/v2XIt/1sA==","additionalParameters":{}}', '{"hashIterations":27500,"algorithm":"pbkdf2-sha256","additionalParameters":{}}', 10);
+    ('4ae0a3de-8c2b-4991-b535-df9362a47a71', NULL, 'password', 'fb51139c-2348-417a-b486-ae5bba6a34cf', 1718980831388, 'My password', '{"value":"0QQzwWMwEOqUdCpVIM7QzGgSSNIZvyHwX2fVa64ecDKin/43Y5nkafW+OzT92ql94V/K0G7PUw1ApY2XnX8VKA==","salt":"QZb1QYDzfgDW/v2XIt/1sA==","additionalParameters":{}}', '{"hashIterations":27500,"algorithm":"pbkdf2-sha256","additionalParameters":{}}', 10)
+on conflict do nothing;
 
 
 INSERT INTO public.organization VALUES

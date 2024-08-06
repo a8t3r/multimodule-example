@@ -5,8 +5,10 @@ import io.eordie.multimodule.contracts.Mutation
 import io.eordie.multimodule.contracts.Query
 import io.eordie.multimodule.contracts.basic.paging.Page
 import io.eordie.multimodule.contracts.basic.paging.Pageable
+import io.eordie.multimodule.contracts.organization.OrganizationDigest
+import io.eordie.multimodule.contracts.organization.OrganizationInput
 import io.eordie.multimodule.contracts.organization.models.Organization
-import io.eordie.multimodule.contracts.organization.models.OrganizationSummary
+import io.eordie.multimodule.contracts.organization.models.OrganizationFilterSummary
 import io.eordie.multimodule.contracts.organization.models.OrganizationsFilter
 import io.eordie.multimodule.contracts.organization.models.User
 import io.eordie.multimodule.contracts.organization.models.structure.OrganizationEmployeeFilter
@@ -19,13 +21,19 @@ interface OrganizationQueries : Query {
 
     suspend fun organizations(filter: OrganizationsFilter? = null, pageable: Pageable? = null): Page<Organization>
 
-    suspend fun organizationSummary(filter: OrganizationsFilter?): OrganizationSummary
+    suspend fun organizationSummary(filter: OrganizationsFilter?): OrganizationFilterSummary
 
     suspend fun loadOrganizationEmployedUsers(
         organizationIds: List<UUID>,
         filter: OrganizationEmployeeFilter? = null
     ): Map<UUID, List<User>>
+
+    suspend fun loadOrganizationDigest(organizationIds: List<UUID>): Map<UUID, OrganizationDigest>
 }
 
 @AutoService(Mutation::class)
-interface OrganizationMutations : Mutation
+interface OrganizationMutations : Mutation {
+    suspend fun organization(input: OrganizationInput): Organization
+
+    suspend fun deleteOrganization(organizationId: UUID)
+}

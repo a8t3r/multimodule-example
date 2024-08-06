@@ -1,6 +1,7 @@
 package io.eordie.multimodule.api.tests.organizations
 
 import com.google.common.truth.Truth.assertThat
+import io.eordie.multimodule.contracts.basic.Permission
 import io.eordie.multimodule.contracts.basic.loader.EntityLoader
 import io.eordie.multimodule.contracts.organization.models.Organization
 import io.eordie.multimodule.contracts.organization.models.User
@@ -27,5 +28,13 @@ class OrganizationEntityLoaderTest : AbstractOrganizationTest() {
         val organization = organizations.load(listOf(developersOrg.id)).values.single()
         assertThat(organization.id).isEqualTo(developersOrg.id)
         assertThat(organization.name).isNotNull()
+    }
+
+    @Test
+    fun `should load organization permissions by loader`() = test(organizationManager) {
+        val permissions = organizations.loadPermissions(listOf(developersOrg.id)).values.single()
+        assertThat(permissions).isNotEmpty()
+        assertThat(permissions).hasSize(1)
+        assertThat(permissions).containsExactly(Permission.VIEW)
     }
 }
