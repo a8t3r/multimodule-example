@@ -13,7 +13,6 @@ import io.eordie.multimodule.organization.management.models.OrganizationEmployee
 import io.eordie.multimodule.organization.management.models.UserModel
 import io.eordie.multimodule.organization.management.models.by
 import io.eordie.multimodule.organization.management.models.email
-import io.eordie.multimodule.organization.management.models.organizationId
 import io.eordie.multimodule.organization.management.repository.InvitationFactory
 import io.eordie.multimodule.organization.management.repository.OrganizationEmployeeFactory
 import io.eordie.multimodule.organization.management.repository.OrganizationMemberRepository
@@ -54,8 +53,8 @@ class InvitationMutationsController(
             UserAlreadyEmployed.error()
         }
 
-        return invitations.save<InvitationModelDraft>(input.id) { isNew, instance ->
-            if (isNew) {
+        return invitations.save<InvitationModelDraft>(input.id) { state, instance ->
+            if (state.isNotExists()) {
                 instance.status = if (invited == null) InvitationStatus.CREATED else InvitationStatus.PENDING
             } else if (instance.status != InvitationStatus.CREATED) {
                 PendingInvitation.error()

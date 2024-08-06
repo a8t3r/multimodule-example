@@ -13,8 +13,8 @@ import java.util.*
 @Singleton
 class FarmAclMutationsController(private val factory: FarmAclFactory) : FarmAclMutations {
     override suspend fun farmAcl(currentOrganization: CurrentOrganization, farmAcl: FarmAclInput): FarmAcl {
-        return factory.save<FarmAclModelDraft>(farmAcl.id) { isNew, value ->
-            if (isNew) {
+        return factory.save<FarmAclModelDraft>(farmAcl.id) { state, value ->
+            state.ifNotExist {
                 value.farmId = farmAcl.farmId
                 value.organizationId = farmAcl.organisationId
                 value.farmOwnerOrganizationId = currentOrganization.id

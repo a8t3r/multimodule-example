@@ -42,6 +42,15 @@ interface KFactory<T : Any, ID> {
     suspend fun <S : T> updateIf(id: ID, block: S.() -> Boolean): Pair<T, Boolean>
 
     suspend fun <S : T> save(block: S.() -> Unit): T
-    suspend fun <S : T> save(id: ID?, fetcher: Fetcher<T>? = null, block: (Boolean, S) -> Unit): T
-    suspend fun <S : T> saveIf(id: ID?, fetcher: Fetcher<T>? = null, block: (Boolean, S) -> Boolean): Pair<T, Boolean>
+    suspend fun <S : T> save(
+        id: ID?,
+        fetcher: Fetcher<T>? = null,
+        block: (EntityState, S) -> Unit
+    ): T
+
+    suspend fun <S : T> saveIf(
+        id: ID?,
+        fetcher: Fetcher<T>? = null,
+        block: (EntityState, S) -> Boolean
+    ): Pair<T, Boolean>
 }

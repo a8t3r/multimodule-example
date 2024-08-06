@@ -491,9 +491,9 @@ open class KFactoryImpl<T : Any, ID : Comparable<ID>>(
         }
     }
 
-    private suspend fun <S : T> loadByKeys(block: (Boolean, S) -> Boolean, fetcher: Fetcher<T>?): T? {
+    private suspend fun <S : T> loadByKeys(block: (EntityState, S) -> Boolean, fetcher: Fetcher<T>?): T? {
         return if (immutableType.keyProps.isEmpty()) null else {
-            val prefetch = produce<S>(null) { block.invoke(true, it) } as ImmutableSpi
+            val prefetch = produce<S>(null) { block.invoke(EntityState.PREFETCH, it) } as ImmutableSpi
             loadByKeys(prefetch, fetcher)
         }
     }
@@ -530,12 +530,13 @@ open class KFactoryImpl<T : Any, ID : Comparable<ID>>(
     override suspend fun <S : T> saveIf(
         id: ID?,
         fetcher: Fetcher<T>?,
-        block: (Boolean, S) -> Boolean
+        block: (EntityState, S) -> Boolean
     ): Pair<T, Boolean> {
         val value = if (id != null) findById(id, fetcher) else loadByKeys(block, fetcher)
         val mutate = AtomicBoolean()
         val draft = produce<S>(value) {
-            mutate.set(block(value == null, it))
+            val state = if (value == null) EntityState.NEW else EntityState.EXISTING
+            mutate.set(block(state, it))
         }
 
         return if (mutate.get()) {
@@ -546,7 +547,7 @@ open class KFactoryImpl<T : Any, ID : Comparable<ID>>(
         }
     }
 
-    override suspend fun <S : T> save(id: ID?, fetcher: Fetcher<T>?, block: (Boolean, S) -> Unit): T {
+    override suspend fun <S : T> save(id: ID?, fetcher: Fetcher<T>?, block: (EntityState, S) -> Unit): T {
         return saveIf<S>(id, fetcher) { isNew, value ->
             block(isNew, value)
             true
