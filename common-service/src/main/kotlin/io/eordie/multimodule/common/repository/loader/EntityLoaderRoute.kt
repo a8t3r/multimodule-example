@@ -2,13 +2,13 @@ package io.eordie.multimodule.common.repository.loader
 
 import io.eordie.multimodule.common.rsocket.client.route.RemoteRoute
 import io.eordie.multimodule.common.rsocket.client.rsocket.RSocketLocalFactory
+import io.eordie.multimodule.contracts.basic.Permission
 import io.eordie.multimodule.contracts.basic.loader.EntityLoader
 import io.micronaut.context.BeanLocator
 import java.lang.reflect.Method
 import kotlin.coroutines.CoroutineContext
 import kotlin.reflect.KClass
 import kotlin.reflect.KFunction
-import kotlin.reflect.KSuspendFunction2
 import kotlin.reflect.KType
 import kotlin.reflect.KTypeProjection
 import kotlin.reflect.KVariance
@@ -22,7 +22,8 @@ class EntityLoaderRoute(
     rsocketFactory: RSocketLocalFactory
 ) : RemoteRoute(EntityLoader::class, beanLocator, rsocketFactory) {
 
-    private val suspendedLoad: KSuspendFunction2<EntityLoader<Any, Any>, List<Any>, Map<Any, Any>> = EntityLoader<Any, Any>::load
+    private val suspendedLoad = EntityLoader<Any, Any>::load
+    private val suspendedLoadPermissions = EntityLoader<Any, Any>::loadPermissions
 
     private val idType = keyType.createType()
 
@@ -41,11 +42,16 @@ class EntityLoaderRoute(
         return invoke(requireNotNull(suspendedLoad.javaMethod), context, arrayOf(ids)) as Map<Any, Any>
     }
 
+    suspend fun loadPermissions(ids: List<Any>, context: CoroutineContext): Map<Any, List<Permission>> {
+        return invoke(requireNotNull(suspendedLoadPermissions.javaMethod), context, arrayOf(ids)) as Map<Any, List<Permission>>
+    }
+
     override fun getReturnType(method: Method): KType = returnType
 
     override fun getGenericParameterTypes(function: KFunction<*>): List<KType> {
         return when (function) {
             suspendedLoad -> listOf(idListType)
+            suspendedLoadPermissions -> listOf(idListType)
             else -> error("unknown method $function")
         }
     }
