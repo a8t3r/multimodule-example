@@ -486,20 +486,20 @@ open class KFactoryImpl<T : Any, ID : Comparable<ID>>(
     }
 
     private suspend fun <S : ImmutableSpi> loadByKeys(prefetch: S): T? {
-        return if (immutableType.keyProps.isEmpty()) null else {
+        return if (!prefetchByKeysEnabled || immutableType.keyProps.isEmpty()) null else {
             loadByKeys(prefetch, null)
         }
     }
 
     private suspend fun <S : T> loadByKeys(block: (EntityState, S) -> Boolean, fetcher: Fetcher<T>?): T? {
-        return if (immutableType.keyProps.isEmpty()) null else {
+        return if (!prefetchByKeysEnabled || immutableType.keyProps.isEmpty()) null else {
             val prefetch = produce<S>(null) { block.invoke(EntityState.PREFETCH, it) } as ImmutableSpi
             loadByKeys(prefetch, fetcher)
         }
     }
 
     private suspend fun <S : ImmutableSpi> loadByKeys(prefetch: S, fetcher: Fetcher<T>?): T? {
-        return if (prefetchByKeysEnabled && immutableType.keyProps.any { !prefetch.__isLoaded(it.id) }) null else {
+        return if (immutableType.keyProps.any { !prefetch.__isLoaded(it.id) }) null else {
             sql.createQuery(entityType) {
                 val predicate = immutableType.keyProps.map { keyProp ->
                     val propertyValue = prefetch.__get(keyProp.id)
