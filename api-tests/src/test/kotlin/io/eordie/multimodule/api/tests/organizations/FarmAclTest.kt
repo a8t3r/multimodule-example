@@ -61,7 +61,7 @@ class FarmAclTest : AbstractOrganizationTest() {
 
         // attach department by farm binding
         withContext(secondManager) {
-            departmentMutations.modifyByFarmCriterion(department.id, binding, true)
+            departmentMutations.modifyByFarmCriterion(secondOrg, department.id, binding, true)
         }
 
         // verify user has required acl
@@ -76,7 +76,7 @@ class FarmAclTest : AbstractOrganizationTest() {
         // change binding
         withContext(secondManager) {
             val updatedBinding = binding.copy(fieldIds = fieldIds.take(2))
-            departmentMutations.modifyByFarmCriterion(department.id, updatedBinding, true)
+            departmentMutations.modifyByFarmCriterion(secondOrg, department.id, updatedBinding, true)
         }
 
         // verify user has required acl
@@ -90,7 +90,7 @@ class FarmAclTest : AbstractOrganizationTest() {
 
         // remove farm binding
         withContext(secondManager) {
-            departmentMutations.modifyByFarmCriterion(department.id, binding, false)
+            departmentMutations.modifyByFarmCriterion(secondOrg, department.id, binding, false)
         }
 
         // verify user has empty acl
@@ -108,7 +108,7 @@ class FarmAclTest : AbstractOrganizationTest() {
 
         // attach department by global binding
         withContext(secondManager) {
-            departmentMutations.modifyGlobalBinding(department.id, true)
+            departmentMutations.modifyGlobalBinding(secondOrg, department.id, true)
         }
 
         // verify user has required acl
@@ -121,7 +121,7 @@ class FarmAclTest : AbstractOrganizationTest() {
 
         // remove global binding
         withContext(secondManager) {
-            departmentMutations.modifyGlobalBinding(department.id, false)
+            departmentMutations.modifyGlobalBinding(secondOrg, department.id, false)
         }
 
         // verify user has empty acl
