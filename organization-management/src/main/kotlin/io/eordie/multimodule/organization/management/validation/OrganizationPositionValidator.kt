@@ -1,6 +1,5 @@
 package io.eordie.multimodule.organization.management.validation
 
-import io.eordie.multimodule.common.utils.getIfPresent
 import io.eordie.multimodule.common.validation.Cycle
 import io.eordie.multimodule.common.validation.EntityValidator
 import io.eordie.multimodule.common.validation.ensureIsAccessible
@@ -11,6 +10,7 @@ import io.eordie.multimodule.contracts.organization.models.structure.Organizatio
 import io.eordie.multimodule.organization.management.models.OrganizationPositionModel
 import io.eordie.multimodule.organization.management.repository.OrganizationPositionsRepository
 import jakarta.inject.Singleton
+import org.babyfish.jimmer.kt.isLoaded
 import org.valiktor.validate
 import java.util.*
 
@@ -33,10 +33,9 @@ class OrganizationPositionValidator(
             validate(OrganizationPositionModel::parentId).ensureIsAccessible(positions, optional = true)
             validate(OrganizationPositionModel::parentId).validate(Cycle) {
                 val parentId = value.parentId
-                val id = value::id.getIfPresent()
-                if (parentId == null || id == null) true else {
+                if (parentId == null || !isLoaded(value, OrganizationPositionModel::id)) true else {
                     val parentIds = positionsRepository.getParentIds(parentId)
-                    !parentIds.contains(id)
+                    !parentIds.contains(value.id)
                 }
             }
         }
