@@ -30,8 +30,10 @@ class ResourceAcl(
     fun hasOrganizationRole(role: Roles) = auth.roles.contains(role)
 
     fun hasAnyOrganizationRole(vararg required: Roles) = hasAnyOrganizationRole(required.toSet())
+
     fun hasAnyOrganizationRole(required: Collection<Roles>) = required.any { hasOrganizationRole(it) }
 
     fun hasAllOrganizationRoles(vararg required: Roles) = hasAllOrganizationRoles(required.toSet())
+
     fun hasAllOrganizationRoles(required: Collection<Roles>) = required.all { hasOrganizationRole(it) }
 }

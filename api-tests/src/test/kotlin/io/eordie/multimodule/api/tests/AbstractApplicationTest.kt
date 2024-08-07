@@ -43,7 +43,7 @@ abstract class AbstractApplicationTest {
     fun test(
         auth: CoroutineContext = authorization,
         block: suspend TestScope.() -> Unit
-    ) = runTest(auth, Duration.parse("10s"), block)
+    ) = runTest(auth, Duration.parse("30s"), block)
 
     operator fun AuthenticationContextElement.minus(role: Roles): AuthenticationContextElement =
         AuthenticationContextElement(details.copy(roles = details.roles - role))

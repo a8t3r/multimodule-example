@@ -11,6 +11,7 @@ import org.babyfish.jimmer.Formula
 import org.babyfish.jimmer.sql.DissociateAction
 import org.babyfish.jimmer.sql.Entity
 import org.babyfish.jimmer.sql.IdView
+import org.babyfish.jimmer.sql.JoinColumn
 import org.babyfish.jimmer.sql.Key
 import org.babyfish.jimmer.sql.ManyToOne
 import org.babyfish.jimmer.sql.OnDissociate
@@ -29,7 +30,7 @@ interface FarmAclModel : UUIDIdentityIF, OrganizationOwnerIF, PermissionAwareIF,
     @OnDissociate(DissociateAction.DELETE)
     val organization: OrganizationModel
 
-    @Key
+    @IdView("farmRegion")
     val farmId: UUID
 
     @IdView
@@ -46,4 +47,9 @@ interface FarmAclModel : UUIDIdentityIF, OrganizationOwnerIF, PermissionAwareIF,
     val roles: List<Roles> get() = Roles.fromIds(roleIds)
 
     val fieldIds: List<UUID>?
+
+    @Key
+    @ManyToOne
+    @JoinColumn(name = "farm_id")
+    val farmRegion: FarmRegionModel
 }

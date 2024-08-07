@@ -44,6 +44,15 @@ inline fun <reified V : Any> KExpression<*>.cast(): KNonNullExpression<V> {
     }
 }
 
+@Suppress("UNCHECKED_CAST")
+fun <T : Any> KExpression<List<T>>.intersection(values: Array<T>): KNonNullExpression<List<T>> {
+    val expression = this
+    return sql(List::class, "array_intersect(%e, array[%v])") {
+        value(values)
+        expression(expression)
+    } as KNonNullExpression<List<T>>
+}
+
 fun <T : Any> KExpression<List<T>>.overlap(values: Array<T>): KNonNullExpression<Boolean> {
     val expression = this
     return sql(Boolean::class, "%e && array[%v]") {

@@ -39,10 +39,12 @@ class OrganizationPositionFactory :
     }
 
     suspend fun changeParent(previousParentId: UUID, newParentId: UUID?): Boolean {
-        return rawUpdate {
-            set(table.parentId, newParentId)
-            where(table.parentId eq previousParentId)
-        }
+        return wrapped {
+            sql.createUpdate(OrganizationPositionModel::class) {
+                set(table.parentId, newParentId)
+                where(table.parentId eq previousParentId)
+            }.execute(it)
+        } > 0
     }
 
     suspend fun deletePosition(positionId: UUID): Boolean {

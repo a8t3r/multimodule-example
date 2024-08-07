@@ -32,5 +32,5 @@ interface ByRegionCriterionModel : Convertable<ByRegionCriterion> {
     val department: OrganizationDepartmentModel
 
     @Key
-    val regionId: UUID
+    val regionId: Long
 }

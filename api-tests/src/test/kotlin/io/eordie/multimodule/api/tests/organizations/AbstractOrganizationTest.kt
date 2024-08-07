@@ -14,6 +14,8 @@ import io.eordie.multimodule.contracts.organization.models.structure.Organizatio
 import io.eordie.multimodule.contracts.organization.models.structure.OrganizationPositionFilter
 import io.eordie.multimodule.contracts.organization.models.structure.OrganizationPositionInput
 import io.eordie.multimodule.contracts.organization.services.EmployeeAclQueries
+import io.eordie.multimodule.contracts.organization.services.FarmAclMutations
+import io.eordie.multimodule.contracts.organization.services.FarmAclQueries
 import io.eordie.multimodule.contracts.organization.services.InvitationMutations
 import io.eordie.multimodule.contracts.organization.services.InvitationQueries
 import io.eordie.multimodule.contracts.organization.services.OrganizationDepartmentMutations
@@ -39,6 +41,12 @@ abstract class AbstractOrganizationTest : AbstractApplicationTest() {
             Roles.MANAGE_MEMBERS
         )
     }
+
+    @Inject
+    lateinit var farmAclQueries: FarmAclQueries
+
+    @Inject
+    lateinit var farmAclMutations: FarmAclMutations
 
     @Inject
     lateinit var userQueries: UserQueries

@@ -10,6 +10,7 @@ import io.eordie.multimodule.contracts.basic.loader.EntityLoader
 import io.eordie.multimodule.contracts.basic.paging.Page
 import io.eordie.multimodule.contracts.basic.paging.Pageable
 import jakarta.inject.Inject
+import jakarta.inject.Provider
 import kotlinx.coroutines.flow.Flow
 import org.babyfish.jimmer.runtime.ImmutableSpi
 import org.babyfish.jimmer.sql.event.EntityListener
@@ -25,7 +26,7 @@ abstract class KBaseFactory<T : Convertable<C>, C : Any, ID, F : Any>(
     EntityLoader<C, ID> where ID : Any, ID : Comparable<ID> {
 
     @Inject
-    private lateinit var eventPublisher: EventPublisher
+    private lateinit var eventPublisher: Provider<EventPublisher>
 
     override val entityListener: EntityListener<T> = EntityListener {
         val (old, new) = it.oldEntity?.convert() to it.newEntity?.convert()
@@ -34,7 +35,7 @@ abstract class KBaseFactory<T : Convertable<C>, C : Any, ID, F : Any>(
         if (!event.isUpdated() || event.difference?.hasAnyChanges() == true) {
             val convertedType = requireNotNull((old ?: new))::class
             val affectedBy = (it.connection as? ConnectionWrapper)?.context
-            eventPublisher.publish(convertedType, requireNotNull(affectedBy), event)
+            eventPublisher.get().publish(convertedType, requireNotNull(affectedBy), event)
         }
     }
 

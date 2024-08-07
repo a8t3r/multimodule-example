@@ -13,12 +13,15 @@ import io.eordie.multimodule.contracts.organization.models.acl.EmployeeAcl
 import io.eordie.multimodule.contracts.organization.models.acl.FarmAcl
 import io.eordie.multimodule.contracts.organization.models.acl.FarmAclFilter
 import io.eordie.multimodule.contracts.organization.models.acl.FarmAclInput
+import io.eordie.multimodule.contracts.organization.models.acl.ResourceAcl
 import java.util.*
 import kotlin.coroutines.CoroutineContext
 
 @AutoService(Query::class)
 interface FarmAclQueries : Query {
     suspend fun queryFarmAcl(filter: FarmAclFilter? = null, pageable: Pageable? = null): Page<FarmAcl>
+
+    suspend fun farmAcl(farmAclId: UUID): FarmAcl?
 }
 
 @AutoService(Mutation::class)
@@ -34,8 +37,12 @@ interface FarmAclMutations : Mutation {
 
 @AutoService(Query::class)
 interface EmployeeAclQueries : Query {
-    suspend fun currentEmployeeAcl(): List<EmployeeAcl>
+    suspend fun activeEmployeeAcl(): List<EmployeeAcl>
+
+    suspend fun internalActiveResourceAcl(userId: UUID, organizationId: UUID): ResourceAcl?
 
     @Secured(allowAnonymous = true)
     fun loadEmployeeAcl(context: CoroutineContext, userId: UUID, organizationId: UUID): List<EmployeeAcl>
+
+    suspend fun loadResourceAcl(userIds: List<UUID>, organizationId: UUID): List<ResourceAcl>
 }

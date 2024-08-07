@@ -7,6 +7,7 @@ import io.eordie.multimodule.contracts.organization.models.structure.Organizatio
 import io.eordie.multimodule.contracts.utils.Roles
 import io.eordie.multimodule.organization.management.models.OrganizationEmployeeModel
 import io.eordie.multimodule.organization.management.models.department
+import io.eordie.multimodule.organization.management.models.fetchBy
 import io.eordie.multimodule.organization.management.models.member
 import io.eordie.multimodule.organization.management.models.organization
 import io.eordie.multimodule.organization.management.models.organizationId
@@ -16,6 +17,7 @@ import io.eordie.multimodule.organization.management.models.userId
 import jakarta.inject.Singleton
 import org.babyfish.jimmer.sql.kt.ast.expression.KNonNullExpression
 import org.babyfish.jimmer.sql.kt.ast.expression.eq
+import org.babyfish.jimmer.sql.kt.ast.expression.valueIn
 import org.babyfish.jimmer.sql.kt.ast.table.KNonNullTable
 import java.util.*
 
@@ -28,6 +30,33 @@ class OrganizationEmployeeFactory :
     override val organizationId = OrganizationEmployeeModel::organizationId
     override val viewRoles = setOf(Roles.VIEW_ORGANIZATION, Roles.VIEW_MEMBERS)
     override val manageRoles = setOf(Roles.MANAGE_ORGANIZATION, Roles.MANAGE_MEMBERS)
+
+    fun getEmployeesByOrganization(userIds: List<UUID>, organizationId: UUID): List<OrganizationEmployeeModel> {
+        return sql.createQuery(entityType) {
+            where(
+                table.userId valueIn userIds,
+                table.organizationId eq organizationId
+            )
+            select(
+                table.fetchBy {
+                    allTableFields()
+
+                    organization {
+                        name()
+                    }
+
+                    user {
+                        email()
+                        emailVerified()
+                    }
+
+                    position {
+                        roles()
+                    }
+                }
+            )
+        }.execute()
+    }
 
     override fun ResourceAcl.toPredicates(
         filter: OrganizationEmployeeFilter,

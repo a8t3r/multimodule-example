@@ -8,8 +8,12 @@ TRUNCATE TABLE public.user_organization_role_mapping cascade;
 
 TRUNCATE TABLE public.organization_positions cascade;
 TRUNCATE TABLE public.organization_departments cascade;
+TRUNCATE TABLE public.department_farm_binding cascade;
+TRUNCATE TABLE public.department_region_binding cascade;
 TRUNCATE TABLE public.organization_employees cascade;
 TRUNCATE TABLE public.organization_invitations cascade;
+TRUNCATE TABLE public.farm_acl cascade;
+TRUNCATE TABLE public.farm_regions cascade;
 
 create or replace function realm() returns text as $$
 begin
@@ -18,12 +22,12 @@ end;
 $$ LANGUAGE plpgsql;
 
 INSERT INTO public.user_entity VALUES
-    ('cb082bb6-d7f3-4052-b43a-fff7547dc3b4', 'admin@nowhere.com', '8cba2359-0c92-4148-b42a-81cdff0483dd', false, true, NULL, NULL, NULL, realm(), 'organization-admin', 1705962214771, NULL, 0),
+    ('cb082bb6-d7f3-4052-b43a-fff7547dc3b4', 'admin@nowhere.com', '8cba2359-0c92-4148-b42a-81cdff0483dd', false, true, NULL, 'Админ', 'Админыч', realm(), 'organization-admin', 1705962214771, NULL, 0),
     ('edf5c94f-8da8-4cc8-97e6-f7625d199186', 'org-admin-70b3b9e8-1c63-4768-98f1-29ae087de907@noreply.phasetwo.io', 'org-admin-70b3b9e8-1c63-4768-98f1-29ae087de907@noreply.phasetwo.io', true, true, NULL, NULL, NULL, realm(), 'org-admin-70b3b9e8-1c63-4768-98f1-29ae087de907', 1705962692068, NULL, 0),
     ('94c3c352-215e-47cb-b580-649c887b1fa3', 'org-admin-c55e2b54-a0f9-425b-bd2e-e64f9e441eb8@noreply.phasetwo.io', 'org-admin-c55e2b54-a0f9-425b-bd2e-e64f9e441eb8@noreply.phasetwo.io', true, true, NULL, NULL, NULL, realm(), 'org-admin-c55e2b54-a0f9-425b-bd2e-e64f9e441eb8', 1706043395033, NULL, 0),
     ('84cad478-66db-40ba-ad1a-4be516ff14d0', 'org-admin-d11e0aee-be2c-413a-9001-0856430a8d71@noreply.phasetwo.io', 'org-admin-d11e0aee-be2c-413a-9001-0856430a8d71@noreply.phasetwo.io', true, true, NULL, NULL, NULL, realm(), 'org-admin-d11e0aee-be2c-413a-9001-0856430a8d71', 1706043406609, NULL, 0),
-    ('bd918ec6-7b7d-49a6-93fa-824191ba261f', 'developer1@nowhere.com', 'eda4b88c-b35e-4523-9856-2a129270025f', false, true, NULL, '', '', realm(), 'developer1', 1706043425311, NULL, 0),
-    ('fb51139c-2348-417a-b486-ae5bba6a34cf', 'developer2@nowhere.com', '4b7375ed-90fe-4950-9f10-568480c5bca6', false, true, NULL, '', '', realm(), 'developer2', 1706043434282, NULL, 0)
+    ('bd918ec6-7b7d-49a6-93fa-824191ba261f', 'developer1@nowhere.com', 'eda4b88c-b35e-4523-9856-2a129270025f', false, true, NULL, 'First', 'Dev', realm(), 'developer1', 1706043425311, NULL, 0),
+    ('fb51139c-2348-417a-b486-ae5bba6a34cf', 'developer2@nowhere.com', '4b7375ed-90fe-4950-9f10-568480c5bca6', false, true, NULL, 'Second', 'Dev', realm(), 'developer2', 1706043434282, NULL, 0)
 on conflict do nothing;
 
 INSERT INTO public.credential VALUES

@@ -36,9 +36,11 @@ class OrganizationFactory : BaseOrganizationFactory<OrganizationModel, Organizat
     override val dependencies = setOf(OrganizationModel::createdBy)
 
     suspend fun changeCreatedBy(organizationId: UUID, userId: UUID) {
-        rawUpdate {
-            set(table.createdByStr, userId.toString())
-            where(table.id eq organizationId)
+        wrapped {
+            sql.createUpdate(OrganizationModel::class) {
+                set(table.createdByStr, userId.toString())
+                where(table.id eq organizationId)
+            }.execute(it)
         }
     }
 

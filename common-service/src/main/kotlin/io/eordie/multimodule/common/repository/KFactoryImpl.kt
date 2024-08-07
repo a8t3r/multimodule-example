@@ -58,7 +58,6 @@ import org.babyfish.jimmer.sql.kt.ast.expression.constant
 import org.babyfish.jimmer.sql.kt.ast.expression.eq
 import org.babyfish.jimmer.sql.kt.ast.expression.isNull
 import org.babyfish.jimmer.sql.kt.ast.expression.valueIn
-import org.babyfish.jimmer.sql.kt.ast.mutation.KMutableUpdate
 import org.babyfish.jimmer.sql.kt.ast.mutation.KSimpleSaveResult
 import org.babyfish.jimmer.sql.kt.ast.query.KConfigurableRootQuery
 import org.babyfish.jimmer.sql.kt.ast.query.KMutableRootQuery
@@ -465,7 +464,7 @@ open class KFactoryImpl<T : Any, ID : Comparable<ID>>(
         return if (!result.isModified) error("entity wasn't modified") else result.get()
     }
 
-    private suspend fun <R : Any> wrapped(block: (Connection) -> R): R {
+    protected suspend fun <R : Any> wrapped(block: (Connection) -> R): R {
         val context = coroutineContext
         val previousConnection = currentConnection()
         return if (previousConnection != null) {
@@ -479,12 +478,6 @@ open class KFactoryImpl<T : Any, ID : Comparable<ID>>(
 
     private suspend fun <S : T> KSimpleSaveResult<S>.get(): T {
         return checkPermission(modifiedEntity, BasePermission.VIEW)
-    }
-
-    protected suspend fun rawUpdate(block: KMutableUpdate<T>.() -> Unit): Boolean {
-        return wrapped {
-            sql.createUpdate(entityType, block).execute(it)
-        } > 0
     }
 
     override suspend fun <S : T> updateIf(id: ID, block: S.() -> Boolean): Pair<T, Boolean> {

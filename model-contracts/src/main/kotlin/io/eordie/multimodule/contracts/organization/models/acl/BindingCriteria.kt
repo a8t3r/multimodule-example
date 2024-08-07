@@ -12,7 +12,7 @@ data class GlobalCriterion(val includeAll: Boolean) : BindingCriterion
 
 @Introspected
 @Serializable
-data class ByRegionCriterion(val regionId: UuidStr) : BindingCriterion
+data class ByRegionCriterion(val regionId: Long) : BindingCriterion
 
 @Introspected
 @Serializable

@@ -7,12 +7,9 @@ import io.eordie.multimodule.contracts.organization.models.acl.FarmAcl
 import io.eordie.multimodule.contracts.organization.models.acl.FarmAclInput
 import io.eordie.multimodule.contracts.organization.models.structure.OrganizationDepartment
 import io.eordie.multimodule.contracts.organization.models.structure.OrganizationPosition
-import io.eordie.multimodule.contracts.organization.services.FarmAclMutations
-import io.eordie.multimodule.contracts.organization.services.FarmAclQueries
 import io.eordie.multimodule.contracts.utils.Roles.MANAGE_MEMBERS
 import io.eordie.multimodule.contracts.utils.Roles.MANAGE_ORGANIZATION
 import io.eordie.multimodule.contracts.utils.Roles.VIEW_ORGANIZATION
-import jakarta.inject.Inject
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.withContext
 import org.junit.jupiter.api.BeforeEach
@@ -20,12 +17,6 @@ import org.junit.jupiter.api.Test
 import java.util.*
 
 class FarmAclTest : AbstractOrganizationTest() {
-
-    @Inject
-    lateinit var queries: FarmAclQueries
-
-    @Inject
-    lateinit var mutations: FarmAclMutations
 
     private lateinit var department: OrganizationDepartment
     private lateinit var structure: Map<String, OrganizationPosition>
@@ -39,8 +30,8 @@ class FarmAclTest : AbstractOrganizationTest() {
     @BeforeEach
     fun init() = runTest {
         withContext(firstManager) {
-            queries.queryFarmAcl().data.forEach {
-                mutations.deleteFarmAcl(it.id)
+            farmAclQueries.queryFarmAcl().data.forEach {
+                farmAclMutations.deleteFarmAcl(it.id)
             }
         }
         withContext(secondManager) {
@@ -66,7 +57,7 @@ class FarmAclTest : AbstractOrganizationTest() {
 
         // verify user has required acl
         withContext(secondUser) {
-            val acl = employeeAclQueries.currentEmployeeAcl()
+            val acl = employeeAclQueries.activeEmployeeAcl()
             assertThat(acl).hasSize(1)
             assertThat(acl[0].farmId).isEqualTo(farmId)
             assertThat(acl[0].fieldIds).hasSize(3)
@@ -81,7 +72,7 @@ class FarmAclTest : AbstractOrganizationTest() {
 
         // verify user has required acl
         withContext(secondUser) {
-            val acl = employeeAclQueries.currentEmployeeAcl()
+            val acl = employeeAclQueries.activeEmployeeAcl()
             assertThat(acl).hasSize(1)
             assertThat(acl[0].farmId).isEqualTo(farmId)
             assertThat(acl[0].fieldIds).hasSize(2)
@@ -95,7 +86,7 @@ class FarmAclTest : AbstractOrganizationTest() {
 
         // verify user has empty acl
         withContext(secondUser) {
-            assertThat(employeeAclQueries.currentEmployeeAcl()).isEmpty()
+            assertThat(employeeAclQueries.activeEmployeeAcl()).isEmpty()
         }
     }
 
@@ -113,7 +104,7 @@ class FarmAclTest : AbstractOrganizationTest() {
 
         // verify user has required acl
         withContext(secondUser) {
-            val acl = employeeAclQueries.currentEmployeeAcl()
+            val acl = employeeAclQueries.activeEmployeeAcl()
             assertThat(acl).hasSize(1)
             assertThat(acl[0].farmId).isEqualTo(farmId)
             assertThat(acl[0].fieldIds).isEqualTo(fieldIds)
@@ -126,7 +117,7 @@ class FarmAclTest : AbstractOrganizationTest() {
 
         // verify user has empty acl
         withContext(secondUser) {
-            assertThat(employeeAclQueries.currentEmployeeAcl()).isEmpty()
+            assertThat(employeeAclQueries.activeEmployeeAcl()).isEmpty()
         }
     }
 
@@ -139,12 +130,12 @@ class FarmAclTest : AbstractOrganizationTest() {
 
         // create new acl for organization
         withContext(firstManager) {
-            mutations.farmAcl(firstOrg, FarmAclInput(null, secondOrg.id, farmId, emptyList(), fieldIds))
+            farmAclMutations.farmAcl(firstOrg, FarmAclInput(null, secondOrg.id, farmId, emptyList(), fieldIds))
         }
 
         // acl is not attached to any departments
         withContext(secondUser) {
-            assertThat(employeeAclQueries.currentEmployeeAcl()).isEmpty()
+            assertThat(employeeAclQueries.activeEmployeeAcl()).isEmpty()
         }
     }
 
@@ -159,18 +150,18 @@ class FarmAclTest : AbstractOrganizationTest() {
         }
 
         withContext(firstManager) {
-            val acl = mutations.farmAcl(firstOrg, FarmAclInput(null, secondOrg.id, farmId, emptyList()))
+            val acl = farmAclMutations.farmAcl(firstOrg, FarmAclInput(null, secondOrg.id, farmId, emptyList()))
             assertEquals(acl)
             assertThat(acl.permissions).hasSize(3)
 
-            val data = queries.queryFarmAcl().data
+            val data = farmAclQueries.queryFarmAcl().data
             assertThat(data).hasSize(1)
             assertEquals(data[0])
             assertThat(data[0].permissions).hasSize(3)
         }
 
         withContext(secondManager) {
-            val data = queries.queryFarmAcl().data
+            val data = farmAclQueries.queryFarmAcl().data
             assertThat(data).hasSize(1)
             assertEquals(data[0])
             assertThat(data[0].permissions).hasSize(1)
