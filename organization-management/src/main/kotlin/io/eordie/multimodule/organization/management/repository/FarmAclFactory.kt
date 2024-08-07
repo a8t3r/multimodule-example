@@ -21,6 +21,7 @@ import jakarta.inject.Singleton
 import org.babyfish.jimmer.sql.kt.ast.expression.KNonNullExpression
 import org.babyfish.jimmer.sql.kt.ast.expression.eq
 import org.babyfish.jimmer.sql.kt.ast.expression.or
+import org.babyfish.jimmer.sql.kt.ast.expression.valueIn
 import org.babyfish.jimmer.sql.kt.ast.table.KNonNullTable
 import java.util.*
 
@@ -31,18 +32,17 @@ class FarmAclFactory : BaseOrganizationFactory<FarmAclModel, FarmAcl, UUID, Farm
     override val organizationId = FarmAclModel::organizationId
 
     override suspend fun calculatePermissions(acl: ResourceAcl, value: FarmAclModel): Set<Permission> {
-        val currentOrganizationId = acl.auth.currentOrganizationId
         return when {
-            value.farmOwnerOrganizationId == currentOrganizationId -> setOf(VIEW, MANAGE, PURGE)
-            value.organizationId == currentOrganizationId -> setOf(VIEW)
+            value.farmOwnerOrganizationId in acl.auth.organizationIds() -> setOf(VIEW, MANAGE, PURGE)
+            value.organizationId in acl.auth.organizationIds() -> setOf(VIEW)
             else -> emptySet()
         }
     }
 
     override fun listPredicates(acl: ResourceAcl, table: KNonNullTable<FarmAclModel>) = listOfNotNull(
         or(
-            table.organizationId eq acl.auth.currentOrganizationId,
-            table.farmOwnerOrganizationId eq acl.auth.currentOrganizationId
+            table.organizationId valueIn acl.auth.organizationIds(),
+            table.farmOwnerOrganizationId valueIn acl.auth.organizationIds()
         )
     )
 
@@ -53,7 +53,7 @@ class FarmAclFactory : BaseOrganizationFactory<FarmAclModel, FarmAcl, UUID, Farm
         return listOfNotNull(
             filter.direction?.let {
                 val field = if (it == Direction.INCOME) table.organizationId else table.farmOwnerOrganizationId
-                field eq auth.currentOrganizationId
+                field valueIn auth.organizationIds()
             },
             table.farmId.accept(filter.farmId),
             table.fieldIds.acceptMany(filter.fieldId),

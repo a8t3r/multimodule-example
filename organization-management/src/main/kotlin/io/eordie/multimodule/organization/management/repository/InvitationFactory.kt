@@ -19,6 +19,7 @@ import jakarta.inject.Singleton
 import org.babyfish.jimmer.sql.kt.ast.expression.KNonNullExpression
 import org.babyfish.jimmer.sql.kt.ast.expression.eq
 import org.babyfish.jimmer.sql.kt.ast.expression.or
+import org.babyfish.jimmer.sql.kt.ast.expression.valueIn
 import org.babyfish.jimmer.sql.kt.ast.table.KNonNullTable
 import java.util.*
 
@@ -45,7 +46,7 @@ class InvitationFactory : KBaseFactory<InvitationModel, Invitation, UUID, Invita
         or(
             table.email eq acl.auth.email,
             table.userId eq acl.auth.userId,
-            (table.organizationId eq acl.auth.currentOrganizationId)
+            (table.organizationId valueIn acl.auth.organizationIds())
                 .takeIf { acl.hasAllOrganizationRoles(Roles.VIEW_INVITATIONS) }
         )
     )
@@ -61,7 +62,7 @@ class InvitationFactory : KBaseFactory<InvitationModel, Invitation, UUID, Invita
             if (it == Direction.INCOME) {
                 table.email eq auth.email
             } else {
-                table.organizationId eq auth.currentOrganizationId
+                table.organizationId valueIn auth.organizationIds()
             }
         }
     )
