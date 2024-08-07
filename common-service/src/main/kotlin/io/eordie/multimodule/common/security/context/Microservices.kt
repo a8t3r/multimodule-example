@@ -1,7 +1,7 @@
 package io.eordie.multimodule.common.security.context
 
-import io.eordie.multimodule.common.repository.ResourceAcl
 import io.eordie.multimodule.contracts.organization.models.acl.EmployeeAcl
+import io.eordie.multimodule.contracts.organization.models.acl.ResourceAcl
 import io.eordie.multimodule.contracts.organization.services.EmployeeAclQueries
 import jakarta.inject.Inject
 import jakarta.inject.Singleton

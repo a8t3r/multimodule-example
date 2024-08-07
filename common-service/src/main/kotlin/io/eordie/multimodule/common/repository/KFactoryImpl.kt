@@ -21,6 +21,7 @@ import io.eordie.multimodule.contracts.basic.exception.EntityNotFoundException
 import io.eordie.multimodule.contracts.basic.exception.ValidationException
 import io.eordie.multimodule.contracts.basic.paging.Page
 import io.eordie.multimodule.contracts.basic.paging.Pageable
+import io.eordie.multimodule.contracts.organization.models.acl.ResourceAcl
 import io.micronaut.context.ApplicationContext
 import io.micronaut.core.convert.ConversionService
 import io.micronaut.core.type.Argument

@@ -1,7 +1,7 @@
 package io.eordie.multimodule.organization.management.repository
 
 import io.eordie.multimodule.common.filter.accept
-import io.eordie.multimodule.common.repository.ResourceAcl
+import io.eordie.multimodule.contracts.organization.models.acl.ResourceAcl
 import io.eordie.multimodule.contracts.organization.models.structure.OrganizationEmployee
 import io.eordie.multimodule.contracts.organization.models.structure.OrganizationEmployeeFilter
 import io.eordie.multimodule.contracts.utils.Roles

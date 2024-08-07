@@ -2,9 +2,9 @@ package io.eordie.multimodule.organization.management.repository
 
 import io.eordie.multimodule.common.repository.Convertable
 import io.eordie.multimodule.common.repository.KBaseFactory
-import io.eordie.multimodule.common.repository.ResourceAcl
 import io.eordie.multimodule.contracts.basic.BasePermission
 import io.eordie.multimodule.contracts.basic.Permission
+import io.eordie.multimodule.contracts.organization.models.acl.ResourceAcl
 import io.eordie.multimodule.contracts.utils.Roles
 import org.babyfish.jimmer.sql.kt.ast.expression.value
 import org.babyfish.jimmer.sql.kt.ast.expression.valueIn

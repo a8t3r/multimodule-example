@@ -1,17 +1,21 @@
-package io.eordie.multimodule.common.repository
+package io.eordie.multimodule.contracts.organization.models.acl
 
-import com.google.common.collect.Iterables
+import graphql.com.google.common.collect.Iterables
 import io.eordie.multimodule.contracts.identitymanagement.models.AuthenticationDetails
-import io.eordie.multimodule.contracts.organization.models.acl.EmployeeAcl
 import io.eordie.multimodule.contracts.utils.Roles
+import io.eordie.multimodule.contracts.utils.UuidStr
+import io.micronaut.core.annotation.Introspected
+import kotlinx.serialization.Serializable
 import java.util.*
 
+@Introspected
+@Serializable
 class ResourceAcl(
     val auth: AuthenticationDetails,
     val entries: List<EmployeeAcl>
 ) {
 
-    val allOrganizationIds: Set<UUID> = Iterables.concat(
+    val allOrganizationIds: Set<UuidStr> = Iterables.concat(
         auth.organizationIds(),
         entries.map { it.farmOwnerOrganizationId }
     ).toSet()

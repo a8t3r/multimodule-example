@@ -2,7 +2,6 @@ package io.eordie.multimodule.common.filter
 
 import io.eordie.multimodule.common.repository.FilterSupportTrait
 import io.eordie.multimodule.common.repository.KBaseFactory
-import io.eordie.multimodule.common.repository.ResourceAcl
 import io.eordie.multimodule.common.repository.entity.CreatedAtIF
 import io.eordie.multimodule.common.repository.entity.CreatedAtIFProps
 import io.eordie.multimodule.common.repository.entity.UpdatedAtIF
@@ -15,6 +14,7 @@ import io.eordie.multimodule.common.utils.GenericTypes
 import io.eordie.multimodule.contracts.basic.filters.LiteralFilter
 import io.eordie.multimodule.contracts.basic.filters.NumericFilter
 import io.eordie.multimodule.contracts.basic.filters.OffsetDateTimeLiteralFilter
+import io.eordie.multimodule.contracts.organization.models.acl.ResourceAcl
 import io.eordie.multimodule.contracts.utils.getIntrospection
 import io.micronaut.core.beans.BeanIntrospection
 import io.micronaut.core.beans.BeanProperty

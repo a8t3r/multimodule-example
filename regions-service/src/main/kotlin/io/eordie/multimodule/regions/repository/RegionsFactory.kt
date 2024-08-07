@@ -2,10 +2,10 @@ package io.eordie.multimodule.regions.repository
 
 import io.eordie.multimodule.common.filter.accept
 import io.eordie.multimodule.common.repository.KBaseFactory
-import io.eordie.multimodule.common.repository.ResourceAcl
 import io.eordie.multimodule.common.repository.ext.contains
 import io.eordie.multimodule.common.repository.ext.jsonStr
 import io.eordie.multimodule.contracts.basic.geometry.TPoint
+import io.eordie.multimodule.contracts.organization.models.acl.ResourceAcl
 import io.eordie.multimodule.contracts.regions.models.Region
 import io.eordie.multimodule.contracts.regions.models.RegionsFilter
 import io.eordie.multimodule.regions.models.OsmPlace

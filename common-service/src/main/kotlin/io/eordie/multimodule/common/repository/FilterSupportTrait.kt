@@ -2,6 +2,7 @@ package io.eordie.multimodule.common.repository
 
 import io.eordie.multimodule.contracts.basic.paging.Page
 import io.eordie.multimodule.contracts.basic.paging.Pageable
+import io.eordie.multimodule.contracts.organization.models.acl.ResourceAcl
 import kotlinx.coroutines.flow.Flow
 import org.babyfish.jimmer.sql.fetcher.Fetcher
 import org.babyfish.jimmer.sql.kt.ast.expression.KNonNullExpression

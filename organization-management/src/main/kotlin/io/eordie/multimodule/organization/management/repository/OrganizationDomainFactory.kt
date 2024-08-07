@@ -1,9 +1,9 @@
 package io.eordie.multimodule.organization.management.repository
 
 import io.eordie.multimodule.common.filter.accept
-import io.eordie.multimodule.common.repository.ResourceAcl
 import io.eordie.multimodule.contracts.organization.models.DomainFilter
 import io.eordie.multimodule.contracts.organization.models.OrganizationDomain
+import io.eordie.multimodule.contracts.organization.models.acl.ResourceAcl
 import io.eordie.multimodule.organization.management.models.OrganizationDomainModel
 import io.eordie.multimodule.organization.management.models.domain
 import io.eordie.multimodule.organization.management.models.id

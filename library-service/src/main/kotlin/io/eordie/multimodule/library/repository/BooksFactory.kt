@@ -3,10 +3,10 @@ package io.eordie.multimodule.library.repository
 import io.eordie.multimodule.common.filter.accept
 import io.eordie.multimodule.common.filter.acceptMany
 import io.eordie.multimodule.common.repository.KBaseFactory
-import io.eordie.multimodule.common.repository.ResourceAcl
 import io.eordie.multimodule.common.repository.ext.negateUnless
 import io.eordie.multimodule.contracts.library.models.Book
 import io.eordie.multimodule.contracts.library.models.BooksFilter
+import io.eordie.multimodule.contracts.organization.models.acl.ResourceAcl
 import io.eordie.multimodule.library.models.BookModel
 import io.eordie.multimodule.library.models.authorIds
 import io.eordie.multimodule.library.models.authors

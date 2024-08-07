@@ -2,10 +2,10 @@ package io.eordie.multimodule.organization.management.repository
 
 import io.eordie.multimodule.common.filter.accept
 import io.eordie.multimodule.common.repository.KBaseFactory
-import io.eordie.multimodule.common.repository.ResourceAcl
 import io.eordie.multimodule.contracts.basic.filters.StringLiteralFilter
 import io.eordie.multimodule.contracts.organization.models.User
 import io.eordie.multimodule.contracts.organization.models.UsersFilter
+import io.eordie.multimodule.contracts.organization.models.acl.ResourceAcl
 import io.eordie.multimodule.contracts.utils.Roles
 import io.eordie.multimodule.organization.management.models.UserModel
 import io.eordie.multimodule.organization.management.models.`attributes?`

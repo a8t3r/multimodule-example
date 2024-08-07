@@ -1,13 +1,13 @@
 package io.eordie.multimodule.organization.management.repository
 
 import io.eordie.multimodule.common.filter.accept
-import io.eordie.multimodule.common.repository.ResourceAcl
 import io.eordie.multimodule.common.repository.entity.PermissionAwareIF
 import io.eordie.multimodule.common.repository.ext.and
 import io.eordie.multimodule.contracts.basic.Permission
 import io.eordie.multimodule.contracts.organization.OrganizationInput
 import io.eordie.multimodule.contracts.organization.models.Organization
 import io.eordie.multimodule.contracts.organization.models.OrganizationsFilter
+import io.eordie.multimodule.contracts.organization.models.acl.ResourceAcl
 import io.eordie.multimodule.contracts.utils.Roles
 import io.eordie.multimodule.organization.management.models.OrganizationModel
 import io.eordie.multimodule.organization.management.models.createdBy
