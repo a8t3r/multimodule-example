@@ -62,7 +62,7 @@ class RsocketServerFactory {
             ControllerDescriptor(
                 it,
                 EntityLoader::class,
-                functions.like(loadSuspend),
+                requireNotNull(functions.like(loadSuspend)),
                 loadSuspend,
                 domainClass.java.simpleName
             )

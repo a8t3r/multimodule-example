@@ -1,7 +1,7 @@
 package io.eordie.multimodule.common.rsocket.server
 
 import io.eordie.multimodule.common.rsocket.client.getServiceInterface
-import io.eordie.multimodule.common.utils.matching
+import io.eordie.multimodule.common.utils.like
 import io.eordie.multimodule.contracts.Mutation
 import io.eordie.multimodule.contracts.Query
 import io.micronaut.context.BeanLocator
@@ -81,14 +81,11 @@ class RsocketConnectionAcceptorBuilder(
                 controller::class.getServiceInterface(type)?.let { controller to it }
             }
             .flatMap { (controller, serviceInterface) ->
-                val implementationFunctions = controller::class.declaredFunctions
+                val implFunctions = controller::class.declaredFunctions
                 serviceInterface.declaredFunctions
                     .filter { it.visibility == KVisibility.PUBLIC }
-                    .mapNotNull { interfaceFunction ->
-                        implementationFunctions.matching(interfaceFunction)
-                            ?.let { interfaceFunction to it }
-                    }
-                    .map { (interfaceFunction, implementationFunction) ->
+                    .map { interfaceFunction ->
+                        val implementationFunction = implFunctions.like(interfaceFunction) ?: interfaceFunction
                         ControllerDescriptor(controller, serviceInterface, implementationFunction, interfaceFunction)
                     }
             }

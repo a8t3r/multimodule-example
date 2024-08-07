@@ -1,16 +1,15 @@
 package io.eordie.multimodule.common.utils
 
 import kotlin.reflect.KFunction
-import kotlin.reflect.KProperty0
 
-fun <T> KProperty0<T>.getIfPresent(): T? = kotlin.runCatching { get() }.getOrNull()
+fun Collection<KFunction<*>>.like(that: KFunction<*>): KFunction<*>? {
+    val simpleMatching = this.filter { it.name == that.name && it.parameters.size == that.parameters.size }
 
-private fun Collection<KFunction<*>>.like(name: String, parameterSize: Int): KFunction<*>? =
-    this.singleOrNull { it.name == name && it.parameters.size == parameterSize }
-
-fun Collection<KFunction<*>>.like(that: KFunction<*>): KFunction<*> =
-    requireNotNull(like(that.name, that.parameters.size))
-
-fun Collection<KFunction<*>>.matching(that: KFunction<*>): KFunction<*>? =
-    like(that.name, that.parameters.size)
-
+    // simple match by name and parameters size
+    return if (simpleMatching.size <= 1) simpleMatching.firstOrNull() else {
+        simpleMatching.firstOrNull {
+            // additional match by parameter names
+            it.parameters.zip(that.parameters).all { (a, b) -> a.name == b.name }
+        }
+    }
+}
