@@ -33,9 +33,7 @@ data class OrganizationRoleBinding(
 @Serializable
 data class AuthenticationDetails(
     val userId: UuidStr,
-    val username: String,
     @GraphQLIgnore val roles: List<Roles>,
-    val active: Boolean,
     val email: String,
     val emailVerified: Boolean,
     val locale: LocaleBinding,

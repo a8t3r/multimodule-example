@@ -74,9 +74,7 @@ class AuthenticationDetailsBuilder {
 
             return AuthenticationDetails(
                 userId = userId,
-                username = attributes["name"] as? String ?: attributes["preferred_username"] as String,
                 roles = holder.roles(),
-                active = false,
                 email = attributes.getValue("email") as String,
                 emailVerified = attributes["email_verified"] as? Boolean ?: false,
                 locale = LocaleBinding("RU", attributes["locale"] as? String ?: "en"),

@@ -13,9 +13,7 @@ object AuthUtils {
     fun authWith(builder: AuthenticationDetails.() -> AuthenticationDetails): AuthenticationContextElement {
         val initial = AuthenticationDetails(
             UUID.randomUUID(),
-            "api-tests",
             roles = emptyList(),
-            active = true,
             email = "test",
             emailVerified = true,
             currentOrganizationId = null,

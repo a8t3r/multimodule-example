@@ -28,9 +28,7 @@ suspend fun getAuthentication() = coroutineContext.getAuthenticationContext()
 val systemContext = AuthenticationContextElement(
     AuthenticationDetails(
         UUID(0L, 0L),
-        "system-admin",
         Roles.entries.filter { it.isSystemRole() },
-        active = true,
         email = "system-admin",
         emailVerified = false,
         locale = LocaleBinding.default()
