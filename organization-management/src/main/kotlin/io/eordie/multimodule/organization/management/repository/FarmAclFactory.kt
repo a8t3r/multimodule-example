@@ -2,14 +2,14 @@ package io.eordie.multimodule.organization.management.repository
 
 import io.eordie.multimodule.common.filter.accept
 import io.eordie.multimodule.common.filter.acceptMany
-import io.eordie.multimodule.contracts.basic.BasePermission.MANAGE
-import io.eordie.multimodule.contracts.basic.BasePermission.PURGE
+import io.eordie.multimodule.common.repository.entity.PermissionAwareIF.Companion.ALL
 import io.eordie.multimodule.contracts.basic.BasePermission.VIEW
 import io.eordie.multimodule.contracts.basic.Permission
 import io.eordie.multimodule.contracts.basic.filters.Direction
 import io.eordie.multimodule.contracts.organization.models.acl.FarmAcl
 import io.eordie.multimodule.contracts.organization.models.acl.FarmAclFilter
 import io.eordie.multimodule.contracts.organization.models.acl.ResourceAcl
+import io.eordie.multimodule.contracts.utils.Roles
 import io.eordie.multimodule.organization.management.models.acl.FarmAclModel
 import io.eordie.multimodule.organization.management.models.acl.farmId
 import io.eordie.multimodule.organization.management.models.acl.farmOwnerOrganization
@@ -33,7 +33,8 @@ class FarmAclFactory : BaseOrganizationFactory<FarmAclModel, FarmAcl, UUID, Farm
 
     override suspend fun calculatePermissions(acl: ResourceAcl, value: FarmAclModel): Set<Permission> {
         return when {
-            value.farmOwnerOrganizationId in acl.auth.organizationIds() -> setOf(VIEW, MANAGE, PURGE)
+            acl.hasOrganizationRole(Roles.MANAGE_ORGANIZATIONS) -> ALL
+            value.farmOwnerOrganizationId in acl.auth.organizationIds() -> ALL
             value.organizationId in acl.auth.organizationIds() -> setOf(VIEW)
             else -> emptySet()
         }
@@ -43,7 +44,7 @@ class FarmAclFactory : BaseOrganizationFactory<FarmAclModel, FarmAcl, UUID, Farm
         or(
             table.organizationId valueIn acl.auth.organizationIds(),
             table.farmOwnerOrganizationId valueIn acl.auth.organizationIds()
-        )
+        ).takeUnless { acl.hasOrganizationRole(Roles.MANAGE_ORGANIZATIONS) }
     )
 
     override fun ResourceAcl.toPredicates(
