@@ -41,10 +41,10 @@ data class AuthenticationDetails(
     val organizationRoles: List<OrganizationRoleBinding>? = null
 ) {
 
-    fun organizationIds(): List<UuidStr> = organizationRoles.orEmpty().map { it.organizationId }
+    fun organizationIds(): Set<UuidStr> = organizationRoles.orEmpty().map { it.organizationId }.toSet()
 
     fun organizations(env: DataFetchingEnvironment): CompletableFuture<List<ShortDescription>> =
-        env.byIds<Organization?>(organizationIds())
+        env.byIds<Organization?>(organizationIds().toList())
             .thenApply { it.filterNotNull() }
 
     fun user(env: DataFetchingEnvironment): CompletableFuture<User> {
