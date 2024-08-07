@@ -8,6 +8,7 @@ import io.eordie.multimodule.contracts.basic.exception.EntityNotFoundException
 import io.eordie.multimodule.contracts.basic.exception.UnauthenticatedException
 import io.eordie.multimodule.contracts.basic.exception.UnexpectedInvocationException
 import io.eordie.multimodule.contracts.basic.exception.ValidationException
+import io.eordie.multimodule.contracts.organization.OrganizationPermission
 import io.eordie.multimodule.contracts.organization.models.acl.BindingCriterion
 import io.eordie.multimodule.contracts.organization.models.acl.ByFarmCriterion
 import io.eordie.multimodule.contracts.organization.models.acl.ByRegionCriterion
@@ -52,6 +53,7 @@ object ProtobufModule {
 
             polymorphic(Permission::class) {
                 subclass(BasePermission::class)
+                subclass(OrganizationPermission::class)
             }
 
             polymorphic(BindingCriterion::class) {

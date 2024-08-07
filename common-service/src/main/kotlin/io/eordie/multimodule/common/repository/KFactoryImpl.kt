@@ -222,7 +222,7 @@ open class KFactoryImpl<T : Any, ID : Comparable<ID>>(
             val index = calculatePermissions(acl, values)
             values.mapNotNull { value ->
                 val permissions = index[value].orEmpty()
-                if (!permissions.contains(permission)) null else {
+                if (permissions.none { it.name == permission.name }) null else {
                     val block: (T) -> Unit = {
                         (it as DraftSpi).__set(PERMISSIONS_PROPERTY, permissions.toList())
                     }
