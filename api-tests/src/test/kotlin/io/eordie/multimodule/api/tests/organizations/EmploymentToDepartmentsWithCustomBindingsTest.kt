@@ -95,15 +95,26 @@ class EmploymentToDepartmentsWithCustomBindingsTest : AbstractOrganizationTest()
     @Test
     @Order(30)
     fun `should apply members to departments`() = test(organizationManager) {
-        val userFilter = UsersFilter(organization = OrganizationsFilter(id = UUIDLiteralFilter(eq = developersOrg.id)))
-        val members = userQueries.users(userFilter).data
-        assertThat(members.size).isAtLeast(2)
-        assertThat(members.map { it.id }).containsAtLeast(developer1, developer2)
+        val unEmployedFilter = UsersFilter(
+            employed = false,
+            organization = OrganizationsFilter(id = UUIDLiteralFilter(eq = developersOrg.id))
+        )
+        val unEmployed = userQueries.users(unEmployedFilter).data
+        assertThat(unEmployed.size).isAtLeast(2)
+        assertThat(unEmployed.map { it.id }).containsAtLeast(developer1, developer2)
 
         val structure = createExampleStructure(developersOrg)
         val junior = structure.getValue("Junior Developer")
         structureMutations.employee(developersOrg, OrganizationEmployeeInput(developer1, fullAccess.id, junior.id))
         structureMutations.employee(developersOrg, OrganizationEmployeeInput(developer2, specific.id, junior.id))
+
+        val employedFilter = UsersFilter(
+            employed = true,
+            organization = OrganizationsFilter(id = UUIDLiteralFilter(eq = developersOrg.id))
+        )
+        val employed = userQueries.users(employedFilter).data
+        assertThat(employed.size).isAtLeast(2)
+        assertThat(employed.map { it.id }).containsAtLeast(developer1, developer2)
     }
 
     @Test

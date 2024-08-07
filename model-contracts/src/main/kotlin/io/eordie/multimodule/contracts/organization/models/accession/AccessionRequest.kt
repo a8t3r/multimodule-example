@@ -1,22 +1,21 @@
-package io.eordie.multimodule.contracts.library.models
+package io.eordie.multimodule.contracts.organization.models.accession
 
-import graphql.schema.DataFetchingEnvironment
 import io.eordie.multimodule.contracts.AuditLog
+import io.eordie.multimodule.contracts.organization.models.User
 import io.eordie.multimodule.contracts.utils.OffsetDateTimeStr
 import io.eordie.multimodule.contracts.utils.UuidStr
-import io.eordie.multimodule.contracts.utils.byIds
 import io.micronaut.core.annotation.Introspected
 import kotlinx.serialization.Serializable
-import java.util.concurrent.CompletableFuture
 
 @Introspected
 @Serializable
-data class Book(
+data class AccessionRequest(
     val id: UuidStr,
-    val name: String,
-    val authorIds: List<UuidStr>,
+    val vat: String,
+    val initiatedBy: User,
+    val processedBy: User?,
+    val status: AccessionRequestStatus,
+    val rejectionMessage: String?,
     override val createdAt: OffsetDateTimeStr,
     override val updatedAt: OffsetDateTimeStr
-) : AuditLog {
-    fun authors(env: DataFetchingEnvironment): CompletableFuture<List<Author>> = env.byIds(authorIds)
-}
+) : AuditLog

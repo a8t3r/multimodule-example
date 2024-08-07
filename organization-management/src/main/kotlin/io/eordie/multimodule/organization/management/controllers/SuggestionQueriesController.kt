@@ -4,7 +4,7 @@ import io.eordie.multimodule.contracts.basic.loader.EntityLoader
 import io.eordie.multimodule.contracts.basic.loader.loadOne
 import io.eordie.multimodule.contracts.organization.models.Organization
 import io.eordie.multimodule.contracts.organization.models.extra.OrganizationPublicInformation
-import io.eordie.multimodule.contracts.organization.models.extra.OrganizationPublicInformationFilter
+import io.eordie.multimodule.contracts.organization.models.extra.OrganizationPublicInformationInput
 import io.eordie.multimodule.contracts.organization.services.SuggestionQueries
 import io.eordie.multimodule.organization.management.service.suggestion.ResultEnvelope
 import io.eordie.multimodule.organization.management.service.suggestion.SuggestionsClient
@@ -19,7 +19,7 @@ class SuggestionQueriesController(
     private val organizationInformationLoader: EntityLoader<OrganizationPublicInformation, UUID>
 ) : SuggestionQueries {
 
-    override suspend fun suggestions(filter: OrganizationPublicInformationFilter): List<OrganizationPublicInformation> {
+    override suspend fun suggestions(filter: OrganizationPublicInformationInput): List<OrganizationPublicInformation> {
         val filterBy = if (filter.organizationId == null) filter else {
             val information = organizationInformationLoader.loadOne(coroutineContext, filter.organizationId)
             if (information?.inn != null) {

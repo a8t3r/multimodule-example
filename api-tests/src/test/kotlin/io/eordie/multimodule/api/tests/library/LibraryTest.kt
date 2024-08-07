@@ -210,7 +210,6 @@ class LibraryTest : AbstractApplicationTest() {
         firstBook = mutateLibrary.book(bookInput)
         assertThat(firstBook.id).isNotEqualTo(bookInput.id)
         assertThat(firstBook.name).isEqualTo("Third book")
-        assertThat(firstBook.deleted).isFalse()
         assertThat(firstBook.authorIds).hasSize(1)
     }
 }

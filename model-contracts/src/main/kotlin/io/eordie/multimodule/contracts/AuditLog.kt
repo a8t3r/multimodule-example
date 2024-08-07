@@ -13,8 +13,7 @@ private fun formatDatetime(datetime: OffsetDateTime, pattern: String?): String {
 }
 
 @Introspected
-interface Auditable {
-    val deleted: Boolean
+interface AuditLog {
     val createdAt: OffsetDateTimeStr
     val updatedAt: OffsetDateTimeStr
 

@@ -6,24 +6,15 @@ import io.eordie.multimodule.contracts.basic.exception.ValidationException
 import io.eordie.multimodule.contracts.basic.filters.StringLiteralFilter
 import io.eordie.multimodule.contracts.organization.OrganizationInput
 import io.eordie.multimodule.contracts.organization.models.OrganizationsFilter
-import io.eordie.multimodule.contracts.organization.services.OrganizationMutations
-import io.eordie.multimodule.contracts.organization.services.OrganizationQueries
-import jakarta.inject.Inject
 import kotlinx.coroutines.future.await
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 
 class OrganizationTest : AbstractOrganizationTest() {
 
-    @Inject
-    lateinit var organizationQueries: OrganizationQueries
-
-    @Inject
-    lateinit var organizationMutations: OrganizationMutations
-
     companion object {
-        private val firstUser = authWith(firstOrg) { copy(userId = developer1) }
-        private val secondUser = authWith(secondOrg) { copy(userId = developer2) }
+        private val firstUser = authWith(firstOrg, developer1)
+        private val secondUser = authWith(secondOrg, developer2)
     }
 
     @Test

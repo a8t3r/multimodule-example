@@ -1,7 +1,7 @@
 package io.eordie.multimodule.contracts.library.models
 
 import graphql.schema.DataFetchingEnvironment
-import io.eordie.multimodule.contracts.Auditable
+import io.eordie.multimodule.contracts.AuditLog
 import io.eordie.multimodule.contracts.annotations.Cached
 import io.eordie.multimodule.contracts.library.services.Library
 import io.eordie.multimodule.contracts.utils.OffsetDateTimeStr
@@ -19,10 +19,9 @@ data class Author(
     val id: UuidStr,
     val firstName: String,
     val lastName: String?,
-    override val deleted: Boolean,
     override val createdAt: OffsetDateTimeStr,
     override val updatedAt: OffsetDateTimeStr
-) : Auditable {
+) : AuditLog {
 
     fun fullName(): String = "$firstName ${lastName ?: "<unspecified>"}"
 

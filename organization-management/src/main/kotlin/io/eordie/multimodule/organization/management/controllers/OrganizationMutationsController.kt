@@ -7,7 +7,7 @@ import io.eordie.multimodule.contracts.basic.BasePermission
 import io.eordie.multimodule.contracts.organization.OrganizationInput
 import io.eordie.multimodule.contracts.organization.models.Organization
 import io.eordie.multimodule.contracts.organization.models.extra.OrganizationPublicInformation
-import io.eordie.multimodule.contracts.organization.models.extra.OrganizationPublicInformationFilter
+import io.eordie.multimodule.contracts.organization.models.extra.OrganizationPublicInformationInput
 import io.eordie.multimodule.contracts.organization.services.OrganizationMutations
 import io.eordie.multimodule.contracts.organization.services.SuggestionQueries
 import io.eordie.multimodule.contracts.utils.Roles
@@ -63,7 +63,7 @@ class OrganizationMutationsController(
             val organizationId = UUID.fromString(rawOrganizationId)
             organizations.changeCreatedBy(organizationId, userId)
 
-            val filter = OrganizationPublicInformationFilter(query = input.name)
+            val filter = OrganizationPublicInformationInput(query = input.name)
             (info ?: suggestions.suggestions(filter).singleOrNull())?.let { savePublicInformation(organizationId, it) }
 
             organizationId
@@ -78,7 +78,7 @@ class OrganizationMutationsController(
     }
 
     override suspend fun organizationByVat(vat: String): Organization {
-        val info = suggestions.suggestions(OrganizationPublicInformationFilter(vat = vat)).singleOrError()
+        val info = suggestions.suggestions(OrganizationPublicInformationInput(vat = vat)).singleOrError()
         return organization(OrganizationInput(id = null, name = info.name), info)
     }
 

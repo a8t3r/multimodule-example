@@ -10,6 +10,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class UsersFilter(
     val id: UUIDLiteralFilter? = null,
+    val employed: Boolean? = null,
     val firstName: StringLiteralFilter? = null,
     val lastName: StringLiteralFilter? = null,
     val email: StringLiteralFilter? = null,

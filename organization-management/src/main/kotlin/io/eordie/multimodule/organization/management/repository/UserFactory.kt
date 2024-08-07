@@ -2,6 +2,7 @@ package io.eordie.multimodule.organization.management.repository
 
 import io.eordie.multimodule.common.filter.accept
 import io.eordie.multimodule.common.repository.KBaseFactory
+import io.eordie.multimodule.common.repository.ext.negateUnless
 import io.eordie.multimodule.contracts.basic.filters.StringLiteralFilter
 import io.eordie.multimodule.contracts.organization.models.User
 import io.eordie.multimodule.contracts.organization.models.UsersFilter
@@ -11,6 +12,7 @@ import io.eordie.multimodule.organization.management.models.UserModel
 import io.eordie.multimodule.organization.management.models.`attributes?`
 import io.eordie.multimodule.organization.management.models.email
 import io.eordie.multimodule.organization.management.models.emailVerified
+import io.eordie.multimodule.organization.management.models.employees
 import io.eordie.multimodule.organization.management.models.enabled
 import io.eordie.multimodule.organization.management.models.firstName
 import io.eordie.multimodule.organization.management.models.id
@@ -19,6 +21,7 @@ import io.eordie.multimodule.organization.management.models.membership
 import io.eordie.multimodule.organization.management.models.name
 import io.eordie.multimodule.organization.management.models.organization
 import io.eordie.multimodule.organization.management.models.organizationId
+import io.eordie.multimodule.organization.management.models.userId
 import io.eordie.multimodule.organization.management.models.value
 import jakarta.inject.Singleton
 import org.babyfish.jimmer.sql.kt.ast.expression.KNonNullExpression
@@ -83,6 +86,11 @@ class UserFactory : KBaseFactory<UserModel, User, UUID, UsersFilter>(
             table.email.accept(filter.email),
             table.emailVerified.accept(filter.emailVerified),
             table.membership { organization.accept(filter.organization) },
+            filter.employed?.let {
+                table.membership {
+                    employees { table.id eq userId }.negateUnless(it)
+                }
+            },
             filter.phoneNumber?.let {
                 observeAttributes(it, "phoneNumber", table)
             },

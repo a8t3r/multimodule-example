@@ -16,6 +16,7 @@ import jakarta.inject.Provider
 import jakarta.inject.Singleton
 import java.util.*
 import kotlin.coroutines.CoroutineContext
+import kotlin.coroutines.coroutineContext
 
 @Singleton
 class EmployeeAclQueriesController(
@@ -24,7 +25,8 @@ class EmployeeAclQueriesController(
     private val departments: OrganizationDepartmentFactory
 ) : EmployeeAclQueries {
 
-    override suspend fun activeEmployeeAcl(): List<EmployeeAcl> = microservices.get().loadAclElement().resource
+    override suspend fun activeEmployeeAcl(): List<EmployeeAcl> =
+        microservices.get().loadAclElement(coroutineContext).resource
 
     override suspend fun internalActiveResourceAcl(userId: UUID, organizationId: UUID): ResourceAcl? {
         return loadResourceAcl(listOf(userId), organizationId).firstOrNull()

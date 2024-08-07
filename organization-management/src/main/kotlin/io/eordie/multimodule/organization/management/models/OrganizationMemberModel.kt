@@ -12,6 +12,7 @@ import org.babyfish.jimmer.sql.JoinColumn
 import org.babyfish.jimmer.sql.Key
 import org.babyfish.jimmer.sql.ManyToOne
 import org.babyfish.jimmer.sql.OnDissociate
+import org.babyfish.jimmer.sql.OneToMany
 import org.babyfish.jimmer.sql.Table
 import org.babyfish.jimmer.sql.meta.UUIDIdGenerator
 import java.util.*
@@ -38,6 +39,9 @@ interface OrganizationMemberModel : CreatedAtIF {
     @OnDissociate(DissociateAction.DELETE)
     @JoinColumn(name = "organization_uid", referencedColumnName = "uid")
     val organization: OrganizationModel
+
+    @OneToMany(mappedBy = "member")
+    val employees: List<OrganizationEmployeeModel>
 
     @IdView
     val organizationId: UUID

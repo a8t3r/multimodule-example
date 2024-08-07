@@ -2,6 +2,7 @@ package io.eordie.multimodule.contracts.organization.models
 
 import io.eordie.multimodule.contracts.basic.filters.StringLiteralFilter
 import io.eordie.multimodule.contracts.basic.filters.UUIDLiteralFilter
+import io.eordie.multimodule.contracts.organization.models.extra.OrganizationPublicInformationFilter
 import io.micronaut.core.annotation.Introspected
 import kotlinx.serialization.Serializable
 
@@ -12,5 +13,6 @@ data class OrganizationsFilter(
     val name: StringLiteralFilter? = null,
     val createdBy: UUIDLiteralFilter? = null,
     val members: UsersFilter? = null,
-    val domains: DomainFilter? = null
+    val domains: DomainFilter? = null,
+    val information: OrganizationPublicInformationFilter? = null
 )

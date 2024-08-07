@@ -1,7 +1,7 @@
 package io.eordie.multimodule.contracts.organization.models.structure
 
 import graphql.schema.DataFetchingEnvironment
-import io.eordie.multimodule.contracts.Auditable
+import io.eordie.multimodule.contracts.AuditLog
 import io.eordie.multimodule.contracts.organization.models.Organization
 import io.eordie.multimodule.contracts.organization.services.OrganizationStructureQueries
 import io.eordie.multimodule.contracts.utils.OffsetDateTimeStr
@@ -21,10 +21,9 @@ data class OrganizationPosition(
     val organizationId: UuidStr,
     val roles: List<Roles>,
     val parentId: UuidStr?,
-    override val deleted: Boolean,
     override val createdAt: OffsetDateTimeStr,
     override val updatedAt: OffsetDateTimeStr
-) : Auditable {
+) : AuditLog {
     fun organization(env: DataFetchingEnvironment): CompletableFuture<Organization> = env.byId(organizationId)
     fun parent(env: DataFetchingEnvironment) = env.byId<OrganizationPosition?>(parentId)
 

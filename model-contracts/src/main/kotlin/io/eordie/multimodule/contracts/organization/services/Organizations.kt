@@ -10,8 +10,6 @@ import io.eordie.multimodule.contracts.organization.OrganizationInput
 import io.eordie.multimodule.contracts.organization.models.Organization
 import io.eordie.multimodule.contracts.organization.models.OrganizationFilterSummary
 import io.eordie.multimodule.contracts.organization.models.OrganizationsFilter
-import io.eordie.multimodule.contracts.organization.models.User
-import io.eordie.multimodule.contracts.organization.models.structure.OrganizationEmployeeFilter
 import java.util.*
 
 @AutoService(Query::class)
@@ -22,11 +20,6 @@ interface OrganizationQueries : Query {
     suspend fun organizations(filter: OrganizationsFilter? = null, pageable: Pageable? = null): Page<Organization>
 
     suspend fun organizationSummary(filter: OrganizationsFilter?): OrganizationFilterSummary
-
-    suspend fun loadOrganizationEmployedUsers(
-        organizationIds: List<UUID>,
-        filter: OrganizationEmployeeFilter? = null
-    ): Map<UUID, List<User>>
 
     suspend fun loadOrganizationDigest(organizationIds: List<UUID>): Map<UUID, OrganizationDigest>
 }

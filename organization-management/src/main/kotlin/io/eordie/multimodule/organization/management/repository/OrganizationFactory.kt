@@ -15,6 +15,8 @@ import io.eordie.multimodule.organization.management.models.createdByStr
 import io.eordie.multimodule.organization.management.models.displayName
 import io.eordie.multimodule.organization.management.models.domains
 import io.eordie.multimodule.organization.management.models.id
+import io.eordie.multimodule.organization.management.models.`information?`
+import io.eordie.multimodule.organization.management.models.inn
 import io.eordie.multimodule.organization.management.models.members
 import io.eordie.multimodule.organization.management.models.name
 import io.eordie.multimodule.organization.management.models.user
@@ -91,7 +93,10 @@ class OrganizationFactory : BaseOrganizationFactory<OrganizationModel, Organizat
             table.name.accept(filter.name),
             table.createdBy.accept(filter.createdBy),
             table.domains { accept(filter.domains) },
-            table.members { user.accept(filter.members?.takeIf { applyMembershipFilter }) }
+            table.members { user.accept(filter.members?.takeIf { applyMembershipFilter }) },
+            filter.information?.let {
+                table.`information?`.inn.accept(it.vat)
+            }
         )
     }
 }

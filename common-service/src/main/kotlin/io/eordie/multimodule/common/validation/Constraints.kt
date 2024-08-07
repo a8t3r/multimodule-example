@@ -4,6 +4,7 @@ import io.eordie.multimodule.contracts.basic.Permission
 import org.valiktor.Constraint
 import org.valiktor.ConstraintViolationException
 import org.valiktor.DefaultConstraintViolation
+import kotlin.reflect.KProperty0
 
 interface CommonConstraint : Constraint {
     override val messageBundle: String get() = "common/messages"
@@ -26,6 +27,8 @@ fun <T> List<T>.singleOrError(): T {
         else -> TooManyResultsFound.error()
     }
 }
+
+fun Constraint.error(property: KProperty0<*>): Nothing = error(property.name)
 
 fun Constraint.error(dataPath: String? = null): Nothing {
     val violation = DefaultConstraintViolation(dataPath.orEmpty(), constraint = this)

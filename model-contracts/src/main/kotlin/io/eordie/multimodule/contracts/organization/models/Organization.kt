@@ -4,7 +4,6 @@ import graphql.schema.DataFetchingEnvironment
 import io.eordie.multimodule.contracts.basic.BasePermission
 import io.eordie.multimodule.contracts.basic.PermissionAware
 import io.eordie.multimodule.contracts.basic.ShortDescription
-import io.eordie.multimodule.contracts.organization.models.structure.OrganizationEmployeeFilter
 import io.eordie.multimodule.contracts.organization.services.OrganizationQueries
 import io.eordie.multimodule.contracts.utils.UuidStr
 import io.eordie.multimodule.contracts.utils.getValueBy
@@ -19,8 +18,5 @@ data class Organization(
     val displayName: String?,
     override val permissions: List<BasePermission>
 ) : PermissionAware<BasePermission>, ShortDescription {
-    fun employedUsers(env: DataFetchingEnvironment, filter: OrganizationEmployeeFilter? = null) =
-        env.getValueBy(OrganizationQueries::loadOrganizationEmployedUsers, id, filter)
-
     fun digest(env: DataFetchingEnvironment) = env.getValueBy(OrganizationQueries::loadOrganizationDigest, id)
 }

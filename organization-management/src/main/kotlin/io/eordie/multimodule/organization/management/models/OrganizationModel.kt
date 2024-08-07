@@ -9,6 +9,7 @@ import org.babyfish.jimmer.sql.Entity
 import org.babyfish.jimmer.sql.Id
 import org.babyfish.jimmer.sql.Key
 import org.babyfish.jimmer.sql.OneToMany
+import org.babyfish.jimmer.sql.OneToOne
 import org.babyfish.jimmer.sql.Table
 import java.util.*
 
@@ -42,4 +43,7 @@ interface OrganizationModel : CreatedByIF, Convertable<Organization>, Permission
 
     @OneToMany(mappedBy = "organization")
     val employees: List<OrganizationEmployeeModel>
+
+    @OneToOne(mappedBy = "organization")
+    val information: OrganizationPublicInformationModel?
 }

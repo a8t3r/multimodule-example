@@ -9,8 +9,8 @@ import java.util.*
 class ObjectDifferTest {
     @Test
     fun `should compare two objects with auditable type`() {
-        val a = Author(UUID.randomUUID(), "foo", "bar", false, OffsetDateTime.now(), OffsetDateTime.now())
-        val b = a.copy(firstName = "foz", lastName = null, deleted = true)
+        val a = Author(UUID.randomUUID(), "foo", "bar", OffsetDateTime.now(), OffsetDateTime.now())
+        val b = a.copy(firstName = "foz", lastName = null)
         val difference = ObjectDiffer.difference(a, b)
         assertThat(difference).isNotNull()
         assertThat(difference!!.set).isEmpty()

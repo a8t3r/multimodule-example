@@ -39,7 +39,9 @@ object AuthUtils {
         )
     }
 
-    fun authWith(currentOrganization: CurrentOrganization, vararg roles: Roles) = authWith(currentOrganization) {
-        this.copy(roles = roles.toList())
-    }
+    fun authWith(currentOrganization: CurrentOrganization, vararg roles: Roles) =
+        authWith(currentOrganization, UUID.randomUUID(), *roles)
+
+    fun authWith(currentOrganization: CurrentOrganization, userId: UUID, vararg roles: Roles) =
+        authWith(currentOrganization) { this.copy(roles = roles.toList(), userId = userId) }
 }

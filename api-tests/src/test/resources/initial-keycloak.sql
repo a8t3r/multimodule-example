@@ -14,6 +14,7 @@ TRUNCATE TABLE public.organization_employees cascade;
 TRUNCATE TABLE public.organization_invitations cascade;
 TRUNCATE TABLE public.farm_acl cascade;
 TRUNCATE TABLE public.farm_regions cascade;
+TRUNCATE TABLE public.accession_requests cascade;
 
 create or replace function realm() returns text as $$
 begin

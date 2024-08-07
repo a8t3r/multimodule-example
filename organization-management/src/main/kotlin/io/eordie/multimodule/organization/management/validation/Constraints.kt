@@ -13,3 +13,5 @@ object MissingMembership : OrganizationConstraint
 object DepartmentNotBelongsToOrganization : OrganizationConstraint
 
 object PendingInvitation : OrganizationConstraint
+
+object AccessionRequestFinalState : OrganizationConstraint

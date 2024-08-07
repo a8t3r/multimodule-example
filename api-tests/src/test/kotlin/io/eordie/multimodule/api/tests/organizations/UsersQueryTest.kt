@@ -10,11 +10,42 @@ class UsersQueryTest : AbstractOrganizationTest() {
 
     @Test
     fun `should query users by membership`() = test(organizationManager) {
-        val filter = UsersFilter(organization = OrganizationsFilter(name = StringLiteralFilter(eq = "Developers org")))
-        val page = userQueries.users(filter)
+        val page = userQueries.users(
+            UsersFilter(
+                organization = OrganizationsFilter(name = StringLiteralFilter(eq = "Developers org"))
+            )
+        )
+
         assertThat(page.pageable.cursor).isNull()
         assertThat(page.data.size).isAtLeast(2)
         assertThat(page.data.map { it.id }).containsAtLeast(developer1, developer2)
+    }
+
+    @Test
+    fun `should query unemployed users`() = test(organizationManager) {
+        val page = userQueries.users(
+            UsersFilter(
+                employed = false,
+                organization = OrganizationsFilter(name = StringLiteralFilter(eq = "Developers org"))
+            )
+        )
+
+        assertThat(page.pageable.cursor).isNull()
+        assertThat(page.data.size).isAtLeast(2)
+        assertThat(page.data.map { it.id }).containsAtLeast(developer1, developer2)
+    }
+
+    @Test
+    fun `should query employed users`() = test(organizationManager) {
+        val page = userQueries.users(
+            UsersFilter(
+                employed = true,
+                organization = OrganizationsFilter(name = StringLiteralFilter(eq = "Developers org"))
+            )
+        )
+
+        assertThat(page.pageable.cursor).isNull()
+        assertThat(page.data).isEmpty()
     }
 
     @Test

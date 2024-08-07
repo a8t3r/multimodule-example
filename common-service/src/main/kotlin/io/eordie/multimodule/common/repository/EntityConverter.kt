@@ -8,6 +8,7 @@ import io.eordie.multimodule.contracts.utils.getIntrospection
 import io.micronaut.core.beans.BeanIntrospection
 import kotlinx.serialization.Required
 import org.babyfish.jimmer.Draft
+import org.babyfish.jimmer.meta.TargetLevel
 import org.babyfish.jimmer.runtime.DraftSpi
 import org.babyfish.jimmer.runtime.ImmutableSpi
 import java.time.OffsetDateTime
@@ -51,7 +52,14 @@ object EntityConverter {
         val constructorArgs = introspection.constructorArguments.map { argument ->
             val prop = immutableType.getProp(argument.name)
             when {
-                from.__isLoaded(prop.id) -> from.__get(prop.id)
+                from.__isLoaded(prop.id) -> {
+                    if (prop.isReference(TargetLevel.ENTITY)) {
+                        val convertable = from.__get(prop.id) as Convertable<*>?
+                        convertable?.convert()
+                    } else {
+                        from.__get(prop.id)
+                    }
+                }
                 argument.isNullable -> null
                 argument.name == PermissionAwareIF::permissions.name -> emptyList<Permission>()
                 argument.isAnnotationPresent(Required::class.java) -> {
