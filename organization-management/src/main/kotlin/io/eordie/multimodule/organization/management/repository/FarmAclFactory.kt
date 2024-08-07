@@ -59,7 +59,13 @@ class FarmAclFactory : BaseOrganizationFactory<FarmAclModel, FarmAcl, UUID, Farm
             table.farmId.accept(filter.farmId),
             table.fieldIds.acceptMany(filter.fieldId),
             table.organization.accept(filter.organization),
-            table.farmOwnerOrganization.accept(filter.farmOwnerOrganization)
+            table.farmOwnerOrganization.accept(filter.farmOwnerOrganization),
+            filter.relatedOrganizationId?.let {
+                or(
+                    table.organizationId.accept(it),
+                    table.farmOwnerOrganizationId.accept(it)
+                )
+            }
         )
     }
 

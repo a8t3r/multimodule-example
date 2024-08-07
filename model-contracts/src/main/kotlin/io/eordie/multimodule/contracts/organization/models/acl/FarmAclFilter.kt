@@ -13,5 +13,6 @@ data class FarmAclFilter(
     val farmId: UUIDLiteralFilter? = null,
     val fieldId: UUIDLiteralFilter? = null,
     val organization: OrganizationsFilter? = null,
+    val relatedOrganizationId: UUIDLiteralFilter? = null,
     val farmOwnerOrganization: OrganizationsFilter? = null
 )
