@@ -1,6 +1,6 @@
 package io.eordie.multimodule.contracts.organization.models.acl
 
-import io.eordie.multimodule.contracts.basic.Permission
+import io.eordie.multimodule.contracts.basic.BasePermission
 import io.eordie.multimodule.contracts.basic.PermissionAware
 import io.eordie.multimodule.contracts.utils.UuidStr
 import io.micronaut.core.annotation.Introspected
@@ -14,5 +14,5 @@ data class FarmAcl(
     val roles: List<String>,
     val farmId: UuidStr,
     val fieldIds: List<UuidStr>? = null,
-    override val permissions: List<Permission>
-) : PermissionAware
+    override val permissions: List<BasePermission>
+) : PermissionAware<BasePermission>

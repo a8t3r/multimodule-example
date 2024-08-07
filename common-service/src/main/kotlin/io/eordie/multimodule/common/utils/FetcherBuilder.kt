@@ -2,6 +2,7 @@ package io.eordie.multimodule.common.utils
 
 import io.eordie.multimodule.common.repository.Convertable
 import io.eordie.multimodule.common.repository.EntityConverter
+import io.eordie.multimodule.contracts.basic.PermissionAware
 import kotlinx.serialization.Required
 import org.babyfish.jimmer.meta.ImmutableType
 import org.babyfish.jimmer.meta.TargetLevel
@@ -31,6 +32,7 @@ internal class FetcherBuilder<T : Convertable<out Any>>(private val type: KClass
 
                 when {
                     property != null -> acc.add(property.name)
+                    field == PermissionAware<*>::permissions.name -> acc
                     constructorArgumentNames.contains(field) -> error("unknown property [$field] in projection")
                     else -> acc
                 }

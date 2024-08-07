@@ -15,6 +15,7 @@ import io.eordie.multimodule.common.utils.asFlow
 import io.eordie.multimodule.common.validation.EntityValidator
 import io.eordie.multimodule.common.validation.MissingPermission
 import io.eordie.multimodule.common.validation.error
+import io.eordie.multimodule.contracts.basic.BasePermission
 import io.eordie.multimodule.contracts.basic.Permission
 import io.eordie.multimodule.contracts.basic.exception.EntityNotFoundException
 import io.eordie.multimodule.contracts.basic.exception.ValidationException
@@ -214,7 +215,7 @@ open class KFactoryImpl<T : Any, ID : Comparable<ID>>(
 
     private suspend fun applyPermissions(
         values: List<T>,
-        permission: Permission = Permission.VIEW
+        permission: BasePermission = BasePermission.VIEW
     ): List<T> {
         return if (values.isEmpty() || !isPermissionAware) values else {
             val acl = resourceAcl()
@@ -231,7 +232,7 @@ open class KFactoryImpl<T : Any, ID : Comparable<ID>>(
         }
     }
 
-    suspend fun checkPermission(value: T, permission: Permission): T {
+    suspend fun checkPermission(value: T, permission: BasePermission): T {
         return applyPermissions(listOf(value), permission).firstOrNull() ?: kotlin.run {
             MissingPermission(permission).error()
         }
@@ -255,7 +256,7 @@ open class KFactoryImpl<T : Any, ID : Comparable<ID>>(
             entities().findById(entityType, id)
         }
 
-        return value?.let { checkPermission(it, Permission.VIEW) }
+        return value?.let { checkPermission(it, BasePermission.VIEW) }
     }
 
     override suspend fun getById(id: ID, fetcher: Fetcher<T>?): T {
@@ -269,7 +270,7 @@ open class KFactoryImpl<T : Any, ID : Comparable<ID>>(
     override suspend fun deleteByIds(ids: Collection<ID>): Int {
         return if (ids.isEmpty()) 0 else {
             internalFindByIds(ids, null).forEach {
-                checkPermission(it, Permission.PURGE)
+                checkPermission(it, BasePermission.PURGE)
             }
 
             wrapped {
@@ -428,7 +429,7 @@ open class KFactoryImpl<T : Any, ID : Comparable<ID>>(
     }
 
     private suspend fun persist(entity: T): T {
-        checkPermission(entity, Permission.MANAGE)
+        checkPermission(entity, BasePermission.MANAGE)
 
         validator?.let {
             try {
@@ -445,7 +446,7 @@ open class KFactoryImpl<T : Any, ID : Comparable<ID>>(
     }
 
     override suspend fun <S : T> update(entity: S): T {
-        checkPermission(entity, Permission.MANAGE)
+        checkPermission(entity, BasePermission.MANAGE)
 
         validator?.let {
             try {
@@ -476,7 +477,7 @@ open class KFactoryImpl<T : Any, ID : Comparable<ID>>(
     }
 
     private suspend fun <S : T> KSimpleSaveResult<S>.get(): T {
-        return checkPermission(modifiedEntity, Permission.VIEW)
+        return checkPermission(modifiedEntity, BasePermission.VIEW)
     }
 
     protected suspend fun rawUpdate(block: KMutableUpdate<T>.() -> Unit): Boolean {

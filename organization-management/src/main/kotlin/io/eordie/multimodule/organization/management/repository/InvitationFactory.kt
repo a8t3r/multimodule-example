@@ -4,6 +4,7 @@ import io.eordie.multimodule.common.filter.accept
 import io.eordie.multimodule.common.repository.KBaseFactory
 import io.eordie.multimodule.common.repository.ResourceAcl
 import io.eordie.multimodule.common.repository.entity.PermissionAwareIF
+import io.eordie.multimodule.contracts.basic.BasePermission
 import io.eordie.multimodule.contracts.basic.Permission
 import io.eordie.multimodule.contracts.basic.filters.Direction
 import io.eordie.multimodule.contracts.organization.models.invitation.Invitation
@@ -30,9 +31,9 @@ class InvitationFactory : KBaseFactory<InvitationModel, Invitation, UUID, Invita
     override suspend fun calculatePermissions(acl: ResourceAcl, value: InvitationModel): Set<Permission> {
         return when {
             acl.hasOrganizationRole(Roles.MANAGE_INVITATIONS) -> PermissionAwareIF.ALL
-            acl.hasOrganizationRole(Roles.VIEW_INVITATIONS) -> setOf(Permission.VIEW)
-            value.email == acl.auth.email -> setOf(Permission.VIEW)
-            value.userId == acl.auth.userId -> setOf(Permission.VIEW)
+            acl.hasOrganizationRole(Roles.VIEW_INVITATIONS) -> setOf(BasePermission.VIEW)
+            value.email == acl.auth.email -> setOf(BasePermission.VIEW)
+            value.userId == acl.auth.userId -> setOf(BasePermission.VIEW)
             else -> emptySet()
         }
     }

@@ -3,6 +3,7 @@ package io.eordie.multimodule.organization.management.repository
 import io.eordie.multimodule.common.repository.Convertable
 import io.eordie.multimodule.common.repository.KBaseFactory
 import io.eordie.multimodule.common.repository.ResourceAcl
+import io.eordie.multimodule.contracts.basic.BasePermission
 import io.eordie.multimodule.contracts.basic.Permission
 import io.eordie.multimodule.contracts.utils.Roles
 import org.babyfish.jimmer.sql.kt.ast.expression.value
@@ -35,11 +36,11 @@ abstract class BaseOrganizationFactory<T : Convertable<C>, C : Any, ID, F : Any>
     override suspend fun calculatePermissions(acl: ResourceAcl, value: T): Set<Permission> {
         return buildSet {
             if (acl.hasOrganizationRole(Roles.VIEW_ORGANIZATIONS)) {
-                add(Permission.VIEW)
+                add(BasePermission.VIEW)
             }
             if (acl.hasOrganizationRole(Roles.MANAGE_ORGANIZATIONS)) {
-                add(Permission.MANAGE)
-                add(Permission.PURGE)
+                add(BasePermission.MANAGE)
+                add(BasePermission.PURGE)
             }
 
             val viewOrganizationIds = acl.organizationsWithRole(viewRoles)
@@ -48,11 +49,11 @@ abstract class BaseOrganizationFactory<T : Convertable<C>, C : Any, ID, F : Any>
             val organizationId = organizationId.get(value)
             if (organizationId in acl.allOrganizationIds) {
                 if (organizationId in viewOrganizationIds) {
-                    add(Permission.VIEW)
+                    add(BasePermission.VIEW)
                 }
                 if (organizationId in writeOrganizationIds) {
-                    add(Permission.MANAGE)
-                    add(Permission.PURGE)
+                    add(BasePermission.MANAGE)
+                    add(BasePermission.PURGE)
                 }
             }
         }

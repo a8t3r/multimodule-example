@@ -1,6 +1,7 @@
 package io.eordie.multimodule.common.repository.entity
 
 import io.eordie.multimodule.common.repository.entity.PermissionAwareIFProps.PERMISSIONS
+import io.eordie.multimodule.contracts.basic.BasePermission
 import io.eordie.multimodule.contracts.basic.Permission
 import org.babyfish.jimmer.sql.MappedSuperclass
 import org.babyfish.jimmer.sql.Transient
@@ -9,7 +10,7 @@ import org.babyfish.jimmer.sql.Transient
 interface PermissionAwareIF {
 
     companion object {
-        val ALL = Permission.entries.toSet()
+        val ALL = BasePermission.entries.toSet()
     }
 
     @Transient

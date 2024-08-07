@@ -1,7 +1,7 @@
 package io.eordie.multimodule.organization.management.controllers
 
 import io.eordie.multimodule.common.security.context.getAuthentication
-import io.eordie.multimodule.contracts.basic.Permission
+import io.eordie.multimodule.contracts.basic.BasePermission
 import io.eordie.multimodule.contracts.organization.OrganizationInput
 import io.eordie.multimodule.contracts.organization.models.Organization
 import io.eordie.multimodule.contracts.organization.services.OrganizationMutations
@@ -40,7 +40,7 @@ class OrganizationMutationsController(
             organizationId
         } else {
             // perform update
-            organizations.checkPermission(organization, Permission.MANAGE)
+            organizations.checkPermission(organization, BasePermission.MANAGE)
             resource.organization(organization.id.toString()).update(input.toRepresentation())
             organization.id
         }
@@ -50,7 +50,7 @@ class OrganizationMutationsController(
 
     override suspend fun deleteOrganization(organizationId: UUID) {
         val organization = organizations.getById(organizationId)
-        organizations.checkPermission(organization, Permission.PURGE)
+        organizations.checkPermission(organization, BasePermission.PURGE)
         resource.organization(organization.id.toString()).delete()
         // no event should be produced because tuple was deleted at previous stage
         organizations.deleteById(organization.id)

@@ -1,5 +1,7 @@
 package io.eordie.multimodule.contracts.utils
 
+import io.eordie.multimodule.contracts.basic.BasePermission
+import io.eordie.multimodule.contracts.basic.Permission
 import io.eordie.multimodule.contracts.basic.exception.AccessDeniedException
 import io.eordie.multimodule.contracts.basic.exception.BaseRuntimeException
 import io.eordie.multimodule.contracts.basic.exception.EntityNotFoundException
@@ -46,6 +48,10 @@ object ProtobufModule {
                 subclass(UnauthenticatedException::class)
                 subclass(EntityNotFoundException::class)
                 subclass(UnexpectedInvocationException::class)
+            }
+
+            polymorphic(Permission::class) {
+                subclass(BasePermission::class)
             }
 
             polymorphic(BindingCriterion::class) {

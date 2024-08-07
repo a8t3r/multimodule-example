@@ -1,7 +1,7 @@
 package io.eordie.multimodule.contracts.organization.models
 
 import graphql.schema.DataFetchingEnvironment
-import io.eordie.multimodule.contracts.basic.Permission
+import io.eordie.multimodule.contracts.basic.BasePermission
 import io.eordie.multimodule.contracts.basic.PermissionAware
 import io.eordie.multimodule.contracts.basic.ShortDescription
 import io.eordie.multimodule.contracts.organization.models.structure.OrganizationEmployeeFilter
@@ -17,8 +17,8 @@ data class Organization(
     override val id: UuidStr,
     override val name: String,
     val displayName: String?,
-    override val permissions: List<Permission>
-) : PermissionAware, ShortDescription {
+    override val permissions: List<BasePermission>
+) : PermissionAware<BasePermission>, ShortDescription {
     fun employedUsers(env: DataFetchingEnvironment, filter: OrganizationEmployeeFilter? = null) =
         env.getValueBy(OrganizationQueries::loadOrganizationEmployedUsers, id, filter)
 

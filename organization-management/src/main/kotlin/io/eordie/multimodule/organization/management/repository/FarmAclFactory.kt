@@ -3,10 +3,10 @@ package io.eordie.multimodule.organization.management.repository
 import io.eordie.multimodule.common.filter.accept
 import io.eordie.multimodule.common.filter.acceptMany
 import io.eordie.multimodule.common.repository.ResourceAcl
+import io.eordie.multimodule.contracts.basic.BasePermission.MANAGE
+import io.eordie.multimodule.contracts.basic.BasePermission.PURGE
+import io.eordie.multimodule.contracts.basic.BasePermission.VIEW
 import io.eordie.multimodule.contracts.basic.Permission
-import io.eordie.multimodule.contracts.basic.Permission.MANAGE
-import io.eordie.multimodule.contracts.basic.Permission.PURGE
-import io.eordie.multimodule.contracts.basic.Permission.VIEW
 import io.eordie.multimodule.contracts.basic.filters.Direction
 import io.eordie.multimodule.contracts.organization.models.acl.FarmAcl
 import io.eordie.multimodule.contracts.organization.models.acl.FarmAclFilter
