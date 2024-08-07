@@ -39,7 +39,7 @@ class FunctionKotlinDataLoader(
     private val isBatchedFunction = function.returnType.classifier == Map::class
 
     override val dataLoaderName =
-        (instance::class.getServiceInterface() ?: instance::class).simpleName + ":" + function.name
+        (instance::class.getServiceInterface(Query::class) ?: instance::class).simpleName + ":" + function.name
 
     override fun getDataLoader(graphQLContext: GraphQLContext): DataLoader<Any, Any?> {
         return DataLoaderFactory.newDataLoader(

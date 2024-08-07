@@ -1,6 +1,9 @@
 package io.eordie.multimodule.common.rsocket.server
 
 import io.eordie.multimodule.common.rsocket.client.getServiceInterface
+import io.eordie.multimodule.common.utils.matching
+import io.eordie.multimodule.contracts.Mutation
+import io.eordie.multimodule.contracts.Query
 import io.micronaut.context.BeanLocator
 import io.opentelemetry.api.trace.Tracer
 import io.rsocket.kotlin.ConnectionAcceptor
@@ -12,6 +15,7 @@ import io.rsocket.kotlin.metadata.read
 import io.rsocket.kotlin.payload.Payload
 import kotlinx.coroutines.withContext
 import kotlin.coroutines.EmptyCoroutineContext
+import kotlin.reflect.KClass
 import kotlin.reflect.KVisibility
 import kotlin.reflect.full.declaredFunctions
 
@@ -19,10 +23,11 @@ import kotlin.reflect.full.declaredFunctions
 class RsocketConnectionAcceptorBuilder(
     beanLocator: BeanLocator,
     tracer: Tracer,
-    controllers: Collection<Any>
+    queries: Collection<Query>,
+    mutations: Collection<Mutation>
 ) {
 
-    private val index = buildControllerMethods(controllers).associateBy { it.name }.toMutableMap()
+    private val index = buildControllerMethods(queries, mutations).associateBy { it.name }.toMutableMap()
     private val invocationHelper = InvocationHelper(beanLocator, tracer)
 
     fun createAcceptor(): ConnectionAcceptor {
@@ -63,17 +68,29 @@ class RsocketConnectionAcceptorBuilder(
         return this
     }
 
-    private fun buildControllerMethods(controllers: Collection<Any>): List<ControllerDescriptor> {
+    private fun buildControllerMethods(
+        queries: Collection<Query>,
+        mutations: Collection<Mutation>
+    ): List<ControllerDescriptor> {
+        return buildControllerMethods(queries, Query::class) + buildControllerMethods(mutations, Mutation::class)
+    }
+
+    private fun buildControllerMethods(controllers: Collection<Any>, type: KClass<*>): List<ControllerDescriptor> {
         return controllers
-            .flatMap { controller ->
-                controller::class.declaredFunctions
-                    .filter { it.visibility == KVisibility.PUBLIC }
-                    .map { controller to it }
+            .mapNotNull { controller ->
+                controller::class.getServiceInterface(type)?.let { controller to it }
             }
-            .mapNotNull { (controller, function) ->
-                controller::class.getServiceInterface()?.let {
-                    ControllerDescriptor(controller, it, function)
-                }
+            .flatMap { (controller, serviceInterface) ->
+                val implementationFunctions = controller::class.declaredFunctions
+                serviceInterface.declaredFunctions
+                    .filter { it.visibility == KVisibility.PUBLIC }
+                    .mapNotNull { interfaceFunction ->
+                        implementationFunctions.matching(interfaceFunction)
+                            ?.let { interfaceFunction to it }
+                    }
+                    .map { (interfaceFunction, implementationFunction) ->
+                        ControllerDescriptor(controller, serviceInterface, implementationFunction, interfaceFunction)
+                    }
             }
     }
 }

@@ -68,7 +68,7 @@ class GraphQLConfig {
         dataLoaders: List<KotlinDataLoader<*, *>>,
         cacheProvider: CacheProvider
     ): KotlinDataLoaderRegistryFactory {
-        val generated = filterOperations(queries)
+        val generated = filterOperations(queries, Query::class)
             .flatMap { (type, instance) ->
                 type.declaredFunctions.map {
                     FunctionKotlinDataLoader(instance, it, cacheProvider)
@@ -114,8 +114,8 @@ class GraphQLConfig {
     }
 
     // replace service type with super interface declared in model-contracts
-    private fun <T : Any> filterOperations(operations: List<T>): List<Pair<KClass<*>, T>> {
-        return operations.groupBy { it::class.getServiceInterface() ?: it::class }
+    private fun <T : Any> filterOperations(operations: List<T>, type: KClass<T>): List<Pair<KClass<*>, T>> {
+        return operations.groupBy { it::class.getServiceInterface(type) ?: it::class }
             .map { (targetClass, group) ->
                 val instance = group.firstOrNull { it is Synthesized }
                     ?: error("synthesized implementation not found for type $targetClass")
@@ -136,13 +136,13 @@ class GraphQLConfig {
         queries: List<Query>,
         mutations: List<Mutation>
     ): GraphQL {
-        fun topObjects(operations: List<Any>) = filterOperations(operations)
+        fun <T : Any> topObjects(operations: List<T>, type: KClass<T>) = filterOperations(operations, type)
             .map { (type, instance) -> TopLevelObject(instance, type) }
 
         val graphQLSchema = toSchema(
             config,
-            topObjects(queries),
-            topObjects(mutations)
+            topObjects(queries, Query::class),
+            topObjects(mutations, Mutation::class),
         )
         return GraphQL.newGraphQL(graphQLSchema)
             .preparsedDocumentProvider(preparsedDocumentProvider())

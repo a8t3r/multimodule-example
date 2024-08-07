@@ -59,12 +59,22 @@ class RsocketServerFactory {
         val entityLoaders: List<ControllerDescriptor> = baseFactories.map {
             val domainClass = GenericTypes.getTypeArguments(it, KBaseFactory::class)[1]
             val functions = it::class.functions
-            ControllerDescriptor(it, EntityLoader::class, functions.like(loadSuspend), domainClass.java.simpleName)
+            ControllerDescriptor(
+                it,
+                EntityLoader::class,
+                functions.like(loadSuspend),
+                loadSuspend,
+                domainClass.java.simpleName
+            )
         }
 
         val tracer = openTelemetry.tracerBuilder("rsocket-server").build()
-        val controllers = (queries + mutations).filter { it !is Synthesized }
-        return RsocketConnectionAcceptorBuilder(beanLocator, tracer, controllers)
+        return RsocketConnectionAcceptorBuilder(
+            beanLocator,
+            tracer,
+            queries.filter { it !is Synthesized },
+            mutations.filter { it !is Synthesized }
+        )
             .addDescriptors(entityLoaders)
             .createAcceptor()
     }
@@ -75,8 +85,7 @@ class RsocketServerFactory {
         connectionAcceptor: ConnectionAcceptor
     ): TcpServer {
         val transport = TcpServerTransport(localAddress, DefaultBufferPool()) { }
-        val connector = RSocketServer {
-        }
+        val connector = RSocketServer { }
 
         val job = SupervisorJob()
         val scope = CoroutineScope(
