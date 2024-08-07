@@ -27,7 +27,7 @@ abstract class BaseOrganizationFactory<T : Convertable<C>, C : Any, ID, F : Any>
         when {
             acl.hasOrganizationRole(Roles.MANAGE_ORGANIZATIONS) -> value(true)
             acl.hasAllOrganizationRoles(viewRoles) -> {
-                table.get<UUID>(organizationId.name).valueIn(acl.allOrganizationIds)
+                table.get<UUID>(organizationId.name) valueIn acl.allOrganizationIds
             }
             else -> value(false)
         }
