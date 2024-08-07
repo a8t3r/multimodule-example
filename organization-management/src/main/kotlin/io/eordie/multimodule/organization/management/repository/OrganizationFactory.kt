@@ -33,6 +33,8 @@ class OrganizationFactory : BaseOrganizationFactory<OrganizationModel, Organizat
 
     override val organizationId = OrganizationModel::id
 
+    override val dependencies = setOf(OrganizationModel::createdBy)
+
     suspend fun changeCreatedBy(organizationId: UUID, userId: UUID) {
         rawUpdate {
             set(table.createdByStr, userId.toString())
@@ -58,7 +60,7 @@ class OrganizationFactory : BaseOrganizationFactory<OrganizationModel, Organizat
         table: KNonNullTable<OrganizationModel>
     ): List<KNonNullExpression<Boolean>> = listOf(
         or(
-            table.createdByStr eq acl.auth.userId.toString(),
+            table.createdBy eq acl.auth.userId,
             super.listPredicates(acl, table).and()
         )!!
     )

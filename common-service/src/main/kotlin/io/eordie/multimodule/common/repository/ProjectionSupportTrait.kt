@@ -10,10 +10,13 @@ import kotlinx.coroutines.flow.map
 import org.babyfish.jimmer.sql.fetcher.Fetcher
 import kotlin.coroutines.coroutineContext
 import kotlin.reflect.KClass
+import kotlin.reflect.KProperty1
 
 interface ProjectionSupportTrait<T : Convertable<C>, C : Any, ID, F : Any> : FilterSupportTrait<T, ID, F> {
 
     val entityType: KClass<T>
+
+    val dependencies: Set<KProperty1<T, *>> get() = emptySet()
 
     suspend fun queryById(id: ID): C? {
         return findById(id)?.convert()
@@ -33,7 +36,7 @@ interface ProjectionSupportTrait<T : Convertable<C>, C : Any, ID, F : Any> : Fil
         val selectionSet = coroutineContext.getSelectionSet()
         return if (selectionSet == null) null else {
             val fields = selectionSet.fields.map { it.substringAfter("${Page<T>::data.name}.") }
-            FetcherBuilder(entityType).newFetcher(fields)
+            FetcherBuilder(entityType).newFetcher(fields + dependencies.map { it.name })
         }
     }
 }
