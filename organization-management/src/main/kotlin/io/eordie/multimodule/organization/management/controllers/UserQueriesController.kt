@@ -35,7 +35,7 @@ class UserQueriesController(
         return users.findByIds(ids).associateBy(UserModel::id) { it.convert() }
     }
 
-    override suspend fun loadRolesByUserIds(userIds: List<UUID>, role: String?): Map<UUID, List<String>> {
+    override suspend fun loadRolesByUserIds(userIds: List<UUID>, role: Roles?): Map<UUID, List<Roles>> {
         val filterBy = OrganizationEmployeeFilter(
             userId = UUIDLiteralFilter(of = userIds),
             organizationId = UUIDLiteralFilter(eq = getAuthentication().currentOrganizationId)
@@ -51,7 +51,7 @@ class UserQueriesController(
         return employees.findAllByFilter(filterBy, fetcher)
             .associateFlattenById(userIds, OrganizationEmployeeModel::userId) { employee ->
                 val position = requireNotNull(employee.position)
-                Roles.nameFromIds(position.roleIds).filter { role == null || role == it }
+                position.roles.filter { role == null || role == it }
             }
     }
 }

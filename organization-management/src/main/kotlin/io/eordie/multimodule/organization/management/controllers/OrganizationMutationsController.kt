@@ -32,7 +32,7 @@ class OrganizationMutationsController(
             organizationResource.memberships().add(userId.toString())
             val rolesResource = organizationResource.roles()
             Roles.entries.filter { it.isOrganizationRole() }.forEach {
-                rolesResource.grant(it.humanName(), userId.toString())
+                rolesResource.grant(it.internalName(), userId.toString())
             }
 
             val organizationId = UUID.fromString(rawOrganizationId)

@@ -5,6 +5,7 @@ import io.eordie.multimodule.contracts.Auditable
 import io.eordie.multimodule.contracts.organization.models.Organization
 import io.eordie.multimodule.contracts.organization.services.OrganizationStructureQueries
 import io.eordie.multimodule.contracts.utils.OffsetDateTimeStr
+import io.eordie.multimodule.contracts.utils.Roles
 import io.eordie.multimodule.contracts.utils.UuidStr
 import io.eordie.multimodule.contracts.utils.byId
 import io.eordie.multimodule.contracts.utils.getValueBy
@@ -18,7 +19,7 @@ data class OrganizationPosition(
     val id: UuidStr,
     val name: String,
     val organizationId: UuidStr,
-    val roles: List<String>,
+    val roles: List<Roles>,
     val parentId: UuidStr?,
     override val deleted: Boolean,
     override val createdAt: OffsetDateTimeStr,

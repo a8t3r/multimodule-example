@@ -43,7 +43,7 @@ interface FarmAclModel : UUIDIdentityIF, OrganizationOwnerIF, PermissionAwareIF,
     val roleIds: List<Int>
 
     @Formula(dependencies = [ "roleIds" ])
-    val roles: List<String> get() = Roles.nameFromIds(roleIds)
+    val roles: List<Roles> get() = Roles.fromIds(roleIds)
 
     val fieldIds: List<UUID>?
 }

@@ -2,6 +2,7 @@ package io.eordie.multimodule.contracts.organization.models
 
 import graphql.schema.DataFetchingEnvironment
 import io.eordie.multimodule.contracts.organization.services.UserQueries
+import io.eordie.multimodule.contracts.utils.Roles
 import io.eordie.multimodule.contracts.utils.UuidStr
 import io.eordie.multimodule.contracts.utils.getValueBy
 import io.micronaut.core.annotation.Introspected
@@ -18,7 +19,7 @@ data class User(
     val emailVerified: Boolean,
     val enabled: Boolean
 ) {
-    fun roles(env: DataFetchingEnvironment, role: String? = null): CompletableFuture<List<String>> {
+    fun roles(env: DataFetchingEnvironment, role: Roles? = null): CompletableFuture<List<Roles>> {
         return env.getValueBy(UserQueries::loadRolesByUserIds, id, role)
     }
 }

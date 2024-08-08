@@ -23,26 +23,16 @@ enum class Roles(val index: Int) {
     CREATE_ORGANIZATION(54),
     ;
 
-    fun humanName(): String = name.lowercase().replace('_', '-')
+    fun internalName(): String = name.lowercase().replace('_', '-')
 
     fun isSystemRole() = index >= 50
 
     fun isOrganizationRole() = index <= 10
 
     companion object {
-
         private val index = entries.associateBy { it.index }
 
-        fun nameFromIds(ids: Collection<Int>): List<String> {
-            return ids.mapNotNull { index[it]?.humanName() }
-        }
-
-        fun supportedFrom(roles: Collection<String>): List<Roles> {
-            return Roles.entries.filter { it.humanName() in roles }
-        }
-
-        fun idsFromNames(roles: Collection<String>?): List<Int> {
-            return supportedFrom(roles.orEmpty()).map { it.index }
-        }
+        fun toIds(values: List<Roles>) = values.map { it.index }
+        fun fromIds(ids: List<Int>?) = ids.orEmpty().mapNotNull { index[it] }
     }
 }

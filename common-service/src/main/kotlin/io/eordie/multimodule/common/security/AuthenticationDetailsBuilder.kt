@@ -9,6 +9,7 @@ import io.eordie.multimodule.contracts.identitymanagement.models.LocaleBinding
 import io.eordie.multimodule.contracts.identitymanagement.models.OrganizationRoleBinding
 import io.eordie.multimodule.contracts.utils.Roles
 import io.micronaut.security.authentication.Authentication
+import org.apache.commons.lang3.EnumUtils
 import java.util.*
 
 class AuthenticationDetailsBuilder {
@@ -21,9 +22,7 @@ class AuthenticationDetailsBuilder {
         var organizationAttributes: Map<String, OrganizationAttribute>? = null
 
         fun roles(): List<Roles> {
-            return Roles.supportedFrom(
-                resourceAccess?.masterRealm?.roles.orEmpty() + activeOrganization?.role.orEmpty()
-            )
+            return supportedRoles((resourceAccess?.masterRealm?.roles.orEmpty() + activeOrganization?.role.orEmpty()))
         }
     }
 
@@ -52,6 +51,13 @@ class AuthenticationDetailsBuilder {
     )
 
     companion object {
+
+        private fun supportedRoles(roleNames: Collection<String>): List<Roles> {
+            return roleNames.mapNotNull {
+                val name = it.uppercase().replace('-', '_')
+                EnumUtils.getEnum(Roles::class.java, name)
+            }
+        }
 
         private val mapper = ObjectMapper()
             .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
@@ -84,7 +90,7 @@ class AuthenticationDetailsBuilder {
                         OrganizationRoleBinding(
                             UUID.fromString(it.key),
                             it.value.name,
-                            Roles.supportedFrom(it.value.roles)
+                            supportedRoles(it.value.roles)
                         )
                     }
             )

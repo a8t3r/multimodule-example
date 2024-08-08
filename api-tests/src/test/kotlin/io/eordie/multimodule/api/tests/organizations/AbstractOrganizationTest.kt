@@ -83,7 +83,7 @@ abstract class AbstractOrganizationTest : AbstractApplicationTest() {
             OrganizationPositionInput(
                 null,
                 name,
-                listOf(Roles.VIEW_ORGANIZATION.humanName()),
+                listOf(Roles.VIEW_ORGANIZATION),
                 parent?.id
             )
         )

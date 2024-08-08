@@ -43,7 +43,7 @@ class OrganizationStructureMutationsController(
     ): OrganizationPosition {
         return positions.save<OrganizationPositionModelDraft>(position.id) { _, value ->
             value.parentId = position.parentId
-            value.roleIds = Roles.idsFromNames(position.roles)
+            value.roleIds = Roles.toIds(position.roles)
             value.name = position.name
         }.convert()
     }

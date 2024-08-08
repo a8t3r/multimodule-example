@@ -14,5 +14,5 @@ data class EmployeeAcl(
     val fieldIds: List<UuidStr>? = null,
     @GraphQLIgnore val roleIds: List<Int>? = null
 ) {
-    fun roles() = Roles.nameFromIds(roleIds.orEmpty())
+    fun roles() = Roles.fromIds(roleIds)
 }

@@ -1,7 +1,5 @@
 package io.eordie.multimodule.contracts.identitymanagement.models
 
-import com.expediagroup.graphql.generator.annotations.GraphQLIgnore
-import com.expediagroup.graphql.generator.annotations.GraphQLName
 import graphql.schema.DataFetchingEnvironment
 import io.eordie.multimodule.contracts.basic.ShortDescription
 import io.eordie.multimodule.contracts.organization.models.Organization
@@ -21,19 +19,14 @@ import java.util.concurrent.CompletableFuture
 data class OrganizationRoleBinding(
     val organizationId: UuidStr,
     val organizationName: String,
-    @GraphQLIgnore val roles: List<Roles>
-) {
-    @GraphQLName("roles")
-    fun humanRoles(role: String? = null): List<String> = roles
-        .map { it.humanName() }
-        .filter { role == null || role == it }
-}
+    val roles: List<Roles>
+)
 
 @Introspected
 @Serializable
 data class AuthenticationDetails(
     val userId: UuidStr,
-    @GraphQLIgnore val roles: List<Roles>,
+    val roles: List<Roles>,
     val email: String,
     val emailVerified: Boolean,
     val locale: LocaleBinding,
@@ -50,11 +43,6 @@ data class AuthenticationDetails(
     fun user(env: DataFetchingEnvironment): CompletableFuture<User> {
         return env.getValueBy(UserQueries::loadUserByIds, userId)
     }
-
-    @GraphQLName("roles")
-    fun humanRoles(role: String? = null): List<String> = roles
-        .map { it.humanName() }
-        .filter { role == null || role == it }
 
     fun currentOrganization(env: DataFetchingEnvironment) = env.byId<Organization?>(currentOrganizationId)
 }

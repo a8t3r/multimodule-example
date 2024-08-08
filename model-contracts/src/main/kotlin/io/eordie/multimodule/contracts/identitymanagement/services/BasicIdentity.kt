@@ -13,7 +13,5 @@ interface BasicIdentity : Query {
     @Secured(allowAnonymous = true)
     suspend fun me(@GraphQLIgnore authentication: AuthenticationDetails?): AuthenticationDetails?
 
-    suspend fun supportedRoles(): List<String> {
-        return Roles.entries.map { it.humanName() }.toList()
-    }
+    suspend fun supportedRoles(): List<Roles> = Roles.entries.toList()
 }

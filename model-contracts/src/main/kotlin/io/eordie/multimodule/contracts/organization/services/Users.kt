@@ -7,6 +7,7 @@ import io.eordie.multimodule.contracts.basic.paging.Page
 import io.eordie.multimodule.contracts.basic.paging.Pageable
 import io.eordie.multimodule.contracts.organization.models.User
 import io.eordie.multimodule.contracts.organization.models.UsersFilter
+import io.eordie.multimodule.contracts.utils.Roles
 import java.util.*
 
 @AutoService(Query::class)
@@ -16,7 +17,7 @@ interface UserQueries : Query {
 
     suspend fun loadUserByIds(ids: List<UUID>): Map<UUID, User>
 
-    suspend fun loadRolesByUserIds(userIds: List<UUID>, role: String?): Map<UUID, List<String>>
+    suspend fun loadRolesByUserIds(userIds: List<UUID>, role: Roles?): Map<UUID, List<Roles>>
 }
 
 @AutoService(Mutation::class)

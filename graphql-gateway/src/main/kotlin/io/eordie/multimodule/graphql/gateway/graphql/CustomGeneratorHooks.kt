@@ -41,11 +41,10 @@ internal class CustomGeneratorHooks(customConverters: List<TypeConverter>) : Flo
         .toMap()
 
     private val previouslyCreated = mutableSetOf<String>()
-    private val internalPrefixes = setOf("internal", "load", "broadcast")
+    private val skip = setOf("internal", "load", "broadcast")
 
     override fun isValidFunction(kClass: KClass<*>, function: KFunction<*>) =
-        function.findAnnotations<GraphQLIgnore>(kClass).isEmpty() &&
-            internalPrefixes.none { function.name.startsWith(it) }
+        function.findAnnotations<GraphQLIgnore>(kClass).isEmpty() && skip.none { function.name.startsWith(it) }
 
     @Suppress("CyclomaticComplexMethod")
     override fun willGenerateGraphQLType(type: KType): GraphQLType? = when (type.classifier as? KClass<*>) {

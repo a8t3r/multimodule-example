@@ -11,6 +11,6 @@ class KeycloakRolesFinder : RolesFinder {
 
     override fun resolveRoles(attributes: MutableMap<String, Any>): MutableList<String> {
         val holder = AuthenticationDetailsBuilder.getRolesHolder(attributes)
-        return holder.roles().map { it.humanName() }.toMutableList()
+        return holder.roles().map { it.name.lowercase() }.toMutableList()
     }
 }
