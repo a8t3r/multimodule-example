@@ -14,7 +14,6 @@ import io.eordie.multimodule.contracts.organization.models.acl.FarmAclInput
 import io.eordie.multimodule.contracts.organization.models.acl.GlobalCriterion
 import io.eordie.multimodule.contracts.organization.models.structure.OrganizationDepartment
 import io.eordie.multimodule.contracts.organization.models.structure.OrganizationEmployeeInput
-import io.eordie.multimodule.contracts.utils.Roles.MANAGE_MEMBERS
 import io.eordie.multimodule.contracts.utils.Roles.MANAGE_ORGANIZATION
 import io.eordie.multimodule.contracts.utils.Roles.VIEW_ORGANIZATION
 import org.junit.jupiter.api.MethodOrderer
@@ -27,7 +26,6 @@ import java.util.*
 class EmploymentToDepartmentsWithCustomBindingsTest : AbstractOrganizationTest() {
 
     private val farmOwner = authWith(firstOrg, MANAGE_ORGANIZATION)
-    private val organizationManager = authWith(developersOrg, VIEW_ORGANIZATION, MANAGE_ORGANIZATION, MANAGE_MEMBERS)
 
     private lateinit var farmAcl: List<FarmAcl>
     private lateinit var empty: OrganizationDepartment
