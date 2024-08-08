@@ -10,7 +10,6 @@ import io.eordie.multimodule.contracts.utils.getValueBy
 import io.micronaut.core.annotation.Introspected
 import kotlinx.serialization.Serializable
 import java.util.concurrent.CompletableFuture
-import java.util.concurrent.CompletableFuture.completedFuture
 
 @Cached
 @Introspected
@@ -34,11 +33,7 @@ data class Region(
         return env.getValueBy(RegionQueries::loadRegionsName, id, lang)
     }
 
-    fun parent(env: DataFetchingEnvironment): CompletableFuture<Region?> {
-        return if (parentId == null) completedFuture(null) else {
-            env.byId(parentId)
-        }
-    }
+    fun parent(env: DataFetchingEnvironment) = env.byId<Region?>(parentId)
 
     fun children(env: DataFetchingEnvironment): CompletableFuture<List<Region>> {
         return env.getValueBy(RegionQueries::loadRegionByParentIds, id)
