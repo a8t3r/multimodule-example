@@ -13,6 +13,7 @@ import io.eordie.multimodule.regions.models.OsmRegionTreeModel
 import io.eordie.multimodule.regions.models.OsmRelationModel
 import io.eordie.multimodule.regions.models.country
 import io.eordie.multimodule.regions.models.depth
+import io.eordie.multimodule.regions.models.fetchBy
 import io.eordie.multimodule.regions.models.geometry
 import io.eordie.multimodule.regions.models.id
 import io.eordie.multimodule.regions.models.osmId
@@ -45,6 +46,29 @@ class RegionsFactory : KBaseFactory<OsmRegionTreeModel, Region, Long, RegionsFil
     private fun KNonNullPropExpression<Map<String, String>>.name(lang: String? = null): KNullableExpression<String> {
         val tag = if (lang == null) "name" else "name:${lang.lowercase()}"
         return this.jsonStr(tag)
+    }
+
+    fun getRegionPath(regionId: Long): List<OsmRegionTreeModel> {
+        val region = sql.createQuery(entityType) {
+            where(table.id eq regionId)
+            select(
+                table.fetchBy {
+                    allScalarFields()
+                    `parent*`()
+                }
+            )
+        }.fetchOneOrNull() ?: return emptyList()
+
+        fun visitParent(region: OsmRegionTreeModel?, visited: MutableList<OsmRegionTreeModel>) {
+            if (region != null) {
+                visited.add(region)
+                visitParent(region.parent, visited)
+            }
+        }
+
+        return mutableListOf<OsmRegionTreeModel>()
+            .apply { visitParent(region, this) }
+            .sortedBy { it.depth }
     }
 
     override fun ResourceAcl.toPredicates(

@@ -23,7 +23,15 @@ class RegionsTest : AbstractApplicationTest() {
         assertThat(region.id).isEqualTo(2804758)
         assertThat(region.depth).isEqualTo(1)
         assertThat(region.parentId).isEqualTo(9407)
+        assertThat(region.country).isEqualTo("AD")
         assertThat(region.name(env()).await()).isEqualTo("Ordino")
+    }
+
+    @Test
+    fun `should get region path by id`() = test {
+        val regions = regions.regionPath(2804758)
+        assertThat(regions).hasSize(2)
+        assertThat(regions.map { it.id }).containsExactly(9407L, 2804758L).inOrder()
     }
 
     @Test
@@ -47,6 +55,7 @@ class RegionsTest : AbstractApplicationTest() {
         assertThat(region.id).isEqualTo(2804758)
         assertThat(region.depth).isEqualTo(1)
         assertThat(region.parentId).isEqualTo(9407)
+        assertThat(region.country).isEqualTo("AD")
         assertThat(region.name(env()).await()).isEqualTo("Ordino")
     }
 
@@ -64,5 +73,6 @@ class RegionsTest : AbstractApplicationTest() {
         assertThat(region.id).isEqualTo(9407)
         assertThat(region.depth).isEqualTo(0)
         assertThat(region.parentId).isNull()
+        assertThat(region.country).isEqualTo("AD")
     }
 }

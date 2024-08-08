@@ -16,6 +16,8 @@ interface RegionQueries : Query {
 
     suspend fun regions(filter: RegionsFilter? = null, pageable: Pageable? = null): Page<Region>
 
+    suspend fun regionPath(regionId: Long): List<Region>
+
     suspend fun loadRegionByParentIds(parentIds: List<Long>): Map<Long, List<Region>>
 
     suspend fun loadRegionsName(regionIds: List<Long>, lang: String? = null): Map<Long, String>

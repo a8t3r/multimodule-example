@@ -30,6 +30,10 @@ class RegionQueriesController(
         return regions.query(filter.orDefault(), pageable)
     }
 
+    override suspend fun regionPath(regionId: Long): List<Region> {
+        return regions.getRegionPath(regionId).map { it.convert() }
+    }
+
     override suspend fun loadRegionByParentIds(parentIds: List<Long>): Map<Long, List<Region>> {
         return regions.findAllBySpecification {
             where(table.parentId valueIn parentIds)
