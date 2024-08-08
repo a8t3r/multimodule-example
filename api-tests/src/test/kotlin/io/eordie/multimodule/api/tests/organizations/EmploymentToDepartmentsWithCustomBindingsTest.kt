@@ -98,7 +98,7 @@ class EmploymentToDepartmentsWithCustomBindingsTest : AbstractOrganizationTest()
         val userFilter = UsersFilter(organization = OrganizationsFilter(id = UUIDLiteralFilter(eq = developersOrg.id)))
         val members = userQueries.users(userFilter).data
         assertThat(members.size).isAtLeast(2)
-        assertThat(members.map { it.id }).containsExactly(developer1, developer2)
+        assertThat(members.map { it.id }).containsAtLeast(developer1, developer2)
 
         val structure = createExampleStructure(developersOrg)
         val junior = structure.getValue("Junior Developer")

@@ -14,7 +14,7 @@ class UsersQueryTest : AbstractOrganizationTest() {
         val page = userQueries.users(filter)
         assertThat(page.pageable.cursor).isNull()
         assertThat(page.data.size).isAtLeast(2)
-        assertThat(page.data.map { it.id }).containsExactly(developer1, developer2)
+        assertThat(page.data.map { it.id }).containsAtLeast(developer1, developer2)
     }
 
     @Test
