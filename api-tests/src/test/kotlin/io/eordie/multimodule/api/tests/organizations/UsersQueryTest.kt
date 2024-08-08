@@ -13,7 +13,7 @@ class UsersQueryTest : AbstractOrganizationTest() {
         val filter = UsersFilter(organization = OrganizationsFilter(name = StringLiteralFilter(eq = "Developers org")))
         val page = userQueries.users(filter)
         assertThat(page.pageable.cursor).isNull()
-        assertThat(page.data).hasSize(2)
+        assertThat(page.data.size).isAtLeast(2)
         assertThat(page.data.map { it.id }).containsExactly(developer1, developer2)
     }
 
