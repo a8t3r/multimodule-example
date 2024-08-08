@@ -3,6 +3,7 @@ package io.eordie.multimodule.api.tests.organizations
 import com.google.common.truth.Truth.assertThat
 import io.eordie.multimodule.api.tests.AuthUtils.authWith
 import io.eordie.multimodule.contracts.basic.filters.Direction
+import io.eordie.multimodule.contracts.basic.filters.StringLiteralFilter
 import io.eordie.multimodule.contracts.basic.filters.UUIDLiteralFilter
 import io.eordie.multimodule.contracts.organization.models.OrganizationsFilter
 import io.eordie.multimodule.contracts.organization.models.UsersFilter
@@ -14,6 +15,7 @@ import io.eordie.multimodule.contracts.organization.models.acl.FarmAclInput
 import io.eordie.multimodule.contracts.organization.models.acl.GlobalCriterion
 import io.eordie.multimodule.contracts.organization.models.structure.OrganizationDepartment
 import io.eordie.multimodule.contracts.organization.models.structure.OrganizationEmployeeInput
+import io.eordie.multimodule.contracts.organization.models.structure.OrganizationPositionFilter
 import io.eordie.multimodule.contracts.utils.Roles.MANAGE_ORGANIZATION
 import io.eordie.multimodule.contracts.utils.Roles.VIEW_ORGANIZATION
 import org.junit.jupiter.api.MethodOrderer
@@ -180,5 +182,17 @@ class EmploymentToDepartmentsWithCustomBindingsTest : AbstractOrganizationTest()
             ensureEntries(employeeAclQueries.internalActiveResourceAcl(developer1, developersOrg.id)?.entries)
             ensureEntries(employeeAclQueries.internalActiveResourceAcl(developer2, developersOrg.id)?.entries)
         }
+    }
+
+    @Test
+    @Order(70)
+    fun `verify access after position remove`() = test(organizationManager) {
+        val filter = OrganizationPositionFilter(name = StringLiteralFilter(eq = "Junior Developer"))
+        val positions = structureQueries.positions(developersOrg, filter)
+        assertThat(positions).hasSize(1)
+        structureMutations.deletePosition(positions[0].id)
+
+        assertThat(employeeAclQueries.internalActiveResourceAcl(developer1, developersOrg.id)?.entries).isNull()
+        assertThat(employeeAclQueries.internalActiveResourceAcl(developer2, developersOrg.id)?.entries).isNull()
     }
 }
