@@ -5,11 +5,11 @@ import io.micronaut.http.annotation.Post
 import io.micronaut.http.client.annotation.Client
 
 @Header(name = "Authorization", value = "Token \${integrations.dadata.token}")
-@Client("https://suggestions.dadata.ru")
+@Client("https://suggestions.dadata.ru/suggestions/api/4_1/rs")
 interface SuggestionsClient {
-    @Post("/suggestions/api/4_1/rs/suggest/party")
+    @Post("/suggest/party")
     suspend fun suggest(query: String): ResultEnvelope
 
-    @Post("/suggestions/api/4_1/rs/findById/party")
+    @Post("/findById/party")
     suspend fun findById(query: String): ResultEnvelope
 }
