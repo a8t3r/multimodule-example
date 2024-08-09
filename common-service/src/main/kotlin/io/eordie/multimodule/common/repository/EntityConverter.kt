@@ -7,10 +7,13 @@ import io.eordie.multimodule.contracts.basic.Permission
 import io.eordie.multimodule.contracts.utils.getIntrospection
 import io.micronaut.core.beans.BeanIntrospection
 import kotlinx.serialization.Required
+import org.babyfish.jimmer.Draft
+import org.babyfish.jimmer.runtime.DraftSpi
 import org.babyfish.jimmer.runtime.ImmutableSpi
 import java.time.OffsetDateTime
 import java.util.*
 import kotlin.reflect.KClass
+import kotlin.reflect.KProperty0
 
 object EntityConverter {
 
@@ -21,6 +24,14 @@ object EntityConverter {
         List::class.java to emptyList<Any>(),
         OffsetDateTime::class.java to OffsetDateTime.now()
     )
+
+    fun <T, S : Any> T.copyFields(vararg props: KProperty0<*>): T where T : Convertable<S>, T : Draft {
+        val draft = (this as DraftSpi)
+        props.forEach { prop ->
+            draft.__set(prop.name, prop.get())
+        }
+        return this
+    }
 
     fun <T : Any> convert(convertable: Convertable<T>): T {
         val introspection = this.getIntrospection(convertable::class)

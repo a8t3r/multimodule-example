@@ -1,4 +1,4 @@
-#include postgres-default, postgres-keycloak, postgres-osm, logback-template, kafka, keycloak-security, redis, bootstrap
+#include postgres-default, postgres-keycloak, postgres-osm, logback-template, kafka, keycloak-security, redis, bootstrap, dadata
 
 jackson:
   serializationInclusion: ALWAYS

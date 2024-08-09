@@ -35,5 +35,7 @@ interface OrganizationQueries : Query {
 interface OrganizationMutations : Mutation {
     suspend fun organization(input: OrganizationInput): Organization
 
+    suspend fun organizationByVat(vat: String): Organization
+
     suspend fun deleteOrganization(organizationId: UUID)
 }

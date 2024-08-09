@@ -1,4 +1,4 @@
-#include postgres-keycloak, logback-template, bootstrap, kafka, kubernetes, redis, keycloak
+#include postgres-keycloak, logback-template, bootstrap, kafka, kubernetes, redis, keycloak, dadata
 
 micronaut:
   application:
