@@ -86,10 +86,13 @@ class UserFactory : KBaseFactory<UserModel, User, UUID, UsersFilter>(
             table.email.accept(filter.email),
             table.emailVerified.accept(filter.emailVerified),
             table.membership { organization.accept(filter.organization) },
-            filter.employed?.let {
-                table.membership {
-                    employees { table.id eq userId }.negateUnless(it)
-                }
+            table.membership {
+                employees {
+                    and(
+                        table.id eq userId,
+                        asTableEx().accept(filter.employee)
+                    )
+                }.negateUnless(filter.hasEmployee)
             },
             filter.phoneNumber?.let {
                 observeAttributes(it, "phoneNumber", table)

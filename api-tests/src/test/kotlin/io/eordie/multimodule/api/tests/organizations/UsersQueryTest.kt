@@ -25,7 +25,7 @@ class UsersQueryTest : AbstractOrganizationTest() {
     fun `should query unemployed users`() = test(organizationManager) {
         val page = userQueries.users(
             UsersFilter(
-                employed = false,
+                hasEmployee = false,
                 organization = OrganizationsFilter(name = StringLiteralFilter(eq = "Developers org"))
             )
         )
@@ -39,7 +39,7 @@ class UsersQueryTest : AbstractOrganizationTest() {
     fun `should query employed users`() = test(organizationManager) {
         val page = userQueries.users(
             UsersFilter(
-                employed = true,
+                hasEmployee = true,
                 organization = OrganizationsFilter(name = StringLiteralFilter(eq = "Developers org"))
             )
         )

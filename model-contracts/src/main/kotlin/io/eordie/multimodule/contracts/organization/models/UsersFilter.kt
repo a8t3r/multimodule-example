@@ -3,6 +3,7 @@ package io.eordie.multimodule.contracts.organization.models
 import io.eordie.multimodule.contracts.basic.filters.BooleanLiteralFilter
 import io.eordie.multimodule.contracts.basic.filters.StringLiteralFilter
 import io.eordie.multimodule.contracts.basic.filters.UUIDLiteralFilter
+import io.eordie.multimodule.contracts.organization.models.structure.OrganizationEmployeeFilter
 import io.micronaut.core.annotation.Introspected
 import kotlinx.serialization.Serializable
 
@@ -10,12 +11,13 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class UsersFilter(
     val id: UUIDLiteralFilter? = null,
-    val employed: Boolean? = null,
     val firstName: StringLiteralFilter? = null,
     val lastName: StringLiteralFilter? = null,
     val email: StringLiteralFilter? = null,
     val emailVerified: BooleanLiteralFilter? = null,
     val organization: OrganizationsFilter? = null,
     val phoneNumber: StringLiteralFilter? = null,
+    val employee: OrganizationEmployeeFilter? = null,
+    val hasEmployee: Boolean? = null,
     val phoneNumberVerified: BooleanLiteralFilter? = null
 )
