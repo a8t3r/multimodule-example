@@ -14,6 +14,8 @@ import io.eordie.multimodule.contracts.organization.models.acl.FarmAclFilter
 import io.eordie.multimodule.contracts.organization.models.acl.FarmAclInput
 import io.eordie.multimodule.contracts.organization.models.acl.GlobalCriterion
 import io.eordie.multimodule.contracts.organization.models.structure.OrganizationDepartment
+import io.eordie.multimodule.contracts.organization.models.structure.OrganizationDepartmentFilter
+import io.eordie.multimodule.contracts.organization.models.structure.OrganizationEmployeeFilter
 import io.eordie.multimodule.contracts.organization.models.structure.OrganizationEmployeeInput
 import io.eordie.multimodule.contracts.organization.models.structure.OrganizationPositionFilter
 import io.eordie.multimodule.contracts.utils.Roles.MANAGE_ORGANIZATION
@@ -95,26 +97,76 @@ class EmploymentToDepartmentsWithCustomBindingsTest : AbstractOrganizationTest()
     @Test
     @Order(30)
     fun `should apply members to departments`() = test(organizationManager) {
-        val unEmployedFilter = UsersFilter(
+        val filter = UsersFilter(
             hasEmployee = false,
             organization = OrganizationsFilter(id = UUIDLiteralFilter(eq = developersOrg.id))
         )
-        val unEmployed = userQueries.users(unEmployedFilter).data
-        assertThat(unEmployed.size).isAtLeast(2)
-        assertThat(unEmployed.map { it.id }).containsAtLeast(developer1, developer2)
+        val users = userQueries.users(filter).data
+        assertThat(users.size).isAtLeast(2)
+        assertThat(users.map { it.id }).containsAtLeast(developer1, developer2)
 
         val structure = createExampleStructure(developersOrg)
         val junior = structure.getValue("Junior Developer")
         structureMutations.employee(developersOrg, OrganizationEmployeeInput(developer1, fullAccess.id, junior.id))
         structureMutations.employee(developersOrg, OrganizationEmployeeInput(developer2, specific.id, junior.id))
+    }
 
-        val employedFilter = UsersFilter(
+    @Test
+    @Order(31)
+    fun `query users by employee filter`() = test(organizationManager) {
+        val filter = UsersFilter(
             hasEmployee = true,
             organization = OrganizationsFilter(id = UUIDLiteralFilter(eq = developersOrg.id))
         )
-        val employed = userQueries.users(employedFilter).data
-        assertThat(employed.size).isAtLeast(2)
-        assertThat(employed.map { it.id }).containsAtLeast(developer1, developer2)
+
+        val users = userQueries.users(filter).data
+        assertThat(users).hasSize(2)
+        assertThat(users.map { it.id }).containsExactly(developer1, developer2)
+    }
+
+    @Test
+    @Order(31)
+    fun `query users by department filter - full access department`() = test(organizationManager) {
+        val filter = UsersFilter(
+            employee = OrganizationEmployeeFilter(
+                department = OrganizationDepartmentFilter(id = UUIDLiteralFilter(eq = fullAccess.id))
+            ),
+            organization = OrganizationsFilter(id = UUIDLiteralFilter(eq = developersOrg.id))
+        )
+
+        val users = userQueries.users(filter).data
+        assertThat(users).hasSize(1)
+        assertThat(users.map { it.id }).containsExactly(developer1)
+    }
+
+    @Test
+    @Order(32)
+    fun `query users by department filter - specific access department`() = test(organizationManager) {
+        val filter = UsersFilter(
+            employee = OrganizationEmployeeFilter(
+                department = OrganizationDepartmentFilter(id = UUIDLiteralFilter(eq = specific.id))
+            ),
+            organization = OrganizationsFilter(id = UUIDLiteralFilter(eq = developersOrg.id))
+        )
+
+        val users = userQueries.users(filter).data
+        assertThat(users).hasSize(1)
+        assertThat(users.map { it.id }).containsExactly(developer2)
+    }
+
+    @Test
+    @Order(33)
+    fun `query users by position filter`() = test(organizationManager) {
+        val filter = UsersFilter(
+            employee = OrganizationEmployeeFilter(
+                position = OrganizationPositionFilter(name = StringLiteralFilter(like = "Junior"))
+            ),
+            organization = OrganizationsFilter(id = UUIDLiteralFilter(eq = developersOrg.id))
+        )
+
+        val users = userQueries.users(filter).data
+        assertThat(users).hasSize(2)
+        assertThat(users.map { it.id }).containsExactly(developer1, developer2)
     }
 
     @Test
