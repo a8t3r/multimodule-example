@@ -24,6 +24,7 @@ import io.eordie.multimodule.organization.management.models.organizationId
 import io.eordie.multimodule.organization.management.models.userId
 import io.eordie.multimodule.organization.management.models.value
 import jakarta.inject.Singleton
+import org.apache.commons.lang3.ObjectUtils.anyNotNull
 import org.babyfish.jimmer.sql.kt.ast.expression.KNonNullExpression
 import org.babyfish.jimmer.sql.kt.ast.expression.KPropExpression
 import org.babyfish.jimmer.sql.kt.ast.expression.and
@@ -93,7 +94,7 @@ class UserFactory : KBaseFactory<UserModel, User, UUID, UsersFilter>(
                         asTableEx().accept(filter.employee)
                     )
                 }.negateUnless(filter.hasEmployee)
-            },
+            }.takeIf { anyNotNull(filter.employee, filter.hasEmployee) },
             filter.phoneNumber?.let {
                 observeAttributes(it, "phoneNumber", table)
             },
