@@ -11,6 +11,7 @@ import io.eordie.multimodule.contracts.organization.models.structure.Organizatio
 import io.eordie.multimodule.contracts.organization.models.structure.OrganizationDepartmentFilter
 import io.eordie.multimodule.contracts.organization.models.structure.OrganizationEmployee
 import io.eordie.multimodule.contracts.organization.models.structure.OrganizationEmployeeFilter
+import io.eordie.multimodule.contracts.organization.models.structure.OrganizationEmployeeFilterSummary
 import io.eordie.multimodule.contracts.organization.models.structure.OrganizationPosition
 import io.eordie.multimodule.contracts.organization.models.structure.OrganizationPositionFilter
 import io.eordie.multimodule.contracts.organization.services.OrganizationStructureQueries
@@ -78,5 +79,9 @@ class OrganizationStructureQueriesController(
             .copy(organizationId = UUIDLiteralFilter(eq = currentOrganization.id))
 
         return employees.query(filterBy, pageable)
+    }
+
+    override suspend fun employeeSummary(filter: OrganizationEmployeeFilter): OrganizationEmployeeFilterSummary {
+        return employees.getEmployeeFilterSummary(filter)
     }
 }

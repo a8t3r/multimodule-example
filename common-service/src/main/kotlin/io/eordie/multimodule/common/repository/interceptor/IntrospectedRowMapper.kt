@@ -6,6 +6,7 @@ import io.micronaut.core.type.Argument
 import org.apache.commons.lang3.StringUtils
 import org.springframework.jdbc.core.RowMapper
 import java.sql.ResultSet
+import java.util.*
 
 class IntrospectedRowMapper<T : Any>(
     mappedClass: Class<T>,
@@ -27,13 +28,8 @@ class IntrospectedRowMapper<T : Any>(
 
         val parameters = argumentIndex.entries.map { (argument, columnName) ->
             val columnIndex = columnIndex.getValue(columnName)
-            val value = rs.getObject(columnIndex)
-            // nullable array value
-            if (argument.type == List::class.java && value == null) {
-                ArrayList<Any>()
-            } else {
-                conversionService.convert(value, Argument.of(argument.asType())).orElseThrow()
-            }
+            val value = rs.getObject(columnIndex) ?: Optional.empty<Any>()
+            conversionService.convert(value, argument).orElseThrow()
         }
         return constructor.instantiate(*parameters.toTypedArray())
     }

@@ -14,6 +14,7 @@ import io.eordie.multimodule.contracts.organization.models.structure.Organizatio
 import io.eordie.multimodule.contracts.organization.models.structure.OrganizationDepartmentInput
 import io.eordie.multimodule.contracts.organization.models.structure.OrganizationEmployee
 import io.eordie.multimodule.contracts.organization.models.structure.OrganizationEmployeeFilter
+import io.eordie.multimodule.contracts.organization.models.structure.OrganizationEmployeeFilterSummary
 import io.eordie.multimodule.contracts.organization.models.structure.OrganizationEmployeeInput
 import io.eordie.multimodule.contracts.organization.models.structure.OrganizationPosition
 import io.eordie.multimodule.contracts.organization.models.structure.OrganizationPositionFilter
@@ -44,6 +45,8 @@ interface OrganizationStructureQueries : Query {
         filter: OrganizationEmployeeFilter? = null,
         pageable: Pageable? = null
     ): Page<OrganizationEmployee>
+
+    suspend fun employeeSummary(filter: OrganizationEmployeeFilter): OrganizationEmployeeFilterSummary
 }
 
 @AutoService(Mutation::class)
