@@ -26,7 +26,6 @@ import io.eordie.multimodule.organization.management.models.value
 import jakarta.inject.Singleton
 import org.apache.commons.lang3.ObjectUtils.anyNotNull
 import org.babyfish.jimmer.sql.kt.ast.expression.KNonNullExpression
-import org.babyfish.jimmer.sql.kt.ast.expression.KPropExpression
 import org.babyfish.jimmer.sql.kt.ast.expression.and
 import org.babyfish.jimmer.sql.kt.ast.expression.eq
 import org.babyfish.jimmer.sql.kt.ast.expression.isNotNull
@@ -42,17 +41,6 @@ class UserFactory : KBaseFactory<UserModel, User, UUID, UsersFilter>(
 ) {
 
     override val datasourceName = "keycloak"
-
-    override fun sortingExpressions(table: KNonNullTable<UserModel>): List<KPropExpression<out Comparable<*>>> {
-        return listOf(
-            table.firstName,
-            table.lastName,
-            table.email,
-            table.emailVerified,
-            table.enabled,
-            table.id
-        )
-    }
 
     override fun listPredicates(acl: ResourceAcl, table: KNonNullTable<UserModel>) = listOfNotNull(
         table.firstName.isNotNull(),

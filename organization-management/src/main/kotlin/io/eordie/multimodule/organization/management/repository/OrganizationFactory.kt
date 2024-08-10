@@ -16,7 +16,6 @@ import io.eordie.multimodule.organization.management.models.OrganizationModel
 import io.eordie.multimodule.organization.management.models.createdBy
 import io.eordie.multimodule.organization.management.models.createdByStr
 import io.eordie.multimodule.organization.management.models.`departments?`
-import io.eordie.multimodule.organization.management.models.displayName
 import io.eordie.multimodule.organization.management.models.domains
 import io.eordie.multimodule.organization.management.models.`domains?`
 import io.eordie.multimodule.organization.management.models.`employees?`
@@ -30,7 +29,6 @@ import io.eordie.multimodule.organization.management.models.`positions?`
 import io.eordie.multimodule.organization.management.models.user
 import jakarta.inject.Singleton
 import org.babyfish.jimmer.sql.kt.ast.expression.KNonNullExpression
-import org.babyfish.jimmer.sql.kt.ast.expression.KPropExpression
 import org.babyfish.jimmer.sql.kt.ast.expression.count
 import org.babyfish.jimmer.sql.kt.ast.expression.eq
 import org.babyfish.jimmer.sql.kt.ast.expression.or
@@ -119,14 +117,6 @@ class OrganizationFactory : BaseOrganizationFactory<OrganizationModel, Organizat
         return if (value.createdBy == acl.auth.userId) PermissionAwareIF.ALL else {
             super.calculatePermissions(acl, value)
         }
-    }
-
-    override fun sortingExpressions(table: KNonNullTable<OrganizationModel>): List<KPropExpression<out Comparable<*>>> {
-        return listOf(
-            table.name,
-            table.displayName,
-            table.id
-        )
     }
 
     override fun ResourceAcl.toPredicates(

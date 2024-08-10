@@ -27,7 +27,6 @@ import org.babyfish.jimmer.sql.ast.Selection
 import org.babyfish.jimmer.sql.kt.ast.expression.KNonNullExpression
 import org.babyfish.jimmer.sql.kt.ast.expression.KNonNullPropExpression
 import org.babyfish.jimmer.sql.kt.ast.expression.KNullableExpression
-import org.babyfish.jimmer.sql.kt.ast.expression.KPropExpression
 import org.babyfish.jimmer.sql.kt.ast.expression.eq
 import org.babyfish.jimmer.sql.kt.ast.expression.or
 import org.babyfish.jimmer.sql.kt.ast.expression.valueIn
@@ -38,10 +37,6 @@ class RegionsFactory : KBaseFactory<OsmRegionTreeModel, Region, Long, RegionsFil
 
     override val datasourceName = "osm"
     override val requireEmployeeAcl = false
-
-    override fun sortingExpressions(table: KNonNullTable<OsmRegionTreeModel>): List<KPropExpression<out Comparable<*>>> {
-        return listOf(table.country, table.depth, table.id)
-    }
 
     private fun KNonNullPropExpression<Map<String, String>>.name(lang: String? = null): KNullableExpression<String> {
         val tag = if (lang == null) "name" else "name:${lang.lowercase()}"
