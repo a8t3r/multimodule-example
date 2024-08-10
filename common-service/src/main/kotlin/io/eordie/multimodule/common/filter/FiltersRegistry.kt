@@ -56,7 +56,7 @@ class FiltersRegistry(
         val i = getIntrospection<F>(filter::class)
         val ownPredicates = with(filterSupport) {
             acl.toPredicates(filter, table)
-        }
+        } + filterSupport.listPredicates(acl, table)
 
         val basicPredicates = buildList {
             if (VersionedEntityIF::class.isSuperclassOf(targetClass)) {

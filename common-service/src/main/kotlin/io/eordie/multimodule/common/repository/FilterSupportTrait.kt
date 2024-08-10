@@ -10,6 +10,8 @@ import org.babyfish.jimmer.sql.kt.ast.table.KNonNullTable
 
 interface FilterSupportTrait<T : Any, ID, F : Any> {
 
+    fun listPredicates(acl: ResourceAcl, table: KNonNullTable<T>): List<KNonNullExpression<Boolean>>
+
     fun ResourceAcl.toPredicates(filter: F, table: KNonNullTable<T>): List<KNonNullExpression<Boolean>> =
         emptyList()
 
