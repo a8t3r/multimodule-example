@@ -105,7 +105,7 @@ class OrganizationTest : AbstractOrganizationTest() {
         assertThat(filterSummary.organizationIds).hasSize(1)
         assertThat(filterSummary.organizationIds).containsExactly(organization.id)
         assertThat(filterSummary.domainIds).isEmpty()
-        assertThat(filterSummary.userIds).hasSize(1)
+        assertThat(filterSummary.userIds).hasSize(2)
     }
 
     @Test
