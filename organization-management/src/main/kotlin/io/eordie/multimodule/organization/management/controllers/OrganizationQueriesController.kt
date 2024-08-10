@@ -1,6 +1,5 @@
 package io.eordie.multimodule.organization.management.controllers
 
-import io.eordie.multimodule.common.utils.associateBy
 import io.eordie.multimodule.contracts.basic.filters.UUIDLiteralFilter
 import io.eordie.multimodule.contracts.basic.paging.Page
 import io.eordie.multimodule.contracts.basic.paging.Pageable
@@ -10,17 +9,13 @@ import io.eordie.multimodule.contracts.organization.models.OrganizationFilterSum
 import io.eordie.multimodule.contracts.organization.models.OrganizationsFilter
 import io.eordie.multimodule.contracts.organization.services.OrganizationQueries
 import io.eordie.multimodule.contracts.utils.orDefault
-import io.eordie.multimodule.organization.management.repository.OrganizationEmployeeFactory
 import io.eordie.multimodule.organization.management.repository.OrganizationFactory
-import io.eordie.multimodule.organization.management.repository.OrganizationRepository
 import jakarta.inject.Singleton
 import java.util.*
 
 @Singleton
 class OrganizationQueriesController(
-    private val organizations: OrganizationFactory,
-    private val employees: OrganizationEmployeeFactory,
-    private val organizationRepository: OrganizationRepository
+    private val organizations: OrganizationFactory
 ) : OrganizationQueries {
 
     override suspend fun organization(id: UUID): Organization? {
@@ -32,12 +27,12 @@ class OrganizationQueriesController(
     }
 
     override suspend fun organizationSummary(filter: OrganizationsFilter?): OrganizationFilterSummary {
-        return organizationRepository.getOrganizationSummary(filter.orDefault())
+        return organizations.getOrganizationsFilterSummary(filter.orDefault())
     }
 
     override suspend fun loadOrganizationDigest(organizationIds: List<UUID>): Map<UUID, OrganizationDigest> {
         val filter = OrganizationsFilter(id = UUIDLiteralFilter(of = organizationIds))
-        return organizationRepository.getOrganizationsDigest(filter)
+        return organizations.getOrganizationsDigest(filter)
             .associateBy(OrganizationDigest::organizationId) { it }
     }
 }
