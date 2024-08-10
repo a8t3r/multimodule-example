@@ -140,7 +140,7 @@ class EmploymentToDepartmentsWithCustomBindingsTest : AbstractOrganizationTest()
     }
 
     @Test
-    @Order(32)
+    @Order(31)
     fun `query users by department filter - specific access department`() = test(organizationManager) {
         val filter = UsersFilter(
             employee = OrganizationEmployeeFilter(
@@ -155,13 +155,45 @@ class EmploymentToDepartmentsWithCustomBindingsTest : AbstractOrganizationTest()
     }
 
     @Test
-    @Order(33)
+    @Order(31)
     fun `query users by position filter`() = test(organizationManager) {
         val filter = UsersFilter(
             employee = OrganizationEmployeeFilter(
                 position = OrganizationPositionFilter(name = StringLiteralFilter(like = "Junior"))
             ),
             organization = OrganizationsFilter(id = UUIDLiteralFilter(eq = developersOrg.id))
+        )
+
+        val users = userQueries.users(filter).data
+        assertThat(users).hasSize(2)
+        assertThat(users.map { it.id }).containsExactly(developer1, developer2)
+    }
+
+    @Test
+    @Order(31)
+    fun `query users by department accessible farm ids`() = test(organizationManager) {
+        val filter = UsersFilter(
+            employee = OrganizationEmployeeFilter(
+                department = OrganizationDepartmentFilter(
+                    farmId = UUIDLiteralFilter(of = farmAcl.map { it.farmId })
+                )
+            )
+        )
+
+        val users = userQueries.users(filter).data
+        assertThat(users).hasSize(2)
+        assertThat(users.map { it.id }).containsExactly(developer1, developer2)
+    }
+
+    @Test
+    @Order(31)
+    fun `query users by department accessible farm field ids`() = test(organizationManager) {
+        val filter = UsersFilter(
+            employee = OrganizationEmployeeFilter(
+                department = OrganizationDepartmentFilter(
+                    fieldId = UUIDLiteralFilter(of = farmAcl.mapNotNull { it.fieldIds }.flatten())
+                )
+            )
         )
 
         val users = userQueries.users(filter).data

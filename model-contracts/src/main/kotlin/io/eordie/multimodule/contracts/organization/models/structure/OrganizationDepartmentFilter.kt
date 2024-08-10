@@ -1,5 +1,6 @@
 package io.eordie.multimodule.contracts.organization.models.structure
 
+import io.eordie.multimodule.contracts.basic.filters.LongNumericFilter
 import io.eordie.multimodule.contracts.basic.filters.StringLiteralFilter
 import io.eordie.multimodule.contracts.basic.filters.UUIDLiteralFilter
 import io.eordie.multimodule.contracts.organization.models.OrganizationsFilter
@@ -12,5 +13,8 @@ data class OrganizationDepartmentFilter(
     val id: UUIDLiteralFilter? = null,
     val name: StringLiteralFilter? = null,
     val organization: OrganizationsFilter? = null,
-    val organizationId: UUIDLiteralFilter? = null
+    val organizationId: UUIDLiteralFilter? = null,
+    val farmId: UUIDLiteralFilter? = null,
+    val fieldId: UUIDLiteralFilter? = null,
+    val regionId: LongNumericFilter? = null
 )

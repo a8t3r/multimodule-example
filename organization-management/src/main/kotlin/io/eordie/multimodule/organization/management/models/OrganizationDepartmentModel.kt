@@ -6,6 +6,7 @@ import io.eordie.multimodule.common.repository.entity.UUIDIdentityIF
 import io.eordie.multimodule.contracts.organization.models.structure.OrganizationDepartment
 import io.eordie.multimodule.organization.management.models.acl.ByFarmCriterionModel
 import io.eordie.multimodule.organization.management.models.acl.ByRegionCriterionModel
+import io.eordie.multimodule.organization.management.models.acl.DepartmentBindingView
 import org.babyfish.jimmer.sql.DissociateAction
 import org.babyfish.jimmer.sql.Entity
 import org.babyfish.jimmer.sql.IdView
@@ -41,4 +42,7 @@ interface OrganizationDepartmentModel : UUIDIdentityIF, OrganizationOwnerIF, Con
 
     @OneToMany(mappedBy = "department")
     val farmBindings: List<ByFarmCriterionModel>
+
+    @OneToMany(mappedBy = "department")
+    val bindingViews: List<DepartmentBindingView>
 }

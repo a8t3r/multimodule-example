@@ -17,6 +17,7 @@ import io.eordie.multimodule.organization.management.models.acl.farmOwnerOrganiz
 import io.eordie.multimodule.organization.management.models.acl.farmRegionIds
 import io.eordie.multimodule.organization.management.models.acl.fieldIds
 import io.eordie.multimodule.organization.management.models.acl.organizationId
+import io.eordie.multimodule.organization.management.models.bindingViews
 import io.eordie.multimodule.organization.management.models.by
 import io.eordie.multimodule.organization.management.models.id
 import io.eordie.multimodule.organization.management.models.name
@@ -26,6 +27,8 @@ import jakarta.inject.Singleton
 import org.babyfish.jimmer.sql.kt.ast.expression.KNonNullExpression
 import org.babyfish.jimmer.sql.kt.ast.expression.eq
 import org.babyfish.jimmer.sql.kt.ast.expression.isNotNull
+import org.babyfish.jimmer.sql.kt.ast.expression.isNull
+import org.babyfish.jimmer.sql.kt.ast.expression.or
 import org.babyfish.jimmer.sql.kt.ast.table.KNonNullTable
 import org.babyfish.jimmer.sql.kt.fetcher.newFetcher
 import java.util.*
@@ -89,7 +92,15 @@ class OrganizationDepartmentFactory :
             table.id.accept(filter.id),
             table.name.accept(filter.name),
             table.organization.accept(filter.organization),
-            table.organizationId.accept(filter.organizationId)
+            table.organizationId.accept(filter.organizationId),
+            table.bindingViews { farmId.accept(filter.farmId) },
+            table.bindingViews { farmRegionIds.acceptMany(filter.regionId) },
+            table.bindingViews {
+                or(
+                    fieldIds.isNull(),
+                    fieldIds.acceptMany(filter.fieldId)
+                ).takeIf { filter.fieldId != null }
+            }
         )
     }
 }
