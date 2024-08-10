@@ -42,11 +42,11 @@ class FarmAclFactory : BaseOrganizationFactory<FarmAclModel, FarmAcl, UUID, Farm
         }
     }
 
-    override fun listPredicates(acl: ResourceAcl, table: KNonNullTable<FarmAclModel>) = listOfNotNull(
+    override fun ResourceAcl.listPredicates(table: KNonNullTable<FarmAclModel>) = listOfNotNull(
         or(
-            table.organizationId valueIn acl.auth.organizationIds(),
-            table.farmOwnerOrganizationId valueIn acl.auth.organizationIds()
-        ).takeUnless { acl.hasOrganizationRole(Roles.MANAGE_ORGANIZATIONS) }
+            table.organizationId valueIn auth.organizationIds(),
+            table.farmOwnerOrganizationId valueIn auth.organizationIds()
+        ).takeUnless { hasOrganizationRole(Roles.MANAGE_ORGANIZATIONS) }
     )
 
     override fun ResourceAcl.toPredicates(

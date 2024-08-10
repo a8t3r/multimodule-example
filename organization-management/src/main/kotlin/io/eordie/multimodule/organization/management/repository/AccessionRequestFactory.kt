@@ -27,12 +27,12 @@ class AccessionRequestFactory :
 
     override val organizationId = AccessionRequestModel::organizationId
 
-    override fun listPredicates(acl: ResourceAcl, table: KNonNullTable<AccessionRequestModel>) =
+    override fun ResourceAcl.listPredicates(table: KNonNullTable<AccessionRequestModel>) =
         listOfNotNull(
             or(
-                table.createdBy eq acl.auth.userId,
-                (table.organizationId valueIn acl.auth.organizationIds()).takeIf {
-                    acl.hasAnyOrganizationRole(Roles.VIEW_INVITATIONS)
+                table.createdBy eq auth.userId,
+                (table.organizationId valueIn auth.organizationIds()).takeIf {
+                    hasAnyOrganizationRole(Roles.VIEW_INVITATIONS)
                 }
             )
         )

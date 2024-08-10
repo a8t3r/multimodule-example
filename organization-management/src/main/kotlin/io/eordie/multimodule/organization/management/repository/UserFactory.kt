@@ -42,13 +42,13 @@ class UserFactory : KBaseFactory<UserModel, User, UUID, UsersFilter>(
 
     override val datasourceName = "keycloak"
 
-    override fun listPredicates(acl: ResourceAcl, table: KNonNullTable<UserModel>) = listOfNotNull(
+    override fun ResourceAcl.listPredicates(table: KNonNullTable<UserModel>) = listOfNotNull(
         table.firstName.isNotNull(),
         table.lastName.isNotNull(),
         table.enabled eq true,
         table.membership {
-            organizationId valueIn acl.allOrganizationIds
-        }.takeUnless { acl.hasAnyOrganizationRole(Roles.VIEW_USERS) }
+            organizationId valueIn allOrganizationIds
+        }.takeUnless { hasAnyOrganizationRole(Roles.VIEW_USERS) }
     )
 
     private fun observeAttributes(

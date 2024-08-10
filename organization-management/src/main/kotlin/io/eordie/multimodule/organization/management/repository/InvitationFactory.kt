@@ -39,15 +39,14 @@ class InvitationFactory : KBaseFactory<InvitationModel, Invitation, UUID, Invita
         }
     }
 
-    override fun listPredicates(
-        acl: ResourceAcl,
+    override fun ResourceAcl.listPredicates(
         table: KNonNullTable<InvitationModel>
     ): List<KNonNullExpression<Boolean>> = listOfNotNull(
         or(
-            table.email eq acl.auth.email,
-            table.userId eq acl.auth.userId,
-            (table.organizationId valueIn acl.auth.organizationIds())
-                .takeIf { acl.hasAllOrganizationRoles(Roles.VIEW_INVITATIONS) }
+            table.email eq auth.email,
+            table.userId eq auth.userId,
+            (table.organizationId valueIn auth.organizationIds())
+                .takeIf { hasAllOrganizationRoles(Roles.VIEW_INVITATIONS) }
         )
     )
 

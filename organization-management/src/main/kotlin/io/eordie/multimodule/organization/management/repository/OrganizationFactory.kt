@@ -2,7 +2,6 @@ package io.eordie.multimodule.organization.management.repository
 
 import io.eordie.multimodule.common.filter.accept
 import io.eordie.multimodule.common.repository.entity.PermissionAwareIF
-import io.eordie.multimodule.common.repository.ext.and
 import io.eordie.multimodule.common.repository.ext.arrayAgg
 import io.eordie.multimodule.contracts.basic.Permission
 import io.eordie.multimodule.contracts.organization.OrganizationDigest
@@ -32,6 +31,8 @@ import org.babyfish.jimmer.sql.kt.ast.expression.KNonNullExpression
 import org.babyfish.jimmer.sql.kt.ast.expression.count
 import org.babyfish.jimmer.sql.kt.ast.expression.eq
 import org.babyfish.jimmer.sql.kt.ast.expression.or
+import org.babyfish.jimmer.sql.kt.ast.expression.value
+import org.babyfish.jimmer.sql.kt.ast.expression.valueIn
 import org.babyfish.jimmer.sql.kt.ast.table.KNonNullTable
 import java.util.*
 
@@ -103,13 +104,18 @@ class OrganizationFactory : BaseOrganizationFactory<OrganizationModel, Organizat
         }.fetchOneOrNull()
     }
 
-    override fun listPredicates(
-        acl: ResourceAcl,
+    override fun ResourceAcl.listPredicates(
         table: KNonNullTable<OrganizationModel>
     ): List<KNonNullExpression<Boolean>> = listOf(
         or(
-            table.createdBy eq acl.auth.userId,
-            super.listPredicates(acl, table).and()
+            table.createdBy eq auth.userId,
+            when {
+                hasOrganizationRole(Roles.MANAGE_ORGANIZATIONS) -> value(true)
+                hasAllOrganizationRoles(viewRoles) -> {
+                    table.get<UUID>(organizationId.name) valueIn allOrganizationIds
+                }
+                else -> value(false)
+            }
         )!!
     )
 

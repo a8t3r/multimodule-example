@@ -174,7 +174,7 @@ open class KFactoryImpl<T : Any, ID : Comparable<ID>>(
         }
     }
 
-    open fun listPredicates(acl: ResourceAcl, table: KNonNullTable<T>): List<KNonNullExpression<Boolean>> =
+    open fun ResourceAcl.listPredicates(table: KNonNullTable<T>): List<KNonNullExpression<Boolean>> =
         emptyList()
 
     private fun T.getId(): ID = (this as ImmutableSpi).__get(idProperty.name()) as ID
@@ -406,7 +406,7 @@ open class KFactoryImpl<T : Any, ID : Comparable<ID>>(
     ): KConfigurableRootQuery<T, out Tuple6<ID, out Any, out Any, out Any, out Any, out Any>> {
         return sql.createQuery(entityType) {
             block(this)
-            where(*listPredicates(acl, table).toTypedArray())
+            where(*acl.listPredicates(table).toTypedArray())
 
             val orderBy = cursor.getOrderBy(table)
             if (orderBy.size > MAX_ALLOWED_SORTING) {
