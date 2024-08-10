@@ -66,9 +66,10 @@ fun List<KNonNullExpression<Boolean>?>?.or(): KNonNullExpression<Boolean>? =
 fun List<KNonNullExpression<Boolean>?>?.and(): KNonNullExpression<Boolean>? =
     if (this.isNullOrEmpty()) null else and(*this.toTypedArray())
 
-fun <T : Any> KExpression<T>.arrayAgg(distinct: Boolean = true): KNonNullExpression<out List<T>> {
+inline fun <reified T : Any> KExpression<T>.arrayAgg(distinct: Boolean = true): KNonNullExpression<out Array<T>> {
     val property = this
-    return sql(emptyList<T>()::class, "array_agg(${if (distinct) "distinct" else ""} %e)") {
+    val type = arrayOf<T>()::class
+    return sql(type, "array_agg(${if (distinct) "distinct" else ""} %e)") {
         expression(property)
     }
 }
