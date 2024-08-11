@@ -63,7 +63,7 @@ fun <T : Any> KExpression<List<T>>.arrayLike(pattern: String): KNonNullExpressio
     }
 }
 
-fun List<KNonNullExpression<Boolean>>.asOrList(): List<KNonNullExpression<Boolean>> = listOf(this.or())
+fun KNonNullExpression<Boolean>.asList(): List<KNonNullExpression<Boolean>> = listOf(this)
 
 fun List<KNonNullExpression<Boolean>>.or(): KNonNullExpression<Boolean> =
     if (this.isEmpty()) value(true) else requireNotNull(or(*this.toTypedArray()))

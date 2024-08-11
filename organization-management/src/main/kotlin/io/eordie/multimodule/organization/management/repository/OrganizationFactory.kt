@@ -3,7 +3,8 @@ package io.eordie.multimodule.organization.management.repository
 import io.eordie.multimodule.common.filter.accept
 import io.eordie.multimodule.common.repository.entity.PermissionAwareIF
 import io.eordie.multimodule.common.repository.ext.arrayAgg
-import io.eordie.multimodule.common.repository.ext.asOrList
+import io.eordie.multimodule.common.repository.ext.asList
+import io.eordie.multimodule.common.repository.ext.or
 import io.eordie.multimodule.contracts.basic.Permission
 import io.eordie.multimodule.contracts.organization.OrganizationDigest
 import io.eordie.multimodule.contracts.organization.OrganizationInput
@@ -116,7 +117,7 @@ class OrganizationFactory : BaseOrganizationFactory<OrganizationModel, Organizat
 
             else -> value(false)
         }
-    ).asOrList()
+    ).or().asList()
 
     override suspend fun calculatePermissions(acl: ResourceAcl, value: OrganizationModel): Set<Permission> {
         return if (value.createdBy == acl.auth.userId) PermissionAwareIF.ALL else {
