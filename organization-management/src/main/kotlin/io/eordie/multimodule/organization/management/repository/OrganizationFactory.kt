@@ -3,6 +3,7 @@ package io.eordie.multimodule.organization.management.repository
 import io.eordie.multimodule.common.filter.accept
 import io.eordie.multimodule.common.repository.entity.PermissionAwareIF
 import io.eordie.multimodule.common.repository.ext.arrayAgg
+import io.eordie.multimodule.common.repository.ext.asOrList
 import io.eordie.multimodule.contracts.basic.Permission
 import io.eordie.multimodule.contracts.organization.OrganizationDigest
 import io.eordie.multimodule.contracts.organization.OrganizationInput
@@ -30,7 +31,6 @@ import jakarta.inject.Singleton
 import org.babyfish.jimmer.sql.kt.ast.expression.KNonNullExpression
 import org.babyfish.jimmer.sql.kt.ast.expression.count
 import org.babyfish.jimmer.sql.kt.ast.expression.eq
-import org.babyfish.jimmer.sql.kt.ast.expression.or
 import org.babyfish.jimmer.sql.kt.ast.expression.value
 import org.babyfish.jimmer.sql.kt.ast.expression.valueIn
 import org.babyfish.jimmer.sql.kt.ast.table.KNonNullTable
@@ -107,17 +107,16 @@ class OrganizationFactory : BaseOrganizationFactory<OrganizationModel, Organizat
     override fun ResourceAcl.listPredicates(
         table: KNonNullTable<OrganizationModel>
     ): List<KNonNullExpression<Boolean>> = listOf(
-        or(
-            table.createdBy eq auth.userId,
-            when {
-                hasOrganizationRole(Roles.MANAGE_ORGANIZATIONS) -> value(true)
-                hasAllOrganizationRoles(viewRoles) -> {
-                    table.get<UUID>(organizationId.name) valueIn allOrganizationIds
-                }
-                else -> value(false)
+        table.createdBy eq auth.userId,
+        when {
+            hasOrganizationRole(Roles.MANAGE_ORGANIZATIONS) -> value(true)
+            hasAllOrganizationRoles(viewRoles) -> {
+                table.get<UUID>(organizationId.name) valueIn allOrganizationIds
             }
-        )!!
-    )
+
+            else -> value(false)
+        }
+    ).asOrList()
 
     override suspend fun calculatePermissions(acl: ResourceAcl, value: OrganizationModel): Set<Permission> {
         return if (value.createdBy == acl.auth.userId) PermissionAwareIF.ALL else {

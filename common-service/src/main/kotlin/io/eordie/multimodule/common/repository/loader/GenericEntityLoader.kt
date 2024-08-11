@@ -23,7 +23,7 @@ class GenericEntityLoader(
     private val beanLocator: BeanLocator
 ) {
 
-    private var isSimulateRemoteRouting: Boolean = false
+    private val isSimulateRemoteRouting: Boolean = false
 
     private val routesCache: LoadingCache<Pair<Class<*>, Class<*>>, EntityLoaderRoute> = CacheBuilder.newBuilder()
         .maximumSize(1000)

@@ -19,7 +19,7 @@ class OrganizationEmployeeValidator(
     private val positions: EntityLoader<OrganizationPosition, UUID>
 ) : EntityValidator<OrganizationEmployeeModel> {
     override suspend fun onUpdate(value: OrganizationEmployeeModel) {
-        validate(value) {
+        validate(value) { _ ->
             validate(OrganizationEmployeeModel::organizationId).ensureIsAccessible(organizations)
             validate(OrganizationEmployeeModel::departmentId).ensureIsAccessible(departments, true) {
                 it.organizationId == value.organizationId

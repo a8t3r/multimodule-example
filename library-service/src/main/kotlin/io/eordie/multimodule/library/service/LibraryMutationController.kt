@@ -24,7 +24,7 @@ class LibraryMutationController(
                 instance.firstName = requireNotNull(author.firstName ?: instance.firstName)
                 instance.lastName = author.lastName ?: instance.lastName
             }
-        }.map { it.id }
+        }.map { author -> author.id }
 
         books.save<BookModelDraft>(input.id) { state, instance ->
             state.ifNotExists {

@@ -1,3 +1,5 @@
+@file:Suppress("TooManyFunctions")
+
 package io.eordie.multimodule.common.repository.ext
 
 import org.babyfish.jimmer.sql.kt.ast.expression.KExpression
@@ -5,6 +7,7 @@ import org.babyfish.jimmer.sql.kt.ast.expression.KNonNullExpression
 import org.babyfish.jimmer.sql.kt.ast.expression.and
 import org.babyfish.jimmer.sql.kt.ast.expression.or
 import org.babyfish.jimmer.sql.kt.ast.expression.sql
+import org.babyfish.jimmer.sql.kt.ast.expression.value
 
 private fun <T : Any> KExpression<List<T>>.operator(value: T, name: String): KNonNullExpression<Boolean> {
     val expression = this
@@ -60,8 +63,10 @@ fun <T : Any> KExpression<List<T>>.arrayLike(pattern: String): KNonNullExpressio
     }
 }
 
-fun List<KNonNullExpression<Boolean>?>?.or(): KNonNullExpression<Boolean>? =
-    if (this.isNullOrEmpty()) null else or(*this.toTypedArray())
+fun List<KNonNullExpression<Boolean>>.asOrList(): List<KNonNullExpression<Boolean>> = listOf(this.or())
+
+fun List<KNonNullExpression<Boolean>>.or(): KNonNullExpression<Boolean> =
+    if (this.isEmpty()) value(true) else requireNotNull(or(*this.toTypedArray()))
 
 fun List<KNonNullExpression<Boolean>?>?.and(): KNonNullExpression<Boolean>? =
     if (this.isNullOrEmpty()) null else and(*this.toTypedArray())

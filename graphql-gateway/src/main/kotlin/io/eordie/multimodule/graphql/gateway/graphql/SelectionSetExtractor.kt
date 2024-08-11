@@ -41,8 +41,8 @@ object SelectionSetExtractor {
                     else -> null
                 }
             }
-            .mapNotNull {
-                it.takeIf {
+            .mapNotNull { node ->
+                node.takeIf {
                     it.directives.isNullOrEmpty() || conditional.shouldInclude(
                         it,
                         variables,

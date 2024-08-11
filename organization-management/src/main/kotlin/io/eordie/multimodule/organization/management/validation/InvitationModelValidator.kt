@@ -17,7 +17,7 @@ class InvitationModelValidator(
     private val positions: EntityLoader<OrganizationPosition, UUID>
 ) : EntityValidator<InvitationModel> {
     override suspend fun onUpdate(value: InvitationModel) {
-        validate(value) {
+        validate(value) { _ ->
             validate(InvitationModel::email).isEmail()
 
             validate(InvitationModel::departmentId).ensureIsAccessible(departments, true) {
