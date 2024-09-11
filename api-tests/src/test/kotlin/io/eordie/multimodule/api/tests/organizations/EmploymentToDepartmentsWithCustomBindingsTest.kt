@@ -95,6 +95,21 @@ class EmploymentToDepartmentsWithCustomBindingsTest : AbstractOrganizationTest()
     }
 
     @Test
+    @Order(23)
+    fun `duplicate department creation shouldn't create duplicate`() = test(organizationManager) {
+        farmAcl.forEach { acl ->
+            val criterion = ByFarmCriterion(acl.farmId, acl.fieldIds)
+            departmentMutations.modifyByFarmCriterion(developersOrg, specific.id, criterion, true)
+        }
+
+        val bindings = structureQueries.loadBindingsByDepartments(listOf(specific.id)).values.first()
+        assertThat(bindings).hasSize(farmAcl.size)
+        bindings.forEach {
+            assertThat(it).isInstanceOf(ByFarmCriterion::class.java)
+        }
+    }
+
+    @Test
     @Order(30)
     fun `should apply members to departments`() = test(organizationManager) {
         val filter = UsersFilter(

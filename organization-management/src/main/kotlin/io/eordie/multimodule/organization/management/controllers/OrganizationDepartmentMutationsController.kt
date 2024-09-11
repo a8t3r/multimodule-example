@@ -9,6 +9,7 @@ import io.eordie.multimodule.contracts.organization.services.OrganizationDepartm
 import io.eordie.multimodule.contracts.organization.services.OrganizationStructureQueries
 import io.eordie.multimodule.organization.management.models.acl.ByFarmCriterionModel
 import io.eordie.multimodule.organization.management.models.acl.ByRegionCriterionModel
+import io.eordie.multimodule.organization.management.models.acl.addBy
 import io.eordie.multimodule.organization.management.repository.OrganizationDepartmentFactory
 import io.eordie.multimodule.organization.management.validation.DepartmentNotBelongsToOrganization
 import jakarta.inject.Singleton
@@ -37,10 +38,7 @@ class OrganizationDepartmentMutationsController(
         departmentId: UUID,
         includeAll: Boolean
     ): List<BindingCriterion> {
-        val department = departments.save(
-            departmentId,
-            departments.defaultFetcher
-        ) { _, value ->
+        val department = departments.save(departmentId, departments.defaultFetcher) { _, value ->
             ensureEquality(currentOrganization, value.organizationId)
 
             value.globalBinding = includeAll
@@ -62,18 +60,12 @@ class OrganizationDepartmentMutationsController(
             this.regionId = binding.regionId
         }
 
-        val department = departments.save(
-            departmentId,
-            departments.defaultFetcher
-        ) { _, value ->
+        val department = departments.save(departmentId, departments.defaultFetcher) { _, value ->
             ensureEquality(currentOrganization, value.organizationId)
 
             value.globalBinding = null
             value.regionBindings = if (plus) {
-                val contains = value.regionBindings.any { it.regionId == model.regionId }
-                if (contains) value.regionBindings else {
-                    value.regionBindings + model
-                }
+                value.regionBindings().addBy(model)
             } else {
                 value.regionBindings.filter { it.regionId != model.regionId }
             }
@@ -94,20 +86,12 @@ class OrganizationDepartmentMutationsController(
             this.fieldIds = binding.fieldIds
         }
 
-        val department = departments.save(
-            departmentId,
-            departments.defaultFetcher
-        ) { _, value ->
+        val department = departments.save(departmentId, departments.defaultFetcher) { _, value ->
             ensureEquality(currentOrganization, value.organizationId)
 
             value.globalBinding = null
             value.farmBindings = if (plus) {
-                val index = value.farmBindings.indexOfFirst { it.farmId == model.farmId }
-                if (index < 0) value.farmBindings + model else {
-                    val mutable = ArrayList(value.farmBindings)
-                    mutable[index] = model
-                    mutable
-                }
+                value.farmBindings().addBy(model)
             } else {
                 value.farmBindings.filter { it.farmId != model.farmId }
             }
