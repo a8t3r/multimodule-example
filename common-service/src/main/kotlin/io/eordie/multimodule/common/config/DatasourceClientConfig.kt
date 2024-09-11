@@ -96,9 +96,13 @@ class DatasourceClientConfig {
             }
         }
         .setConnectionManager(object : ConnectionManager {
-            override fun <R : Any> execute(block: Function<Connection, R>): R? {
-                return operations.execute {
-                    block.apply(it)
+            override fun <R : Any> execute(con: Connection?, block: Function<Connection, R>): R? {
+                return if (con != null) {
+                    block.apply(con)
+                } else {
+                    operations.execute {
+                        block.apply(it)
+                    }
                 }
             }
         })

@@ -441,7 +441,9 @@ open class KFactoryImpl<T : Any, S : T, ID : Comparable<ID>>(
         }
 
         return wrapped {
-            sql.entities.save(entity, it)
+            sql.entities.save(entity, it) {
+                setMode(SaveMode.INSERT_ONLY)
+            }
         }.get()
     }
 

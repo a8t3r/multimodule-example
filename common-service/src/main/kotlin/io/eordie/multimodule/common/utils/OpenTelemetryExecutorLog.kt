@@ -28,9 +28,9 @@ class OpenTelemetryExecutorLog(
         val tableName = sql.substringAfter(" from ", "").substringBefore(' ')
         val query = StringBuilder().apply { formatter.append(this, sql, variables, variablePositions) }
 
-        val span = tracer.spanBuilder("${purpose.name} $tableName")
+        val span = tracer.spanBuilder("$purpose $tableName")
             .setParent(Context.current())
-            .setAttribute(purpose.name.lowercase(), query.toString())
+            .setAttribute(purpose.toString(), query.toString())
             .startSpan()
 
         try {
@@ -52,13 +52,14 @@ class OpenTelemetryExecutorLog(
     }
 
     override fun executeBatch(
-        sqlClient: JSqlClientImplementor,
         con: Connection,
         sql: String,
-        generatedIdProp: ImmutableProp?
+        generatedIdProp: ImmutableProp?,
+        purpose: ExecutionPurpose,
+        sqlClient: JSqlClientImplementor
     ): Executor.BatchContext {
         return makeSpan(sql, emptyList(), emptyList(), ExecutionPurpose.UPDATE) {
-            delegate.executeBatch(sqlClient, con, sql, generatedIdProp)
+            delegate.executeBatch(con, sql, generatedIdProp, purpose, sqlClient)
         }
     }
 }
