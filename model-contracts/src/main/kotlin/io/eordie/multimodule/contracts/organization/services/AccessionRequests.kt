@@ -18,7 +18,7 @@ interface AccessionRequestQueries : Query {
     ): Page<AccessionRequest>
 }
 
-@AutoService(Query::class)
+@AutoService(Mutation::class)
 interface AccessionRequestMutations : Mutation {
     suspend fun acceptAccessionRequest(requestId: UuidStr): AccessionRequest
     suspend fun rejectAccessionRequest(requestId: UuidStr, rejectionMessage: String? = null): AccessionRequest
