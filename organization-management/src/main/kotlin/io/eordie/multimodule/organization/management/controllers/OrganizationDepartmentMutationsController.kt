@@ -55,19 +55,19 @@ class OrganizationDepartmentMutationsController(
         binding: ByRegionCriterion,
         plus: Boolean
     ): List<BindingCriterion> {
-        val model = ByRegionCriterionModel {
-            this.departmentId = departmentId
-            this.regionId = binding.regionId
-        }
-
         val department = departments.save(departmentId, departments.defaultFetcher) { _, value ->
             ensureEquality(currentOrganization, value.organizationId)
 
             value.globalBinding = null
             value.regionBindings = if (plus) {
-                value.regionBindings().addBy(model)
+                value.regionBindings().addBy(
+                    ByRegionCriterionModel {
+                        this.departmentId = departmentId
+                        this.regionId = binding.regionId
+                    }
+                )
             } else {
-                value.regionBindings.filter { it.regionId != model.regionId }
+                value.regionBindings.filter { it.regionId != binding.regionId }
             }
         }
 
@@ -80,20 +80,20 @@ class OrganizationDepartmentMutationsController(
         binding: ByFarmCriterion,
         plus: Boolean
     ): List<BindingCriterion> {
-        val model = ByFarmCriterionModel {
-            this.departmentId = departmentId
-            this.farmId = binding.farmId
-            this.fieldIds = binding.fieldIds
-        }
-
         val department = departments.save(departmentId, departments.defaultFetcher) { _, value ->
             ensureEquality(currentOrganization, value.organizationId)
 
             value.globalBinding = null
             value.farmBindings = if (plus) {
-                value.farmBindings().addBy(model)
+                value.farmBindings().addBy(
+                    ByFarmCriterionModel {
+                        this.departmentId = departmentId
+                        this.farmId = binding.farmId
+                        this.fieldIds = binding.fieldIds
+                    }
+                )
             } else {
-                value.farmBindings.filter { it.farmId != model.farmId }
+                value.farmBindings.filter { it.farmId != binding.farmId }
             }
         }
 
