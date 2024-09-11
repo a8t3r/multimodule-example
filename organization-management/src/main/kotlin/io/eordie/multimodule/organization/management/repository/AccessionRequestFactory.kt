@@ -8,6 +8,7 @@ import io.eordie.multimodule.contracts.organization.models.accession.AccessionRe
 import io.eordie.multimodule.contracts.organization.models.acl.ResourceAcl
 import io.eordie.multimodule.contracts.utils.Roles
 import io.eordie.multimodule.organization.management.models.AccessionRequestModel
+import io.eordie.multimodule.organization.management.models.AccessionRequestModelDraft
 import io.eordie.multimodule.organization.management.models.createdBy
 import io.eordie.multimodule.organization.management.models.id
 import io.eordie.multimodule.organization.management.models.organizationId
@@ -21,7 +22,7 @@ import java.util.*
 
 @Singleton
 class AccessionRequestFactory :
-    BaseOrganizationFactory<AccessionRequestModel, AccessionRequest, UUID, AccessionRequestFilter>(
+    BaseOrganizationFactory<AccessionRequestModel, AccessionRequestModelDraft, AccessionRequest, UUID, AccessionRequestFilter>(
         AccessionRequestModel::class
     ) {
 

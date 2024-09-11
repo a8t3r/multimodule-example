@@ -8,6 +8,7 @@ import io.eordie.multimodule.contracts.organization.models.structure.Organizatio
 import io.eordie.multimodule.contracts.organization.models.structure.OrganizationEmployeeFilterSummary
 import io.eordie.multimodule.contracts.utils.Roles
 import io.eordie.multimodule.organization.management.models.OrganizationEmployeeModel
+import io.eordie.multimodule.organization.management.models.OrganizationEmployeeModelDraft
 import io.eordie.multimodule.organization.management.models.department
 import io.eordie.multimodule.organization.management.models.departmentId
 import io.eordie.multimodule.organization.management.models.fetchBy
@@ -29,7 +30,7 @@ import java.util.*
 
 @Singleton
 class OrganizationEmployeeFactory :
-    BaseOrganizationFactory<OrganizationEmployeeModel, OrganizationEmployee, UUID, OrganizationEmployeeFilter>(
+    BaseOrganizationFactory<OrganizationEmployeeModel, OrganizationEmployeeModelDraft, OrganizationEmployee, UUID, OrganizationEmployeeFilter>(
         OrganizationEmployeeModel::class
     ) {
 

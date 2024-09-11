@@ -10,6 +10,7 @@ import io.eordie.multimodule.contracts.regions.models.Region
 import io.eordie.multimodule.contracts.regions.models.RegionsFilter
 import io.eordie.multimodule.regions.models.OsmPlace
 import io.eordie.multimodule.regions.models.OsmRegionTreeModel
+import io.eordie.multimodule.regions.models.OsmRegionTreeModelDraft
 import io.eordie.multimodule.regions.models.OsmRelationModel
 import io.eordie.multimodule.regions.models.country
 import io.eordie.multimodule.regions.models.depth
@@ -33,7 +34,9 @@ import org.babyfish.jimmer.sql.kt.ast.expression.valueIn
 import org.babyfish.jimmer.sql.kt.ast.table.KNonNullTable
 
 @Singleton
-class RegionsFactory : KBaseFactory<OsmRegionTreeModel, Region, Long, RegionsFilter>(OsmRegionTreeModel::class) {
+class RegionsFactory : KBaseFactory<OsmRegionTreeModel, OsmRegionTreeModelDraft, Region, Long, RegionsFilter>(
+    OsmRegionTreeModel::class
+) {
 
     override val datasourceName = "osm"
     override val requireEmployeeAcl = false

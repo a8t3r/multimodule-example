@@ -11,7 +11,6 @@ import io.eordie.multimodule.contracts.organization.models.extra.OrganizationPub
 import io.eordie.multimodule.contracts.organization.services.OrganizationMutations
 import io.eordie.multimodule.contracts.organization.services.SuggestionQueries
 import io.eordie.multimodule.contracts.utils.Roles
-import io.eordie.multimodule.organization.management.models.OrganizationPublicInformationModelDraft
 import io.eordie.multimodule.organization.management.repository.OrganizationFactory
 import io.eordie.multimodule.organization.management.repository.OrganizationPublicInformationFactory
 import io.phasetwo.client.OrganizationsResource
@@ -34,7 +33,7 @@ class OrganizationMutationsController(
     override suspend fun organization(input: OrganizationInput): Organization = organization(input, null)
 
     private suspend fun savePublicInformation(organizationId: UUID, info: OrganizationPublicInformation) {
-        information.save<OrganizationPublicInformationModelDraft>(organizationId) { _, instance ->
+        information.save(organizationId) { _, instance ->
             instance.copyFields(info::name, info::address, info::inn, info::kpp, info::ogrn)
             instance.organizationId = organizationId
             info.location?.let {

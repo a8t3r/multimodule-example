@@ -4,7 +4,6 @@ import io.eordie.multimodule.common.security.context.withSystemContext
 import io.eordie.multimodule.contracts.basic.filters.StringLiteralFilter
 import io.eordie.multimodule.contracts.organization.models.invitation.InvitationFilter
 import io.eordie.multimodule.contracts.organization.models.invitation.InvitationStatus
-import io.eordie.multimodule.organization.management.models.InvitationModelDraft
 import io.eordie.multimodule.organization.management.models.KeycloakEvent
 import io.eordie.multimodule.organization.management.repository.InvitationFactory
 import io.micronaut.http.annotation.Body
@@ -22,7 +21,7 @@ class KeycloakWebhookController(
             withSystemContext {
                 invitations.findAllByFilter(InvitationFilter(email = StringLiteralFilter(eq = event.details.username)))
                     .collect { invitation ->
-                        invitations.updateIf<InvitationModelDraft>(invitation.id) {
+                        invitations.updateIf(invitation.id) {
                             val previousStatus = this.status
                             this.status = InvitationStatus.PENDING
                             this.userId = event.details.userId

@@ -3,9 +3,7 @@ package io.eordie.multimodule.api.tests.library
 import com.google.common.truth.Truth.assertThat
 import io.eordie.multimodule.api.tests.AbstractApplicationTest
 import io.eordie.multimodule.library.models.AuthorModel
-import io.eordie.multimodule.library.models.AuthorModelDraft
 import io.eordie.multimodule.library.models.BookModel
-import io.eordie.multimodule.library.models.BookModelDraft
 import io.eordie.multimodule.library.repository.AuthorsFactory
 import io.eordie.multimodule.library.repository.BooksFactory
 import io.micronaut.transaction.exceptions.UnexpectedRollbackException
@@ -30,14 +28,14 @@ class TransactionTest : AbstractApplicationTest() {
 
         val e = assertThrows<UnexpectedRollbackException> {
             books.transaction {
-                author = authors.save<AuthorModelDraft> {
+                author = authors.save {
                     this.firstName = "Test1"
                     this.lastName = null
                 }
 
                 assertThat(authors.findById(author.id)).isNotNull()
 
-                book = books.save<BookModelDraft> {
+                book = books.save {
                     this.name = "Test1"
                     this.authorIds = listOf(author.id)
                 }
@@ -62,7 +60,7 @@ class TransactionTest : AbstractApplicationTest() {
         val e = assertThrows<UnexpectedRollbackException> {
             books.transaction {
                 author = authors.transaction {
-                    authors.save<AuthorModelDraft> {
+                    authors.save {
                         this.firstName = "Test2"
                         this.lastName = null
                     }
@@ -71,7 +69,7 @@ class TransactionTest : AbstractApplicationTest() {
                 assertThat(authors.findById(author.id)).isNotNull()
 
                 book = books.transaction {
-                    books.save<BookModelDraft> {
+                    books.save {
                         this.name = "Test2"
                         this.authorIds = listOf(author.id)
                     }
@@ -96,7 +94,7 @@ class TransactionTest : AbstractApplicationTest() {
         val e = assertThrows<UnexpectedRollbackException> {
             books.transaction {
                 author = authors.transaction {
-                    authors.save<AuthorModelDraft> {
+                    authors.save {
                         this.firstName = "Test2"
                         this.lastName = null
                     }
@@ -124,7 +122,7 @@ class TransactionTest : AbstractApplicationTest() {
             books.transaction {
                 author = coroutineScope {
                     authors.transaction {
-                        authors.save<AuthorModelDraft> {
+                        authors.save {
                             this.firstName = "Test3"
                             this.lastName = null
                         }
@@ -135,7 +133,7 @@ class TransactionTest : AbstractApplicationTest() {
 
                 book = coroutineScope {
                     books.transaction {
-                        books.save<BookModelDraft> {
+                        books.save {
                             this.name = "Test3"
                             this.authorIds = listOf(author.id)
                         }
@@ -163,7 +161,7 @@ class TransactionTest : AbstractApplicationTest() {
             books.transaction {
                 author = async {
                     authors.transaction {
-                        authors.save<AuthorModelDraft> {
+                        authors.save {
                             this.firstName = "Test4"
                             this.lastName = null
                         }
@@ -174,7 +172,7 @@ class TransactionTest : AbstractApplicationTest() {
 
                 book = async {
                     books.transaction {
-                        books.save<BookModelDraft> {
+                        books.save {
                             this.name = "Test4"
                             this.authorIds = listOf(author.id)
                         }

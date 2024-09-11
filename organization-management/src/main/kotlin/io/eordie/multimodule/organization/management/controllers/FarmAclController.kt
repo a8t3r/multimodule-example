@@ -10,7 +10,6 @@ import io.eordie.multimodule.contracts.organization.services.FarmAclMutations
 import io.eordie.multimodule.contracts.organization.services.FarmAclQueries
 import io.eordie.multimodule.contracts.utils.Roles
 import io.eordie.multimodule.contracts.utils.orDefault
-import io.eordie.multimodule.organization.management.models.acl.FarmAclModelDraft
 import io.eordie.multimodule.organization.management.repository.FarmAclFactory
 import jakarta.inject.Singleton
 import java.util.*
@@ -33,7 +32,7 @@ class FarmAclController(private val factory: FarmAclFactory) : FarmAclMutations,
     override suspend fun farmAcl(currentOrganization: CurrentOrganization, farmAcl: FarmAclInput): FarmAcl {
         val farmRegionIds = getRegionIds()
 
-        return factory.save<FarmAclModelDraft>(farmAcl.id) { state, value ->
+        return factory.save(farmAcl.id) { state, value ->
             state.ifNotExists {
                 value.farmId = farmAcl.farmId
                 value.organizationId = farmAcl.organisationId

@@ -13,8 +13,6 @@ import io.eordie.multimodule.contracts.organization.services.InvitationMutations
 import io.eordie.multimodule.contracts.organization.services.InvitationQueries
 import io.eordie.multimodule.contracts.utils.UuidStr
 import io.eordie.multimodule.contracts.utils.orDefault
-import io.eordie.multimodule.organization.management.models.InvitationModelDraft
-import io.eordie.multimodule.organization.management.models.OrganizationEmployeeModelDraft
 import io.eordie.multimodule.organization.management.models.UserModel
 import io.eordie.multimodule.organization.management.models.by
 import io.eordie.multimodule.organization.management.models.email
@@ -66,7 +64,7 @@ class InvitationsController(
             UserAlreadyEmployed.error()
         }
 
-        return invitations.save<InvitationModelDraft>(input.id) { state, instance ->
+        return invitations.save(input.id) { state, instance ->
             if (state.isNotExists()) {
                 instance.status = if (invited == null) InvitationStatus.CREATED else InvitationStatus.PENDING
             } else if (instance.status != InvitationStatus.CREATED) {
@@ -95,7 +93,7 @@ class InvitationsController(
         }
 
         withSystemContext {
-            invitations.save<InvitationModelDraft>(invitation.id) { _, instance ->
+            invitations.save(invitation.id) { _, instance ->
                 instance.status = InvitationStatus.ACCEPTED
             }
 
@@ -105,7 +103,7 @@ class InvitationsController(
             )
 
             if (invitation.positionId != null) {
-                employees.save<OrganizationEmployeeModelDraft>(null) { _, value ->
+                employees.save(null) { _, value ->
                     value.memberId = membershipId
                     value.createdBy = invitation.createdBy
                     value.userId = requireNotNull(invitation.userId)

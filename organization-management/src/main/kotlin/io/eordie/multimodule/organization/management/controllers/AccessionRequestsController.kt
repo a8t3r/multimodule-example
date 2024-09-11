@@ -51,7 +51,7 @@ class AccessionRequestsController(
 
     override suspend fun acceptAccessionRequest(requestId: UuidStr): AccessionRequest {
         val userId = getAuthentication().userId
-        val result = requests.save<AccessionRequestModelDraft>(requestId, fetcher) { state, instance ->
+        val result = requests.save(requestId, fetcher) { state, instance ->
             checkStatus(state, instance)
             instance.processedById = userId
             instance.status = AccessionRequestStatus.ACCEPTED
@@ -67,7 +67,7 @@ class AccessionRequestsController(
 
     override suspend fun rejectAccessionRequest(requestId: UuidStr, rejectionMessage: String?): AccessionRequest {
         val userId = getAuthentication().userId
-        return requests.save<AccessionRequestModelDraft>(requestId, fetcher) { state, instance ->
+        return requests.save(requestId, fetcher) { state, instance ->
             checkStatus(state, instance)
             instance.status = AccessionRequestStatus.REJECTED
             instance.processedById = userId
@@ -85,7 +85,7 @@ class AccessionRequestsController(
         }
 
         val userId = getAuthentication().userId
-        return requests.save<AccessionRequestModelDraft>(input.id, fetcher) { state, instance ->
+        return requests.save(input.id, fetcher) { state, instance ->
             checkStatus(state, instance)
             instance.vat = input.vat
             instance.initiatedById = userId

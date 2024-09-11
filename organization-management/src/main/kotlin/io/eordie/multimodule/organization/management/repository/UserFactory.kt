@@ -9,6 +9,7 @@ import io.eordie.multimodule.contracts.organization.models.UsersFilter
 import io.eordie.multimodule.contracts.organization.models.acl.ResourceAcl
 import io.eordie.multimodule.contracts.utils.Roles
 import io.eordie.multimodule.organization.management.models.UserModel
+import io.eordie.multimodule.organization.management.models.UserModelDraft
 import io.eordie.multimodule.organization.management.models.`attributes?`
 import io.eordie.multimodule.organization.management.models.email
 import io.eordie.multimodule.organization.management.models.emailVerified
@@ -36,7 +37,7 @@ import org.babyfish.jimmer.sql.kt.ast.table.KNonNullTable
 import java.util.*
 
 @Singleton
-class UserFactory : KBaseFactory<UserModel, User, UUID, UsersFilter>(
+class UserFactory : KBaseFactory<UserModel, UserModelDraft, User, UUID, UsersFilter>(
     UserModel::class
 ) {
 

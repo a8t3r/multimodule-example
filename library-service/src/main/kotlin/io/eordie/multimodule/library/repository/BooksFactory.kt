@@ -8,6 +8,7 @@ import io.eordie.multimodule.contracts.library.models.Book
 import io.eordie.multimodule.contracts.library.models.BooksFilter
 import io.eordie.multimodule.contracts.organization.models.acl.ResourceAcl
 import io.eordie.multimodule.library.models.BookModel
+import io.eordie.multimodule.library.models.BookModelDraft
 import io.eordie.multimodule.library.models.authorIds
 import io.eordie.multimodule.library.models.authors
 import io.eordie.multimodule.library.models.id
@@ -18,7 +19,7 @@ import org.babyfish.jimmer.sql.kt.ast.table.KNonNullTable
 import java.util.*
 
 @Singleton
-class BooksFactory : KBaseFactory<BookModel, Book, UUID, BooksFilter>(BookModel::class) {
+class BooksFactory : KBaseFactory<BookModel, BookModelDraft, Book, UUID, BooksFilter>(BookModel::class) {
 
     override fun ResourceAcl.toPredicates(filter: BooksFilter, table: KNonNullTable<BookModel>): List<KNonNullExpression<Boolean>> {
         return listOfNotNull(

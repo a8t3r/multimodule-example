@@ -18,10 +18,10 @@ import org.babyfish.jimmer.sql.fetcher.Fetcher
 import org.babyfish.jimmer.sql.kt.ast.query.KMutableRootQuery
 import kotlin.reflect.KClass
 
-abstract class KBaseFactory<T : Convertable<C>, C : Any, ID, F : Any>(
+abstract class KBaseFactory<T : Convertable<C>, S : T, C : Any, ID, F : Any>(
     entityType: KClass<T>
 ) :
-    KFactoryImpl<T, ID>(entityType),
+    KFactoryImpl<T, S, ID>(entityType),
     ProjectionSupportTrait<T, C, ID, F>,
     EntityLoader<C, ID> where ID : Any, ID : Comparable<ID> {
 

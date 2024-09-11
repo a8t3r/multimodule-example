@@ -14,6 +14,7 @@ import io.eordie.multimodule.contracts.organization.models.OrganizationsFilter
 import io.eordie.multimodule.contracts.organization.models.acl.ResourceAcl
 import io.eordie.multimodule.contracts.utils.Roles
 import io.eordie.multimodule.organization.management.models.OrganizationModel
+import io.eordie.multimodule.organization.management.models.OrganizationModelDraft
 import io.eordie.multimodule.organization.management.models.createdBy
 import io.eordie.multimodule.organization.management.models.createdByStr
 import io.eordie.multimodule.organization.management.models.`departments?`
@@ -38,7 +39,7 @@ import org.babyfish.jimmer.sql.kt.ast.table.KNonNullTable
 import java.util.*
 
 @Singleton
-class OrganizationFactory : BaseOrganizationFactory<OrganizationModel, Organization, UUID, OrganizationsFilter>(
+class OrganizationFactory : BaseOrganizationFactory<OrganizationModel, OrganizationModelDraft, Organization, UUID, OrganizationsFilter>(
     OrganizationModel::class
 ) {
 

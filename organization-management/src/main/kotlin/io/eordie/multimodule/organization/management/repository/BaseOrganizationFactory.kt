@@ -13,9 +13,9 @@ import java.util.*
 import kotlin.reflect.KClass
 import kotlin.reflect.KProperty1
 
-abstract class BaseOrganizationFactory<T : Convertable<C>, C : Any, ID, F : Any>(
+abstract class BaseOrganizationFactory<T : Convertable<C>, S : T, C : Any, ID, F : Any>(
     entityType: KClass<T>
-) : KBaseFactory<T, C, ID, F>(entityType) where ID : Any, ID : Comparable<ID> {
+) : KBaseFactory<T, S, C, ID, F>(entityType) where ID : Any, ID : Comparable<ID> {
 
     override val datasourceName = "keycloak"
 

@@ -30,7 +30,13 @@ class DefaultKRepositoryInterceptor(
         val (entityType, entityId) = context.target::class.superclasses[0].supertypes[0].arguments
         val factoryBean = beanLocator.getBean(
             KBaseFactory::class.java,
-            Qualifiers.byTypeArguments(entityType.asArgument(), Any::class.java, entityId.asArgument(), Any::class.java)
+            Qualifiers.byTypeArguments(
+                entityType.asArgument(),
+                Any::class.java,
+                Any::class.java,
+                entityId.asArgument(),
+                Any::class.java
+            )
         )
 
         val method = context.executableMethod

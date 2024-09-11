@@ -8,6 +8,7 @@ import io.eordie.multimodule.contracts.organization.models.acl.ResourceAcl
 import io.eordie.multimodule.contracts.organization.models.structure.OrganizationDepartment
 import io.eordie.multimodule.contracts.organization.models.structure.OrganizationDepartmentFilter
 import io.eordie.multimodule.organization.management.models.OrganizationDepartmentModel
+import io.eordie.multimodule.organization.management.models.OrganizationDepartmentModelDraft
 import io.eordie.multimodule.organization.management.models.acl.ByFarmCriterionModel
 import io.eordie.multimodule.organization.management.models.acl.DepartmentBindingView
 import io.eordie.multimodule.organization.management.models.acl.department
@@ -35,7 +36,7 @@ import java.util.*
 
 @Singleton
 class OrganizationDepartmentFactory :
-    BaseOrganizationFactory<OrganizationDepartmentModel, OrganizationDepartment, UUID, OrganizationDepartmentFilter>(
+    BaseOrganizationFactory<OrganizationDepartmentModel, OrganizationDepartmentModelDraft, OrganizationDepartment, UUID, OrganizationDepartmentFilter>(
         OrganizationDepartmentModel::class
     ) {
 

@@ -5,6 +5,7 @@ import io.eordie.multimodule.contracts.organization.models.acl.ResourceAcl
 import io.eordie.multimodule.contracts.organization.models.structure.OrganizationPosition
 import io.eordie.multimodule.contracts.organization.models.structure.OrganizationPositionFilter
 import io.eordie.multimodule.organization.management.models.OrganizationPositionModel
+import io.eordie.multimodule.organization.management.models.OrganizationPositionModelDraft
 import io.eordie.multimodule.organization.management.models.by
 import io.eordie.multimodule.organization.management.models.name
 import io.eordie.multimodule.organization.management.models.organization
@@ -20,7 +21,7 @@ import java.util.*
 
 @Singleton
 class OrganizationPositionFactory :
-    BaseOrganizationFactory<OrganizationPositionModel, OrganizationPosition, UUID, OrganizationPositionFilter>(
+    BaseOrganizationFactory<OrganizationPositionModel, OrganizationPositionModelDraft, OrganizationPosition, UUID, OrganizationPositionFilter>(
         OrganizationPositionModel::class
     ) {
 

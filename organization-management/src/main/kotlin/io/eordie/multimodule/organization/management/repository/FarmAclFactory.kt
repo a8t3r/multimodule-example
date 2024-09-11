@@ -11,6 +11,7 @@ import io.eordie.multimodule.contracts.organization.models.acl.FarmAclFilter
 import io.eordie.multimodule.contracts.organization.models.acl.ResourceAcl
 import io.eordie.multimodule.contracts.utils.Roles
 import io.eordie.multimodule.organization.management.models.acl.FarmAclModel
+import io.eordie.multimodule.organization.management.models.acl.FarmAclModelDraft
 import io.eordie.multimodule.organization.management.models.acl.farmId
 import io.eordie.multimodule.organization.management.models.acl.farmOwnerOrganization
 import io.eordie.multimodule.organization.management.models.acl.farmOwnerOrganizationId
@@ -28,7 +29,7 @@ import org.babyfish.jimmer.sql.kt.ast.table.KNonNullTable
 import java.util.*
 
 @Singleton
-class FarmAclFactory : BaseOrganizationFactory<FarmAclModel, FarmAcl, UUID, FarmAclFilter>(
+class FarmAclFactory : BaseOrganizationFactory<FarmAclModel, FarmAclModelDraft, FarmAcl, UUID, FarmAclFilter>(
     FarmAclModel::class
 ) {
     override val organizationId = FarmAclModel::organizationId

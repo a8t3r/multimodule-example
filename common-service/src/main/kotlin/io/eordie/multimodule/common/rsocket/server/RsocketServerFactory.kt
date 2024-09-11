@@ -53,7 +53,7 @@ class RsocketServerFactory {
         beanLocator: BeanLocator,
         queries: List<Query>,
         mutations: List<Mutation>,
-        baseFactories: List<KBaseFactory<*, *, *, *>>
+        baseFactories: List<KBaseFactory<*, *, *, *, *>>
     ): ConnectionAcceptor {
         val loadSuspend: KSuspendFunction2<*, *, *> = EntityLoader<*, *>::load
         val entityLoaders: List<ControllerDescriptor> = baseFactories.map {

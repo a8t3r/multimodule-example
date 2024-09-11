@@ -7,6 +7,7 @@ import io.eordie.multimodule.contracts.library.models.Author
 import io.eordie.multimodule.contracts.library.models.AuthorsFilter
 import io.eordie.multimodule.contracts.organization.models.acl.ResourceAcl
 import io.eordie.multimodule.library.models.AuthorModel
+import io.eordie.multimodule.library.models.AuthorModelDraft
 import io.eordie.multimodule.library.models.books
 import io.eordie.multimodule.library.models.firstName
 import io.eordie.multimodule.library.models.id
@@ -18,7 +19,7 @@ import java.util.*
 
 @Singleton
 class AuthorsFactory :
-    KBaseFactory<AuthorModel, Author, UUID, AuthorsFilter>(AuthorModel::class) {
+    KBaseFactory<AuthorModel, AuthorModelDraft, Author, UUID, AuthorsFilter>(AuthorModel::class) {
 
     override fun ResourceAcl.toPredicates(
         filter: AuthorsFilter,

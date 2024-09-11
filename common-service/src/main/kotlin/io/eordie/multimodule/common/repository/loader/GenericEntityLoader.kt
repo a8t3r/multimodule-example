@@ -55,7 +55,7 @@ class GenericEntityLoader(
 
     @Suppress("UNCHECKED_CAST")
     private suspend fun loadByFactory(
-        factory: Optional<KBaseFactory<*, *, *, *>>,
+        factory: Optional<KBaseFactory<*, *, *, *, *>>,
         context: CoroutineContext,
         ids: List<Any>,
         objectType: Class<*>
@@ -75,7 +75,7 @@ class GenericEntityLoader(
         } as Map<Any, Any>
     }
 
-    private fun findFactory(objectClass: Class<*>): Optional<KBaseFactory<*, *, *, *>> {
+    private fun findFactory(objectClass: Class<*>): Optional<KBaseFactory<*, *, *, *, *>> {
         val simpleName = objectClass.simpleName
         return beanLocator.findBean(KBaseFactory::class.java, byName("${simpleName}Factory"))
             .or { beanLocator.findBean(KBaseFactory::class.java, byName("${simpleName}sFactory")) }

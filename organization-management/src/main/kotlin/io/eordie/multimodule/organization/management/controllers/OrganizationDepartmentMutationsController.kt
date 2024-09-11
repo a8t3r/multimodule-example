@@ -7,7 +7,6 @@ import io.eordie.multimodule.contracts.organization.models.acl.ByFarmCriterion
 import io.eordie.multimodule.contracts.organization.models.acl.ByRegionCriterion
 import io.eordie.multimodule.contracts.organization.services.OrganizationDepartmentMutations
 import io.eordie.multimodule.contracts.organization.services.OrganizationStructureQueries
-import io.eordie.multimodule.organization.management.models.OrganizationDepartmentModelDraft
 import io.eordie.multimodule.organization.management.models.acl.ByFarmCriterionModel
 import io.eordie.multimodule.organization.management.models.acl.ByRegionCriterionModel
 import io.eordie.multimodule.organization.management.repository.OrganizationDepartmentFactory
@@ -38,7 +37,7 @@ class OrganizationDepartmentMutationsController(
         departmentId: UUID,
         includeAll: Boolean
     ): List<BindingCriterion> {
-        val department = departments.save<OrganizationDepartmentModelDraft>(
+        val department = departments.save(
             departmentId,
             departments.defaultFetcher
         ) { _, value ->
@@ -63,7 +62,7 @@ class OrganizationDepartmentMutationsController(
             this.regionId = binding.regionId
         }
 
-        val department = departments.save<OrganizationDepartmentModelDraft>(
+        val department = departments.save(
             departmentId,
             departments.defaultFetcher
         ) { _, value ->
@@ -95,7 +94,7 @@ class OrganizationDepartmentMutationsController(
             this.fieldIds = binding.fieldIds
         }
 
-        val department = departments.save<OrganizationDepartmentModelDraft>(
+        val department = departments.save(
             departmentId,
             departments.defaultFetcher
         ) { _, value ->

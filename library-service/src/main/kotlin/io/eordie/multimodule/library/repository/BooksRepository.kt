@@ -1,15 +1,15 @@
 package io.eordie.multimodule.library.repository
 
-import io.eordie.multimodule.common.repository.KFactory
 import io.eordie.multimodule.common.repository.KRepository
 import io.eordie.multimodule.contracts.library.models.BookSummary
 import io.eordie.multimodule.contracts.library.models.BooksFilter
 import io.eordie.multimodule.library.models.BookModel
 import io.micronaut.data.annotation.Query
+import io.micronaut.data.repository.GenericRepository
 import java.util.*
 
 @KRepository
-interface BooksRepository : KFactory<BookModel, UUID> {
+interface BooksRepository : GenericRepository<BookModel, UUID> {
 
     @Query(
         """

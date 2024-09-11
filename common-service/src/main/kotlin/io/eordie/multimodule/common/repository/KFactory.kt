@@ -7,7 +7,7 @@ import org.babyfish.jimmer.sql.fetcher.Fetcher
 import org.babyfish.jimmer.sql.kt.ast.query.KMutableRootQuery
 
 @Suppress("TooManyFunctions")
-interface KFactory<T : Any, ID> {
+interface KFactory<T : Any, S : T, ID> {
 
     suspend fun findByIds(ids: Collection<ID>, fetcher: Fetcher<T>? = null): Flow<T>
 
@@ -37,18 +37,18 @@ interface KFactory<T : Any, ID> {
     suspend fun getById(id: ID, fetcher: Fetcher<T>? = null): T
     suspend fun findById(id: ID, fetcher: Fetcher<T>? = null): T?
 
-    suspend fun <S : T> update(entity: S): T
-    suspend fun <S : T> update(id: ID, block: S.() -> Unit): T
-    suspend fun <S : T> updateIf(id: ID, block: S.() -> Boolean): Pair<T, Boolean>
+    suspend fun update(entity: S): T
+    suspend fun update(id: ID, block: S.() -> Unit): T
+    suspend fun updateIf(id: ID, block: S.() -> Boolean): Pair<T, Boolean>
 
-    suspend fun <S : T> save(block: S.() -> Unit): T
-    suspend fun <S : T> save(
+    suspend fun save(block: S.() -> Unit): T
+    suspend fun save(
         id: ID?,
         fetcher: Fetcher<T>? = null,
         block: (EntityState, S) -> Unit
     ): T
 
-    suspend fun <S : T> saveIf(
+    suspend fun saveIf(
         id: ID?,
         fetcher: Fetcher<T>? = null,
         block: (EntityState, S) -> Boolean

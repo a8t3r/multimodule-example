@@ -11,9 +11,6 @@ import io.eordie.multimodule.contracts.organization.models.structure.Organizatio
 import io.eordie.multimodule.contracts.organization.models.structure.OrganizationPositionInput
 import io.eordie.multimodule.contracts.organization.services.OrganizationStructureMutations
 import io.eordie.multimodule.contracts.utils.Roles
-import io.eordie.multimodule.organization.management.models.OrganizationDepartmentModelDraft
-import io.eordie.multimodule.organization.management.models.OrganizationEmployeeModelDraft
-import io.eordie.multimodule.organization.management.models.OrganizationPositionModelDraft
 import io.eordie.multimodule.organization.management.models.departmentId
 import io.eordie.multimodule.organization.management.models.organizationId
 import io.eordie.multimodule.organization.management.models.parentId
@@ -41,7 +38,7 @@ class OrganizationStructureMutationsController(
         currentOrganization: CurrentOrganization,
         position: OrganizationPositionInput
     ): OrganizationPosition {
-        return positions.save<OrganizationPositionModelDraft>(position.id) { _, value ->
+        return positions.save(position.id) { _, value ->
             value.parentId = position.parentId
             value.roleIds = Roles.toIds(position.roles)
             value.name = position.name
@@ -70,7 +67,7 @@ class OrganizationStructureMutationsController(
         currentOrganization: CurrentOrganization,
         input: OrganizationDepartmentInput
     ): OrganizationDepartment {
-        return departments.save<OrganizationDepartmentModelDraft>(input.id) { _, value ->
+        return departments.save(input.id) { _, value ->
             value.name = input.name
         }.convert()
     }
@@ -86,7 +83,7 @@ class OrganizationStructureMutationsController(
             )
         } ?: MissingMembership.error()
 
-        return employees.save<OrganizationEmployeeModelDraft>(null) { _, value ->
+        return employees.save(null) { _, value ->
             value.memberId = membership.id
             value.userId = employeeInput.userId
             value.departmentId = employeeInput.departmentId

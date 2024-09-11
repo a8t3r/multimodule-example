@@ -5,8 +5,6 @@ import io.eordie.multimodule.contracts.library.models.AuthorInput
 import io.eordie.multimodule.contracts.library.models.Book
 import io.eordie.multimodule.contracts.library.models.BookInput
 import io.eordie.multimodule.contracts.library.services.LibraryMutations
-import io.eordie.multimodule.library.models.AuthorModelDraft
-import io.eordie.multimodule.library.models.BookModelDraft
 import io.eordie.multimodule.library.repository.AuthorsFactory
 import io.eordie.multimodule.library.repository.BooksFactory
 import jakarta.inject.Singleton
@@ -20,13 +18,13 @@ class LibraryMutationController(
 
     override suspend fun book(input: BookInput): Book = books.transaction {
         val authorIds = input.authors.map { author ->
-            authors.save<AuthorModelDraft>(author.id) { _, instance ->
+            authors.save(author.id) { _, instance ->
                 instance.firstName = requireNotNull(author.firstName ?: instance.firstName)
                 instance.lastName = author.lastName ?: instance.lastName
             }
         }.map { author -> author.id }
 
-        books.save<BookModelDraft>(input.id) { state, instance ->
+        books.save(input.id) { state, instance ->
             state.ifNotExists {
                 instance.authorIds = emptyList()
             }
@@ -43,7 +41,7 @@ class LibraryMutationController(
     }
 
     override suspend fun author(input: AuthorInput): Author {
-        return authors.save<AuthorModelDraft>(input.id) { _, instance ->
+        return authors.save(input.id) { _, instance ->
             instance.firstName = requireNotNull(input.firstName ?: instance.firstName)
             instance.lastName = input.lastName
         }.convert()

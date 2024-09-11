@@ -72,9 +72,9 @@ import kotlin.reflect.KClass
 import kotlin.reflect.full.isSubclassOf
 
 @Suppress("TooManyFunctions")
-open class KFactoryImpl<T : Any, ID : Comparable<ID>>(
+open class KFactoryImpl<T : Any, S : T, ID : Comparable<ID>>(
     val entityType: KClass<T>
-) : KFactory<T, ID> {
+) : KFactory<T, S, ID> {
 
     @Inject
     private lateinit var context: ApplicationContext
@@ -421,14 +421,14 @@ open class KFactoryImpl<T : Any, ID : Comparable<ID>>(
         }
     }
 
-    override suspend fun <S : T> update(id: ID, block: S.() -> Unit): T {
-        return updateIf<S>(id) {
+    override suspend fun update(id: ID, block: S.() -> Unit): T {
+        return updateIf(id) {
             block.invoke(this)
             true
         }.first
     }
 
-    private suspend fun persist(entity: T): T {
+    private suspend fun persist(entity: S): T {
         checkPermission(entity, BasePermission.MANAGE)
 
         validator?.let {
@@ -445,7 +445,7 @@ open class KFactoryImpl<T : Any, ID : Comparable<ID>>(
         }.get()
     }
 
-    override suspend fun <S : T> update(entity: S): T {
+    override suspend fun update(entity: S): T {
         checkPermission(entity, BasePermission.MANAGE)
 
         validator?.let {
@@ -476,11 +476,11 @@ open class KFactoryImpl<T : Any, ID : Comparable<ID>>(
         }
     }
 
-    private suspend fun <S : T> KSimpleSaveResult<S>.get(): T {
+    private suspend fun KSimpleSaveResult<S>.get(): T {
         return checkPermission(modifiedEntity, BasePermission.VIEW)
     }
 
-    override suspend fun <S : T> updateIf(id: ID, block: S.() -> Boolean): Pair<T, Boolean> {
+    override suspend fun updateIf(id: ID, block: S.() -> Boolean): Pair<T, Boolean> {
         val value = entities().findById(entityType, id) ?: throw EntityNotFoundException(id, entityType)
 
         val mutate = AtomicBoolean()
@@ -494,7 +494,7 @@ open class KFactoryImpl<T : Any, ID : Comparable<ID>>(
         }
     }
 
-    private suspend fun <S : T> loadByKeys(block: (EntityState, S) -> Boolean, fetcher: Fetcher<T>?): T? {
+    private suspend fun loadByKeys(block: (EntityState, S) -> Boolean, fetcher: Fetcher<T>?): T? {
         return if (!prefetchByKeysEnabled || immutableType.keyProps.isEmpty()) null else {
             val prefetch = produce<S>(null) { block.invoke(EntityState.PREFETCH, it) } as ImmutableSpi
             loadByKeys(prefetch, fetcher)
@@ -530,7 +530,7 @@ open class KFactoryImpl<T : Any, ID : Comparable<ID>>(
         }
     }
 
-    override suspend fun <S : T> saveIf(
+    override suspend fun saveIf(
         id: ID?,
         fetcher: Fetcher<T>?,
         block: (EntityState, S) -> Boolean
@@ -543,27 +543,27 @@ open class KFactoryImpl<T : Any, ID : Comparable<ID>>(
         }
 
         return if (mutate.get()) {
-            val function: suspend (T) -> T = if (value == null) ::persist else ::update
+            val function: suspend (S) -> T = if (value == null) ::persist else ::update
             function(draft) to true
         } else {
             requireNotNull(value) to false
         }
     }
 
-    override suspend fun <S : T> save(id: ID?, fetcher: Fetcher<T>?, block: (EntityState, S) -> Unit): T {
-        return saveIf<S>(id, fetcher) { isNew, value ->
+    override suspend fun save(id: ID?, fetcher: Fetcher<T>?, block: (EntityState, S) -> Unit): T {
+        return saveIf(id, fetcher) { isNew, value ->
             block(isNew, value)
             true
         }.first
     }
 
-    override suspend fun <S : T> save(block: S.() -> Unit): T {
+    override suspend fun save(block: S.() -> Unit): T {
         val draft = produce(null, block)
         val id = if (!(draft as ImmutableSpi).__isLoaded(idProperty.name())) null else {
             draft.__get(idProperty.name()) as ID?
         }
         val value = if (id != null) findById(id) else loadByKeys(draft)
-        val function: suspend (T) -> T = if (value == null) ::persist else ::update
+        val function: suspend (S) -> T = if (value == null) ::persist else ::update
         return function(draft)
     }
 }

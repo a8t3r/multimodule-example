@@ -5,6 +5,7 @@ import io.eordie.multimodule.contracts.organization.models.DomainFilter
 import io.eordie.multimodule.contracts.organization.models.OrganizationDomain
 import io.eordie.multimodule.contracts.organization.models.acl.ResourceAcl
 import io.eordie.multimodule.organization.management.models.OrganizationDomainModel
+import io.eordie.multimodule.organization.management.models.OrganizationDomainModelDraft
 import io.eordie.multimodule.organization.management.models.domain
 import io.eordie.multimodule.organization.management.models.id
 import io.eordie.multimodule.organization.management.models.verified
@@ -15,7 +16,7 @@ import java.util.*
 
 @Singleton
 class OrganizationDomainFactory :
-    BaseOrganizationFactory<OrganizationDomainModel, OrganizationDomain, UUID, DomainFilter>(
+    BaseOrganizationFactory<OrganizationDomainModel, OrganizationDomainModelDraft, OrganizationDomain, UUID, DomainFilter>(
         OrganizationDomainModel::class
     ) {
     override val organizationId = OrganizationDomainModel::organizationId

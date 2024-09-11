@@ -29,12 +29,12 @@ import kotlin.reflect.full.isSuperclassOf
 
 @Singleton
 class FiltersRegistry(
-    filterSupportTraits: List<KBaseFactory<*, *, *, *>>
+    filterSupportTraits: List<FilterSupportTrait<*, *, *>>
 ) {
 
     private val index = filterSupportTraits.associate {
         val arguments = GenericTypes.getTypeArguments(it, KBaseFactory::class)
-        arguments[3] to (it to arguments[0])
+        arguments[4] to (it to arguments[0])
     }
 
     private inline fun <F, reified S : LiteralFilter<X>, X : Any> derived(

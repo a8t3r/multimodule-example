@@ -11,6 +11,7 @@ import io.eordie.multimodule.contracts.organization.models.invitation.Invitation
 import io.eordie.multimodule.contracts.organization.models.invitation.InvitationFilter
 import io.eordie.multimodule.contracts.utils.Roles
 import io.eordie.multimodule.organization.management.models.InvitationModel
+import io.eordie.multimodule.organization.management.models.InvitationModelDraft
 import io.eordie.multimodule.organization.management.models.email
 import io.eordie.multimodule.organization.management.models.organizationId
 import io.eordie.multimodule.organization.management.models.status
@@ -24,7 +25,7 @@ import org.babyfish.jimmer.sql.kt.ast.table.KNonNullTable
 import java.util.*
 
 @Singleton
-class InvitationFactory : KBaseFactory<InvitationModel, Invitation, UUID, InvitationFilter>(
+class InvitationFactory : KBaseFactory<InvitationModel, InvitationModelDraft, Invitation, UUID, InvitationFilter>(
     InvitationModel::class
 ) {
     override val datasourceName = "keycloak"
