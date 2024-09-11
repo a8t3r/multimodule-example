@@ -82,6 +82,7 @@ class EmploymentToDepartmentsWithCustomBindingsTest : AbstractOrganizationTest()
     @Order(22)
     fun `should create department with specific access`() = test(organizationManager) {
         specific = newDepartment(developersOrg, "Specific access")
+        assertThat(farmAcl).isNotEmpty()
         farmAcl.forEach { acl ->
             val criterion = ByFarmCriterion(acl.farmId, acl.fieldIds)
             departmentMutations.modifyByFarmCriterion(developersOrg, specific.id, criterion, true)
@@ -97,6 +98,7 @@ class EmploymentToDepartmentsWithCustomBindingsTest : AbstractOrganizationTest()
     @Test
     @Order(23)
     fun `duplicate department creation shouldn't create duplicate`() = test(organizationManager) {
+        assertThat(farmAcl).isNotEmpty()
         farmAcl.forEach { acl ->
             val criterion = ByFarmCriterion(acl.farmId, acl.fieldIds)
             departmentMutations.modifyByFarmCriterion(developersOrg, specific.id, criterion, true)
