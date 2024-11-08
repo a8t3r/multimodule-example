@@ -12,8 +12,8 @@ repositories {
 dependencies {
     add("implementation", libs.findLibrary("ksp-gradle").get())
     add("implementation", libs.findLibrary("kotlin-gradle").get())
-    add("implementation", libs.findLibrary("kotlin-allopen").get())
-    add("implementation", libs.findLibrary("kotlin-noarg").get())
+    add("implementation", libs.findLibrary("kotlin-allopen-gradle").get())
+    add("implementation", libs.findLibrary("kotlin-noarg-gradle").get())
     add("implementation", libs.findLibrary("detekt-gradle").get())
     add("implementation", libs.findLibrary("dag-command-gradle").get())
     add("implementation", libs.findLibrary("micronaut-gradle").get())

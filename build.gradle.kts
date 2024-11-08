@@ -5,6 +5,17 @@ plugins {
 }
 
 versionCatalogUpdate {
+    pin {
+        libraries = setOf(
+            libs.ksp.gradle,
+            libs.kotlinx.coroutines.core,
+            libs.kotlinx.coroutines.jdk8,
+            libs.kotlinx.coroutines.reactive,
+            libs.kotlinx.serialization.json,
+            libs.kotlinx.serialization.protobuf,
+            libs.kotlinx.serialization.gradle,
+        )
+    }
     keep {
         // keep versions without any library or plugin reference
         keepUnusedVersions = true
