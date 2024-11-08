@@ -7,7 +7,6 @@ import org.jetbrains.kotlin.gradle.plugin.getKotlinPluginVersion
 import java.net.URI
 
 plugins {
-    id("kotlin-conventions")
     kotlin("jvm")
     id("io.gitlab.arturbosch.detekt")
     id("io.github.leandroborgesferreira.dag-command")
