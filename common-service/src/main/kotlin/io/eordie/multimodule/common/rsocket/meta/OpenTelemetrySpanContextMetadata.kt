@@ -1,8 +1,6 @@
 package io.eordie.multimodule.common.rsocket.meta
 
 import io.ktor.utils.io.core.*
-import io.ktor.utils.io.core.internal.*
-import io.ktor.utils.io.pool.*
 import io.opentelemetry.api.trace.SpanContext
 import io.opentelemetry.api.trace.SpanId
 import io.opentelemetry.api.trace.TraceFlags
@@ -11,6 +9,7 @@ import io.opentelemetry.api.trace.TraceState
 import io.rsocket.kotlin.ExperimentalMetadataApi
 import io.rsocket.kotlin.core.CustomMimeType
 import io.rsocket.kotlin.core.MimeType
+import io.rsocket.kotlin.internal.BufferPool
 import io.rsocket.kotlin.metadata.Metadata
 import io.rsocket.kotlin.metadata.MetadataReader
 
@@ -40,7 +39,7 @@ class OpenTelemetrySpanContextMetadata(val spanContext: SpanContext) : Metadata 
     companion object Reader : MetadataReader<OpenTelemetrySpanContextMetadata> {
         override val mimeType: MimeType = CustomMimeType("message/x.opentelementry.tracing.v0")
 
-        override fun ByteReadPacket.read(pool: ObjectPool<ChunkBuffer>): OpenTelemetrySpanContextMetadata {
+        override fun ByteReadPacket.read(pool: BufferPool): OpenTelemetrySpanContextMetadata {
             val traceId = TraceId.fromBytes(readBytes(16))
             val spanId = SpanId.fromBytes(readBytes(8))
             val traceFlags = TraceFlags.fromByte(readByte())

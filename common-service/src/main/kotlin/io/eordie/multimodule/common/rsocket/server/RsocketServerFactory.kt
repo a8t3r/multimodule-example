@@ -84,7 +84,7 @@ class RsocketServerFactory {
         localAddress: InetSocketAddress,
         connectionAcceptor: ConnectionAcceptor
     ): TcpServer {
-        val transport = TcpServerTransport(localAddress, DefaultBufferPool()) { }
+        val transport = TcpServerTransport(localAddress) { }
         val connector = RSocketServer { }
 
         val job = SupervisorJob()

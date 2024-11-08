@@ -2,7 +2,6 @@ import com.bmuschko.gradle.docker.shaded.org.apache.commons.lang3.RandomStringUt
 import com.bmuschko.gradle.docker.tasks.image.DockerBuildImage
 import io.micronaut.gradle.docker.MicronautDockerfile
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-import java.io.ByteArrayOutputStream
 
 plugins {
     id("kotlin-conventions")
@@ -33,16 +32,8 @@ dependencies {
 val generatedTag: String get() =
     project.findProperty("generated-tag")?.toString() ?: RandomStringUtils.randomNumeric(4)
 
-val gitCommitHash: String get() = kotlin.run {
-    val stdout = ByteArrayOutputStream()
-    rootProject.exec {
-        commandLine("git", "rev-parse", "--verify", "--short", "HEAD")
-        standardOutput = stdout
-    }
-    stdout.toString().trim()
-}
-
 val activeProfile = "dev"
+val gitCommitHash: String get() = providers.of(GitCommitValueSource::class) {}.get()
 val version = "$gitCommitHash-$generatedTag"
 
 tasks.withType<MicronautDockerfile> {

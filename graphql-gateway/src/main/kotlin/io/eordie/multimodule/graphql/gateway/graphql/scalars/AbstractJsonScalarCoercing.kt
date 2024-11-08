@@ -15,7 +15,7 @@ import kotlin.reflect.KClass
 @Suppress("UNCHECKED_CAST")
 abstract class AbstractJsonScalarCoercing<In : Any, Out : Any>(
     private val inputType: KClass<In>,
-    private val outputType: KClass<Out>
+    outputType: KClass<Out>
 ) : Coercing<In, Out> {
 
     companion object {

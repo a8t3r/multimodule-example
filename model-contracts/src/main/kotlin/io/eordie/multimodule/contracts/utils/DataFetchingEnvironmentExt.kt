@@ -19,7 +19,8 @@ private fun <V> findLoader(env: DataFetchingEnvironment, function: KCallable<*>)
         val methodName = function.name
 
         val dataLoaderName = "$serviceName:$methodName"
-        env.getDataLoader<Any, V>(dataLoaderName) to (env.executionId == syntheticExecutionId)
+        val dataLoader = env.getDataLoader<Any, V>(dataLoaderName)
+        requireNotNull(dataLoader) to (env.executionId == syntheticExecutionId)
     }
 }
 
@@ -77,7 +78,7 @@ inline fun <reified V : Any?> DataFetchingEnvironment.byIds(ids: List<Any>): Com
 fun <V> DataFetchingEnvironment.entityDataLoader(): Pair<DataLoader<Any, V>, Boolean> {
     val loader = this.getDataLoader<Any, V>("EntityDataLoader")
     val dispatch = executionId.toString() == "synthetic"
-    return loader to dispatch
+    return requireNotNull(loader) to dispatch
 }
 
 private fun <V> DataFetchingEnvironment.getSingleValueBy(function: KCallable<*>, id: Any, vararg args: Any?): CompletableFuture<V> {

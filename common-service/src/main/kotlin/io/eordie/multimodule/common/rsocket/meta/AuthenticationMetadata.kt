@@ -2,11 +2,10 @@ package io.eordie.multimodule.common.rsocket.meta
 
 import io.eordie.multimodule.contracts.identitymanagement.models.AuthenticationDetails
 import io.ktor.utils.io.core.*
-import io.ktor.utils.io.core.internal.*
-import io.ktor.utils.io.pool.*
 import io.rsocket.kotlin.ExperimentalMetadataApi
 import io.rsocket.kotlin.core.CustomMimeType
 import io.rsocket.kotlin.core.MimeType
+import io.rsocket.kotlin.internal.BufferPool
 import io.rsocket.kotlin.metadata.Metadata
 import io.rsocket.kotlin.metadata.MetadataReader
 import kotlin.reflect.full.createType
@@ -28,7 +27,7 @@ class AuthenticationMetadata(val details: AuthenticationDetails) : Metadata {
 
         override val mimeType: MimeType = CustomMimeType("Authentication")
 
-        override fun ByteReadPacket.read(pool: ObjectPool<ChunkBuffer>): AuthenticationMetadata {
+        override fun ByteReadPacket.read(pool: BufferPool): AuthenticationMetadata {
             val size = readInt()
             val details = proto.decodeFromUnpackedBytes(readBytes(size), type) as AuthenticationDetails
             return AuthenticationMetadata(details)

@@ -2,11 +2,10 @@ package io.eordie.multimodule.common.rsocket.meta
 
 import io.eordie.multimodule.contracts.basic.exception.BaseRuntimeException
 import io.ktor.utils.io.core.*
-import io.ktor.utils.io.core.internal.*
-import io.ktor.utils.io.pool.*
 import io.rsocket.kotlin.ExperimentalMetadataApi
 import io.rsocket.kotlin.core.CustomMimeType
 import io.rsocket.kotlin.core.MimeType
+import io.rsocket.kotlin.internal.BufferPool
 import io.rsocket.kotlin.metadata.Metadata
 import io.rsocket.kotlin.metadata.MetadataReader
 import kotlin.reflect.full.createType
@@ -22,7 +21,7 @@ class ExceptionalMetadata(
 
         override val mimeType = CustomMimeType("exceptional")
 
-        override fun ByteReadPacket.read(pool: ObjectPool<ChunkBuffer>): ExceptionalMetadata {
+        override fun ByteReadPacket.read(pool: BufferPool): ExceptionalMetadata {
             val size = readInt()
             val ex = proto.decodeFromUnpackedBytes(readBytes(size), type) as BaseRuntimeException
             return ExceptionalMetadata(ex)
