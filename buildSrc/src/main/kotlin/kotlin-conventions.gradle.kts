@@ -2,8 +2,9 @@
 
 import io.gitlab.arturbosch.detekt.Detekt
 import io.gitlab.arturbosch.detekt.DetektCreateBaselineTask
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.dsl.KotlinCompile
-import org.jetbrains.kotlin.gradle.plugin.getKotlinPluginVersion
+import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
 import java.net.URI
 
 plugins {
@@ -20,43 +21,21 @@ repositories {
     }
 }
 
-val embeddedMajorAndMinorKotlinVersion = project.getKotlinPluginVersion().substringBeforeLast(".")
-if (KOTLIN_VERSION != embeddedMajorAndMinorKotlinVersion) {
-    logger.warn(
-        "Constant 'KOTLIN_VERSION' ($KOTLIN_VERSION) differs from embedded Kotlin version in Gradle (${project.getKotlinPluginVersion()})!\n" +
-            "Constant 'KOTLIN_VERSION' should be ($embeddedMajorAndMinorKotlinVersion)."
-    )
-}
-
-tasks.compileKotlin {
-    logger.lifecycle("Configuring $name with version ${project.getKotlinPluginVersion()} in project ${project.name}")
-    kotlinOptions {
-        @Suppress("SpellCheckingInspection")
-        freeCompilerArgs = listOf("-Xjsr305=strict", "-Xcontext-receivers")
-        allWarningsAsErrors = true
-        jvmTarget = JDK_VERSION
-        languageVersion = KOTLIN_VERSION
-        apiVersion = KOTLIN_VERSION
-    }
-}
-
-tasks.compileTestKotlin {
-    logger.lifecycle("Configuring $name with version ${project.getKotlinPluginVersion()} in project ${project.name}")
-    kotlinOptions {
-        @Suppress("SpellCheckingInspection")
-        freeCompilerArgs = listOf("-Xjsr305=strict", "-Xcontext-receivers")
-        allWarningsAsErrors = true
-        jvmTarget = JDK_VERSION
-        languageVersion = KOTLIN_VERSION
-        apiVersion = KOTLIN_VERSION
-    }
-}
+val libs = extensions.getByType<VersionCatalogsExtension>().named("libs")
+val jdkVersion = libs.findVersion("jdk").get().toString()
+val kotlinVersion = libs.findVersion("kotlin").get().toString().substringBeforeLast(".").replace(".", "_")
 
 kotlin {
     jvmToolchain {
-        languageVersion.set(
-            JavaLanguageVersion.of(JDK_VERSION)
-        )
+        languageVersion.set(JavaLanguageVersion.of(jdkVersion))
+    }
+    compilerOptions {
+        @Suppress("SpellCheckingInspection")
+        freeCompilerArgs = listOf("-Xjsr305=strict", "-Xcontext-receivers")
+        allWarningsAsErrors = false
+        jvmTarget.set(JvmTarget.valueOf("JVM_$jdkVersion"))
+        languageVersion.set(KotlinVersion.valueOf("KOTLIN_$kotlinVersion"))
+        apiVersion.set(KotlinVersion.valueOf("KOTLIN_$kotlinVersion"))
     }
 }
 
@@ -71,8 +50,6 @@ dagCommand {
     defaultBranch = "origin/develop"
     outputType = "json"
 }
-
-val libs = extensions.getByType<VersionCatalogsExtension>().named("libs")
 
 dependencies {
     constraints {
@@ -102,7 +79,7 @@ tasks.withType<KotlinCompile<*>>().configureEach {
 
 // Activate Type Resolution
 tasks.withType<Detekt>().configureEach {
-    this.jvmTarget = JDK_VERSION
+    this.jvmTarget = jdkVersion
     classpath.setFrom(
         sourceSets.main.get().compileClasspath,
         sourceSets.test.get().compileClasspath
@@ -111,7 +88,7 @@ tasks.withType<Detekt>().configureEach {
 
 // Activate Type Resolution
 tasks.withType<DetektCreateBaselineTask>().configureEach {
-    this.jvmTarget = JDK_VERSION
+    this.jvmTarget = jdkVersion
     classpath.setFrom(
         sourceSets.main.get().compileClasspath,
         sourceSets.test.get().compileClasspath
