@@ -18,4 +18,5 @@ dependencies {
     add("implementation", libs.findLibrary("dag-command-gradle").get())
     add("implementation", libs.findLibrary("micronaut-gradle").get())
     add("implementation", libs.findLibrary("kotlinx-serialization-gradle").get())
+    add("implementation", libs.findLibrary("dependency-analysis-gradle").get())
 }

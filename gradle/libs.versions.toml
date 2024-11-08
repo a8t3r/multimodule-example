@@ -4,6 +4,7 @@ commons-lang = "3.17.0"
 coroutines = "1.9.0"
 dag-command = "1.11.0"
 dekorate = "4.1.4"
+dependency-analysis = "2.4.2"
 detekt = "1.23.7"
 dokka = "1.9.10"
 graphqlExtendedScalars = "22.0"
@@ -33,6 +34,7 @@ commons-lang = { module = "org.apache.commons:commons-lang3", version.ref = "com
 dag-command-gradle = { module = "io.github.leandroborgesferreira:dag-command", version.ref = "dag-command" }
 dekorate-kubernetes-annotations = { module = "io.dekorate:kubernetes-annotations", version.ref = "dekorate" }
 dekorate-prometheus-annotations = { module = "io.dekorate:prometheus-annotations", version.ref = "dekorate" }
+dependency-analysis-gradle = { module = "com.autonomousapps:dependency-analysis-gradle-plugin", version.ref = "dependency-analysis" }
 detekt-formatting = { module = "io.gitlab.arturbosch.detekt:detekt-formatting", version.ref = "detekt" }
 detekt-gradle = { module = "io.gitlab.arturbosch.detekt:detekt-gradle-plugin", version.ref = "detekt" }
 dokka-gradle = { module = "org.jetbrains.dokka:dokka-gradle-plugin", version.ref = "dokka" }

@@ -10,6 +10,7 @@ import java.net.URI
 plugins {
     kotlin("jvm")
     id("io.gitlab.arturbosch.detekt")
+    id("com.autonomousapps.dependency-analysis")
     id("io.github.leandroborgesferreira.dag-command")
 }
 
