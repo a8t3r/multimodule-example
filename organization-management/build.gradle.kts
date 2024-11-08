@@ -3,13 +3,14 @@ plugins {
 }
 
 dependencies {
-    ksp("io.micronaut.data:micronaut-data-processor")
+    ksp(mn.micronaut.data.processor)
 
-    implementation("io.phasetwo:phasetwo-admin-client:0.1.9") {
+    implementation(libs.phaseTwo.admin.client) {
         exclude(group = "com.fasterxml.jackson.module", module = "jackson-module-jaxb-annotations")
     }
 
-    testImplementation("org.testcontainers:testcontainers")
-    testImplementation("org.testcontainers:junit-jupiter")
-    testImplementation("org.testcontainers:postgresql")
+    implementation(libs.kotlin.valiktor.core)
+    implementation(mn.micronaut.kafka)
+    implementation(mn.micronaut.data.jdbc)
+    implementation(mn.micronaut.data.model)
 }

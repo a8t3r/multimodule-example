@@ -3,5 +3,6 @@ plugins {
 }
 
 dependencies {
-    ksp("io.micronaut.data:micronaut-data-processor")
+    ksp(mn.micronaut.data.processor)
+    implementation(mn.micronaut.data.model)
 }

@@ -23,6 +23,7 @@ logging-jvm = "7.0.0"
 logitech = "1.20.0"
 micronaut = "4.6.3"
 micronautPlugin = "4.4.0"
+phaseTwo = "0.1.10"
 rsocket = "0.16.0"
 rsocketLoadBalancer = "1.1.3"
 truth = "1.4.4"
@@ -68,4 +69,5 @@ logitech-jts-core = { module = "org.locationtech.jts:jts-core", version.ref = "l
 micronaut-gradle = { module = "io.micronaut.gradle:micronaut-gradle-plugin", version.ref = "micronautPlugin" }
 micronaut-inject = { module = "io.micronaut:micronaut-inject", version.ref = "micronaut" }
 micronaut-inject-kotlin = { module = "io.micronaut:micronaut-inject-kotlin", version.ref = "micronaut" }
+phaseTwo-admin-client = { module = "io.phasetwo:phasetwo-admin-client", version.ref = "phaseTwo" }
 truth = { module = "com.google.truth:truth", version.ref = "truth" }

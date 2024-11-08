@@ -8,35 +8,42 @@ plugins {
 
 dependencies {
     ksp(libs.ksp.jimmer)
-    annotationProcessor("io.micronaut.tracing:micronaut-tracing-opentelemetry-annotation")
+    annotationProcessor(mn.micronaut.tracing.opentelemetry.annotation)
 
     implementation(project(":model-contracts"))
-    implementation("org.jetbrains.kotlin:kotlin-reflect")
+
+    implementation(mn.kotlin.reflect)
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.kotlinx.serialization.protobuf)
     implementation(libs.kotlin.rsocket.transport.ktor.tcp)
 
-    implementation("io.micronaut.redis:micronaut-redis-lettuce")
-    implementation("io.micronaut.security:micronaut-security-jwt")
-    implementation("io.opentelemetry:opentelemetry-exporter-otlp")
-    implementation("io.micronaut.tracing:micronaut-tracing-opentelemetry-http")
-    implementation("io.micronaut.tracing:micronaut-tracing-opentelemetry-kafka")
-    implementation("io.micronaut.kubernetes:micronaut-kubernetes-discovery-client")
+    implementation(mn.micronaut.redis.lettuce)
+    implementation(mn.micronaut.security.jwt)
+    implementation(mn.micronaut.tracing.opentelemetry.http)
+    implementation(mn.micronaut.tracing.opentelemetry.kafka)
+    implementation(mn.micronaut.kubernetes.discovery.client)
 
-    implementation("io.micronaut.reactor:micronaut-reactor")
-    implementation("com.fasterxml.jackson.core:jackson-databind")
-    implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
+    implementation("io.opentelemetry:opentelemetry-exporter-otlp")
+
+    implementation(mn.micronaut.kafka)
+    implementation(mn.micronaut.data.model)
+    implementation(mn.micronaut.data.jdbc)
+
+    implementation(mn.micronaut.reactor)
+    implementation(mn.jackson.databind)
+    implementation(mn.jackson.module.kotlin)
 
     implementation(libs.guava)
-    implementation(libs.kotlin.valiktor.core)
+    implementation(libs.logitech.jts.core)
     implementation(libs.jimmer.sql.kotlin)
     implementation(libs.kotlin.logging.jvm)
+    implementation(libs.kotlin.valiktor.core)
 
-    implementation("org.postgresql:postgresql")
-    implementation("io.micronaut.flyway:micronaut-flyway")
-    implementation("org.flywaydb:flyway-database-postgresql")
-    implementation("io.micronaut.sql:micronaut-jdbc-hikari")
-    implementation("org.springframework:spring-jdbc:6.1.6")
+    implementation(mn.postgresql)
+    implementation(mn.micronaut.flyway)
+    implementation(mn.flyway.postgresql)
+    implementation(mn.micronaut.jdbc.hikari)
+    implementation(mn.spring.jdbc)
 }
 
 tasks.withType<DockerPushImage> {

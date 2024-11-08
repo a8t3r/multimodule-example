@@ -1,5 +1,3 @@
-val libs = extensions.getByType<VersionCatalogsExtension>().named("libs")
-
 plugins {
     `kotlin-dsl`
 }
@@ -10,13 +8,13 @@ repositories {
 }
 
 dependencies {
-    add("implementation", libs.findLibrary("ksp-gradle").get())
-    add("implementation", libs.findLibrary("kotlin-gradle").get())
-    add("implementation", libs.findLibrary("kotlin-allopen-gradle").get())
-    add("implementation", libs.findLibrary("kotlin-noarg-gradle").get())
-    add("implementation", libs.findLibrary("detekt-gradle").get())
-    add("implementation", libs.findLibrary("dag-command-gradle").get())
-    add("implementation", libs.findLibrary("micronaut-gradle").get())
-    add("implementation", libs.findLibrary("kotlinx-serialization-gradle").get())
-    add("implementation", libs.findLibrary("dependency-analysis-gradle").get())
+    implementation(libs.ksp.gradle)
+    implementation(libs.kotlin.gradle)
+    implementation(libs.kotlin.allopen.gradle)
+    implementation(libs.kotlin.noarg.gradle)
+    implementation(libs.detekt.gradle)
+    implementation(libs.dag.command.gradle)
+    implementation(libs.micronaut.gradle)
+    implementation(libs.kotlinx.serialization.gradle)
+    implementation(libs.dependency.analysis.gradle)
 }

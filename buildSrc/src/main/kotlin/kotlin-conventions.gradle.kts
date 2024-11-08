@@ -1,5 +1,6 @@
 @file:Suppress("UnstableApiUsage")
 
+import gradle.kotlin.dsl.accessors._d31b883013e292cbd0ac2e670d6307c5.implementation
 import io.gitlab.arturbosch.detekt.Detekt
 import io.gitlab.arturbosch.detekt.DetektCreateBaselineTask
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
@@ -65,6 +66,7 @@ dependencies {
     implementation(libs.findLibrary("kotlinx-coroutines-core").get())
     implementation(libs.findLibrary("kotlinx-coroutines-jdk8").get())
     implementation(libs.findLibrary("kotlinx-coroutines-reactive").get())
+    implementation(libs.findLibrary("kotlin-logging-jvm").get())
 
     testImplementation(libs.findLibrary("kotlinx-coroutines-test").get())
     testImplementation(libs.findLibrary("truth").get())
