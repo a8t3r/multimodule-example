@@ -33,7 +33,7 @@ dependencies {
     implementation(mn.jackson.databind)
     implementation(mn.jackson.module.kotlin)
 
-    implementation(libs.guava)
+    implementation(mn.guava)
     implementation(libs.logitech.jts.core)
     implementation(libs.jimmer.sql.kotlin)
     implementation(libs.kotlin.logging.jvm)

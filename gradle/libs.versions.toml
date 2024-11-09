@@ -9,8 +9,8 @@ detekt = "1.23.7"
 dokka = "1.9.10"
 graphqlExtendedScalars = "22.0"
 graphqlKotlin = "8.2.1"
-guava = "33.3.1-jre"
 jdk = "17"
+junit = "5.2.0"
 jimmer = "0.9.11"
 kotlin = "1.9.24"
 kotlinxSerializationJson = "1.6.3"
@@ -40,7 +40,6 @@ detekt-formatting = { module = "io.gitlab.arturbosch.detekt:detekt-formatting", 
 detekt-gradle = { module = "io.gitlab.arturbosch.detekt:detekt-gradle-plugin", version.ref = "detekt" }
 dokka-gradle = { module = "org.jetbrains.dokka:dokka-gradle-plugin", version.ref = "dokka" }
 graphql-scalars = { module = "com.graphql-java:graphql-java-extended-scalars", version.ref = "graphqlExtendedScalars" }
-guava = { module = "com.google.guava:guava", version.ref = "guava" }
 jimmer-sql-kotlin = { module = "org.babyfish.jimmer:jimmer-sql-kotlin", version.ref = "jimmer" }
 kotlin-allopen-gradle = { module = "org.jetbrains.kotlin:kotlin-allopen", version.ref = "kotlin" }
 kotlin-gradle = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }

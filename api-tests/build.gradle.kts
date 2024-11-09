@@ -11,6 +11,6 @@ dependencies {
     implementation(project(":regions-service"))
     implementation(project(":organization-management"))
 
-    testImplementation(mn.micronaut.data.tx.asProvider())
-    testImplementation(mn.micronaut.security.asProvider())
+    testImplementation(mn.micronaut.data.tx)
+    testImplementation(mn.micronaut.security)
 }

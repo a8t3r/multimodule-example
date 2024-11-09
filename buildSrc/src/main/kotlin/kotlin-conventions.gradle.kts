@@ -68,9 +68,6 @@ dependencies {
     implementation(libs.findLibrary("kotlinx-coroutines-reactive").get())
     implementation(libs.findLibrary("kotlin-logging-jvm").get())
 
-    testImplementation(libs.findLibrary("kotlinx-coroutines-test").get())
-    testImplementation(libs.findLibrary("truth").get())
-
     detektPlugins(libs.findLibrary("detekt-formatting").get())
 }
 
