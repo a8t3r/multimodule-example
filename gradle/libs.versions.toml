@@ -16,7 +16,6 @@ kotlin = "1.9.24"
 kotlinxSerialization = "1.6.3"
 ksp = "1.9.24-1.0.20"
 ksp-auto-service = "1.2.0"
-logback = "1.5.12"
 logging-jvm = "7.0.0"
 logitech = "1.20.0"
 micronaut = "4.6.3"
@@ -58,7 +57,6 @@ kotlinx-serialization-protobuf = { module = "org.jetbrains.kotlinx:kotlinx-seria
 ksp-auto-service = { module = "dev.zacsweers.autoservice:auto-service-ksp", version.ref = "ksp-auto-service" }
 ksp-gradle = { module = "com.google.devtools.ksp:symbol-processing-gradle-plugin", version.ref = "ksp" }
 ksp-jimmer = { module = "org.babyfish.jimmer:jimmer-ksp", version.ref = "jimmer" }
-logback = { module = "ch.qos.logback:logback-classic", version.ref = "logback" }
 logitech-jts-core = { module = "org.locationtech.jts:jts-core", version.ref = "logitech" }
 micronaut-gradle = { module = "io.micronaut.gradle:micronaut-gradle-plugin", version.ref = "micronautPlugin" }
 phaseTwo-admin-client = { module = "io.phasetwo:phasetwo-admin-client", version.ref = "phaseTwo" }

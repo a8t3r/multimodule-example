@@ -34,6 +34,7 @@ dependencies {
     implementation(mn.jackson.module.kotlin)
 
     implementation(mn.guava)
+    implementation(mn.logback.classic)
     implementation(libs.logitech.jts.core)
     implementation(libs.jimmer.sql.kotlin)
     implementation(libs.kotlin.logging.jvm)

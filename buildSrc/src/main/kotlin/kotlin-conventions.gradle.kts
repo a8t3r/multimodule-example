@@ -62,7 +62,6 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-jdk8")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactive")
 
-    implementation(libs.findLibrary("logback").get())
     implementation(libs.findLibrary("commons-lang").get())
     implementation(libs.findLibrary("kotlin-logging-jvm").get())
 
