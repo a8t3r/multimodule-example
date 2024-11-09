@@ -54,21 +54,20 @@ dagCommand {
 }
 
 dependencies {
-    constraints {
-        implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
-    }
-
     implementation(platform("org.jetbrains.kotlin:kotlin-bom"))
+    implementation(platform(libs.findLibrary("kotlinx-coroutines-bom").get()))
+
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-jdk8")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactive")
 
     implementation(libs.findLibrary("logback").get())
     implementation(libs.findLibrary("commons-lang").get())
-    implementation(libs.findLibrary("kotlinx-coroutines-core").get())
-    implementation(libs.findLibrary("kotlinx-coroutines-jdk8").get())
-    implementation(libs.findLibrary("kotlinx-coroutines-reactive").get())
     implementation(libs.findLibrary("kotlin-logging-jvm").get())
 
     detektPlugins(libs.findLibrary("detekt-formatting").get())
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test")
 }
 
 tasks.withType<KotlinCompile<*>>().configureEach {
