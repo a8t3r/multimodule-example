@@ -491,22 +491,23 @@ open class KFactoryImpl<T : Any, S : T, ID : Comparable<ID>>(
     }
 
     private suspend fun <S : ImmutableSpi> loadByKeys(prefetch: S): T? {
-        return if (!prefetchByKeysEnabled || immutableType.keyProps.isEmpty()) null else {
+        return if (!prefetchByKeysEnabled) null else {
             loadByKeys(prefetch, null)
         }
     }
 
     private suspend fun loadByKeys(block: (EntityState, S) -> Boolean, fetcher: Fetcher<T>?): T? {
-        return if (!prefetchByKeysEnabled || immutableType.keyProps.isEmpty()) null else {
+        return if (!prefetchByKeysEnabled) null else {
             val prefetch = produce<S>(null) { block.invoke(EntityState.PREFETCH, it) } as ImmutableSpi
             loadByKeys(prefetch, fetcher)
         }
     }
 
     private suspend fun <S : ImmutableSpi> loadByKeys(prefetch: S, fetcher: Fetcher<T>?): T? {
-        return if (immutableType.keyProps.any { !prefetch.__isLoaded(it.id) }) null else {
+        val matchedKeyProps = immutableType.keyMatcher.matchedKeyProps(prefetch)
+        return if (matchedKeyProps.isEmpty() || matchedKeyProps.any { !prefetch.__isLoaded(it.id) }) null else {
             sql.createQuery(entityType) {
-                val predicate = immutableType.keyProps.map { keyProp ->
+                val predicate = matchedKeyProps.map { keyProp ->
                     val propertyValue = prefetch.__get(keyProp.id)
                     if (keyProp.isReference(TargetLevel.ENTITY)) {
                         val targetIdExpression = table.getAssociatedId<Any>(keyProp)
