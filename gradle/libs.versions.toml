@@ -13,7 +13,7 @@ jdk = "17"
 jimmer = "0.9.11"
 junit = "5.11.3"
 kotlin = "1.9.24"
-kotlinxSerializationJson = "1.6.3"
+kotlinxSerialization = "1.6.3"
 kotlinxSerializationPlugin = "1.9.24"
 kotlinxSerializationProtobuf = "1.6.3"
 ksp = "1.9.24-1.0.20"
@@ -55,8 +55,8 @@ kotlin-rsocket-transport-ktor-tcp = { module = "io.rsocket.kotlin:rsocket-transp
 kotlin-valiktor-core = { module = "org.valiktor:valiktor-core", version.ref = "valiktor" }
 kotlinx-coroutines-bom = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-bom", version.ref = "coroutines" }
 kotlinx-serialization-gradle = { module = "org.jetbrains.kotlin:kotlin-serialization", version.ref = "kotlinxSerializationPlugin" }
-kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json-jvm", version.ref = "kotlinxSerializationJson" }
-kotlinx-serialization-protobuf = { module = "org.jetbrains.kotlinx:kotlinx-serialization-protobuf-jvm", version.ref = "kotlinxSerializationProtobuf" }
+kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json-jvm", version.ref = "kotlinxSerialization" }
+kotlinx-serialization-protobuf = { module = "org.jetbrains.kotlinx:kotlinx-serialization-protobuf-jvm", version.ref = "kotlinxSerialization" }
 ksp-auto-service = { module = "dev.zacsweers.autoservice:auto-service-ksp", version.ref = "ksp-auto-service" }
 ksp-gradle = { module = "com.google.devtools.ksp:symbol-processing-gradle-plugin", version.ref = "ksp" }
 ksp-jimmer = { module = "org.babyfish.jimmer:jimmer-ksp", version.ref = "jimmer" }
