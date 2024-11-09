@@ -48,7 +48,6 @@ kotlin-graphql = { module = "com.expediagroup:graphql-kotlin-server", version.re
 kotlin-graphql-persisted-queries = { module = "com.expediagroup:graphql-kotlin-automatic-persisted-queries", version.ref = "graphqlKotlin" }
 kotlin-graphql-schema-generator = { module = "com.expediagroup:graphql-kotlin-schema-generator", version.ref = "graphqlKotlin" }
 kotlin-logging-jvm = { module = "io.github.oshai:kotlin-logging-jvm", version.ref = "logging-jvm" }
-kotlin-micronaut-core = { module = "io.micronaut:micronaut-core", version.ref = "micronaut" }
 kotlin-noarg-gradle = { module = "org.jetbrains.kotlin:kotlin-noarg", version.ref = "kotlin" }
 kotlin-rsocket-ktor-server = { module = "io.rsocket.kotlin:rsocket-ktor-server", version.ref = "rsocket" }
 kotlin-rsocket-load-balancer = { module = "io.rsocket:rsocket-load-balancer", version.ref = "rsocketLoadBalancer" }
@@ -67,7 +66,5 @@ ksp-jimmer = { module = "org.babyfish.jimmer:jimmer-ksp", version.ref = "jimmer"
 logback = { module = "ch.qos.logback:logback-classic", version.ref = "logback" }
 logitech-jts-core = { module = "org.locationtech.jts:jts-core", version.ref = "logitech" }
 micronaut-gradle = { module = "io.micronaut.gradle:micronaut-gradle-plugin", version.ref = "micronautPlugin" }
-micronaut-inject = { module = "io.micronaut:micronaut-inject", version.ref = "micronaut" }
-micronaut-inject-kotlin = { module = "io.micronaut:micronaut-inject-kotlin", version.ref = "micronaut" }
 phaseTwo-admin-client = { module = "io.phasetwo:phasetwo-admin-client", version.ref = "phaseTwo" }
 truth = { module = "com.google.truth:truth", version.ref = "truth" }

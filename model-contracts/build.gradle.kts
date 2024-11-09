@@ -6,11 +6,11 @@ plugins {
 }
 
 dependencies {
-    ksp(libs.micronaut.inject.kotlin)
+    ksp(mn.micronaut.inject.kotlin)
     ksp(libs.ksp.auto.service)
 
     implementation(libs.auto.service)
-    compileOnly(libs.kotlin.micronaut.core)
+    compileOnly(mn.micronaut.core)
     compileOnly(libs.kotlin.graphql.schema.generator)
 
     implementation(libs.kotlinx.serialization.json)
