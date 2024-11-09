@@ -1,7 +1,7 @@
 <configuration debug="true" scan="true" scanPeriod="30 seconds">
 
-    <conversionRule conversionWord="traceId" converterClass="io.eordie.multimodule.common.logger.TraceIdConverter"/>
-    <conversionRule conversionWord="spanId" converterClass="io.eordie.multimodule.common.logger.SpanIdConverter"/>
+    <conversionRule conversionWord="traceId" class="io.eordie.multimodule.common.logger.TraceIdConverter"/>
+    <conversionRule conversionWord="spanId" class="io.eordie.multimodule.common.logger.SpanIdConverter"/>
 
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
