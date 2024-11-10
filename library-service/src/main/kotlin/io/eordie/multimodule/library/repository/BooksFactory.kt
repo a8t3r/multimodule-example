@@ -13,13 +13,19 @@ import io.eordie.multimodule.library.models.authorIds
 import io.eordie.multimodule.library.models.authors
 import io.eordie.multimodule.library.models.id
 import io.eordie.multimodule.library.models.name
+import io.eordie.multimodule.library.models.numberOfAuthors
 import jakarta.inject.Singleton
 import org.babyfish.jimmer.sql.kt.ast.expression.KNonNullExpression
+import org.babyfish.jimmer.sql.kt.ast.expression.KPropExpression
 import org.babyfish.jimmer.sql.kt.ast.table.KNonNullTable
 import java.util.*
 
 @Singleton
 class BooksFactory : KBaseFactory<BookModel, BookModelDraft, Book, UUID, BooksFilter>(BookModel::class) {
+
+    override fun sortingExpressions(table: KNonNullTable<BookModel>): List<KPropExpression<out Comparable<*>>> {
+        return super.sortingExpressions(table) + table.numberOfAuthors
+    }
 
     override fun ResourceAcl.toPredicates(filter: BooksFilter, table: KNonNullTable<BookModel>): List<KNonNullExpression<Boolean>> {
         return listOfNotNull(

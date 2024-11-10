@@ -14,6 +14,7 @@ import io.eordie.multimodule.organization.management.models.departmentId
 import io.eordie.multimodule.organization.management.models.fetchBy
 import io.eordie.multimodule.organization.management.models.id
 import io.eordie.multimodule.organization.management.models.member
+import io.eordie.multimodule.organization.management.models.name
 import io.eordie.multimodule.organization.management.models.organization
 import io.eordie.multimodule.organization.management.models.organizationId
 import io.eordie.multimodule.organization.management.models.position
@@ -22,6 +23,7 @@ import io.eordie.multimodule.organization.management.models.user
 import io.eordie.multimodule.organization.management.models.userId
 import jakarta.inject.Singleton
 import org.babyfish.jimmer.sql.kt.ast.expression.KNonNullExpression
+import org.babyfish.jimmer.sql.kt.ast.expression.KPropExpression
 import org.babyfish.jimmer.sql.kt.ast.expression.count
 import org.babyfish.jimmer.sql.kt.ast.expression.eq
 import org.babyfish.jimmer.sql.kt.ast.expression.valueIn
@@ -37,6 +39,10 @@ class OrganizationEmployeeFactory :
     override val organizationId = OrganizationEmployeeModel::organizationId
     override val viewRoles = setOf(Roles.VIEW_ORGANIZATION, Roles.VIEW_MEMBERS)
     override val manageRoles = setOf(Roles.MANAGE_ORGANIZATION, Roles.MANAGE_MEMBERS)
+
+    override fun sortingExpressions(table: KNonNullTable<OrganizationEmployeeModel>): List<KPropExpression<out Comparable<*>>> {
+        return super.sortingExpressions(table) + table.position.name + table.department.name
+    }
 
     suspend fun getEmployeeFilterSummary(filter: OrganizationEmployeeFilter): OrganizationEmployeeFilterSummary {
         val resourceAcl = resourceAcl()

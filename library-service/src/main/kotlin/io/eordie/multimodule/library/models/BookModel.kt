@@ -1,11 +1,13 @@
 package io.eordie.multimodule.library.models
 
 import io.eordie.multimodule.common.repository.Convertable
+import io.eordie.multimodule.common.repository.Sortable
 import io.eordie.multimodule.common.repository.entity.CreatedAtIF
 import io.eordie.multimodule.common.repository.entity.DeletedIF
 import io.eordie.multimodule.common.repository.entity.UpdatedAtIF
 import io.eordie.multimodule.common.repository.entity.VersionedEntityIF
 import io.eordie.multimodule.contracts.library.models.Book
+import org.babyfish.jimmer.Formula
 import org.babyfish.jimmer.sql.Entity
 import org.babyfish.jimmer.sql.GeneratedValue
 import org.babyfish.jimmer.sql.GenerationType
@@ -31,4 +33,8 @@ interface BookModel : CreatedAtIF, UpdatedAtIF, VersionedEntityIF, DeletedIF, Co
     @ManyToMany
     @JoinSql("(%target_alias.ID)=ANY(%alias.AUTHOR_IDS)")
     val authors: List<AuthorModel>
+
+    @Sortable
+    @Formula(sql = "array_length(%alias.author_ids, 1)")
+    val numberOfAuthors: Int
 }

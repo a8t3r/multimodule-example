@@ -6,6 +6,7 @@ import io.eordie.multimodule.contracts.basic.filters.OffsetDateTimeLiteralFilter
 import io.eordie.multimodule.contracts.basic.filters.StringLiteralFilter
 import io.eordie.multimodule.contracts.basic.filters.UUIDLiteralFilter
 import io.eordie.multimodule.contracts.basic.paging.Pageable
+import io.eordie.multimodule.contracts.basic.paging.SortDirection
 import io.eordie.multimodule.contracts.basic.paging.SortOrder
 import io.eordie.multimodule.contracts.library.models.AuthorInput
 import io.eordie.multimodule.contracts.library.models.AuthorsFilter
@@ -46,8 +47,12 @@ class LibraryTest : AbstractApplicationTest() {
 
     @AfterAll
     fun destroy() = test {
-        if (::firstBook.isInitialized) { mutateLibrary.deleteBook(firstBook.id) }
-        if (::secondBook.isInitialized) { mutateLibrary.deleteBook(secondBook.id) }
+        if (::firstBook.isInitialized) {
+            mutateLibrary.deleteBook(firstBook.id)
+        }
+        if (::secondBook.isInitialized) {
+            mutateLibrary.deleteBook(secondBook.id)
+        }
     }
 
     private fun compareBooks(actual: Book, expected: Book) {
@@ -77,6 +82,24 @@ class LibraryTest : AbstractApplicationTest() {
     }
 
     @Test
+    fun `should query books with formula sorting`() = test {
+        val pageable = Pageable(
+            orderBy = listOf(
+                SortOrder("numberOfAuthors", SortDirection.DESC),
+                SortOrder("name", SortDirection.DESC)
+            )
+        )
+
+        val books = queryLibrary.books(BooksFilter(), pageable)
+        assertThat(books).isNotNull()
+        assertThat(books.pageable.cursor).isNull()
+        assertThat(books.pageable.supportedOrders).containsAtLeast("name", "numberOfAuthors")
+        assertThat(books.data).hasSize(2)
+        compareBooks(books.data[0], secondBook)
+        compareBooks(books.data[1], firstBook)
+    }
+
+    @Test
     fun `should get summary of books`() = test {
         val summary = queryLibrary.bookSummary(BooksFilter())
         assertThat(summary.totalCount).isEqualTo(2)
@@ -98,8 +121,7 @@ class LibraryTest : AbstractApplicationTest() {
     fun `should get summary by complex filter`() = test {
         val initial = BooksFilter(
             authors = AuthorsFilter(
-                firstName = StringLiteralFilter(like = "John"),
-                lastName = StringLiteralFilter(eq = "Doe")
+                firstName = StringLiteralFilter(like = "John"), lastName = StringLiteralFilter(eq = "Doe")
             )
         )
         val filter = initial.copy(authors = initial.authors?.copy(books = initial))
@@ -135,10 +157,7 @@ class LibraryTest : AbstractApplicationTest() {
         val books = queryLibrary.books(
             BooksFilter(
                 name = StringLiteralFilter(
-                    eq = firstBook.name,
-                    startsWith = firstBook.name,
-                    endsWith = firstBook.name,
-                    like = firstBook.name
+                    eq = firstBook.name, startsWith = firstBook.name, endsWith = firstBook.name, like = firstBook.name
                 )
             )
         )
@@ -153,20 +172,13 @@ class LibraryTest : AbstractApplicationTest() {
         val books = queryLibrary.books(
             BooksFilter(
                 name = StringLiteralFilter(
-                    eq = firstBook.name,
-                    startsWith = firstBook.name,
-                    endsWith = firstBook.name,
-                    like = firstBook.name
-                ),
-                authors = AuthorsFilter(
+                    eq = firstBook.name, startsWith = firstBook.name, endsWith = firstBook.name, like = firstBook.name
+                ), authors = AuthorsFilter(
                     id = UUIDLiteralFilter(
                         of = firstBook.authorIds + secondBook.authorIds
                     ),
                     firstName = StringLiteralFilter(
-                        of = listOf("John", "Foo", "Bar"),
-                        nil = false,
-                        startsWith = "Jo",
-                        endsWith = "hn"
+                        of = listOf("John", "Foo", "Bar"), nil = false, startsWith = "Jo", endsWith = "hn"
                     ),
                 )
             )
