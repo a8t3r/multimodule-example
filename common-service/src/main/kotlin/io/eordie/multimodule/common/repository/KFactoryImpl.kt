@@ -359,7 +359,10 @@ open class KFactoryImpl<T : Any, S : T, ID : Comparable<ID>>(
             var nextPageable = pageable.copy(supportedOrders = sortingExpressionsValue.keys)
 
             do {
+                // raw ids without permission checks
                 val data = pager(nextPageable)
+
+                // retrieve elements by ids and check permissions
                 val index = internalFindByIds(data.map { it.first }, fetcher).associateBy { it.getId() }
 
                 // filter accessible elements and take missing amount
