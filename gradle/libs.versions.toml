@@ -59,5 +59,6 @@ ksp-gradle = { module = "com.google.devtools.ksp:symbol-processing-gradle-plugin
 ksp-jimmer = { module = "org.babyfish.jimmer:jimmer-ksp", version.ref = "jimmer" }
 logitech-jts-core = { module = "org.locationtech.jts:jts-core", version.ref = "logitech" }
 micronaut-gradle = { module = "io.micronaut.gradle:micronaut-gradle-plugin", version.ref = "micronautPlugin" }
+micronaut-platform = { module = "io.micronaut.platform:micronaut-platform", version.ref = "micronaut" }
 phaseTwo-admin-client = { module = "io.phasetwo:phasetwo-admin-client", version.ref = "phaseTwo" }
 truth = { module = "com.google.truth:truth", version.ref = "truth" }
