@@ -31,12 +31,9 @@ class TokenEnhancerImpl(
         val currentOrganizationId = getAuthentication().currentOrganizationId
         return if (currentOrganizationId == organizationId) false else {
             val updated = activeOrganization.switchOrganization("Bearer ${token.accessToken}", organizationId)
-            val success = updated.accessToken != null
-
-            if (success) {
-                updateToken(headers, token)
+            return (updated.accessToken != null).also {
+                if (it) updateToken(headers, token)
             }
-            success
         }
     }
 }
