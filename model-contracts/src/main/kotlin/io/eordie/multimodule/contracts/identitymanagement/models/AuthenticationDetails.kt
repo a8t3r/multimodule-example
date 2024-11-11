@@ -1,7 +1,7 @@
 package io.eordie.multimodule.contracts.identitymanagement.models
 
 import graphql.schema.DataFetchingEnvironment
-import io.eordie.multimodule.contracts.basic.ShortDescription
+import io.eordie.multimodule.contracts.basic.Named
 import io.eordie.multimodule.contracts.organization.models.Organization
 import io.eordie.multimodule.contracts.organization.models.User
 import io.eordie.multimodule.contracts.organization.services.UserQueries
@@ -36,7 +36,7 @@ data class AuthenticationDetails(
 
     fun organizationIds(): Set<UuidStr> = organizationRoles.orEmpty().map { it.organizationId }.toSet()
 
-    fun organizations(env: DataFetchingEnvironment): CompletableFuture<List<ShortDescription>> =
+    fun organizations(env: DataFetchingEnvironment): CompletableFuture<List<Named>> =
         env.byIds<Organization?>(organizationIds().toList())
             .thenApply { it.filterNotNull() }
 

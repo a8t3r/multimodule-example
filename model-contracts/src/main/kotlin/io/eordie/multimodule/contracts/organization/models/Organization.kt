@@ -2,8 +2,8 @@ package io.eordie.multimodule.contracts.organization.models
 
 import graphql.schema.DataFetchingEnvironment
 import io.eordie.multimodule.contracts.basic.BasePermission
+import io.eordie.multimodule.contracts.basic.Named
 import io.eordie.multimodule.contracts.basic.PermissionAware
-import io.eordie.multimodule.contracts.basic.ShortDescription
 import io.eordie.multimodule.contracts.organization.services.OrganizationQueries
 import io.eordie.multimodule.contracts.utils.UuidStr
 import io.eordie.multimodule.contracts.utils.getValueBy
@@ -17,6 +17,6 @@ data class Organization(
     override val name: String,
     val displayName: String?,
     override val permissions: List<BasePermission>
-) : PermissionAware<BasePermission>, ShortDescription {
+) : PermissionAware<BasePermission>, Named {
     fun digest(env: DataFetchingEnvironment) = env.getValueBy(OrganizationQueries::loadOrganizationDigest, id)
 }
