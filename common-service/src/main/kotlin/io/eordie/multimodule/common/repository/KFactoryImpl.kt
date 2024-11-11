@@ -215,7 +215,7 @@ open class KFactoryImpl<T : Any, S : T, ID : Comparable<ID>>(
 
     private suspend fun applyPermissions(
         values: List<T>,
-        permission: BasePermission = BasePermission.VIEW
+        permission: BasePermission
     ): List<T> {
         return if (values.isEmpty() || !isPermissionAware) values else {
             val acl = resourceAcl()
@@ -305,7 +305,7 @@ open class KFactoryImpl<T : Any, S : T, ID : Comparable<ID>>(
         } else {
             entities().findByIds(entityType, ids)
         }
-        return applyPermissions(data)
+        return applyPermissions(data, BasePermission.VIEW)
     }
 
     override suspend fun findOneBySpecification(fetcher: Fetcher<T>?, block: KMutableRootQuery<T>.() -> Unit): T? {
