@@ -3,7 +3,6 @@ package io.eordie.multimodule.common.repository
 import io.eordie.multimodule.common.repository.entity.PermissionAwareIF
 import io.eordie.multimodule.common.repository.event.EventPublisher
 import io.eordie.multimodule.common.repository.event.ObjectDiffer.difference
-import io.eordie.multimodule.common.repository.ext.name
 import io.eordie.multimodule.contracts.basic.Permission
 import io.eordie.multimodule.contracts.basic.event.MutationEvent
 import io.eordie.multimodule.contracts.basic.loader.EntityLoader
@@ -45,7 +44,7 @@ abstract class KBaseFactory<T : Convertable<C>, S : T, C : Any, ID, F : Any>(
     override suspend fun load(ids: List<ID>): Map<ID, C> {
         val values = internalFindByIds(ids, null)
         return values.associateBy(
-            { (it as ImmutableSpi).__get(idProperty.name()) as ID },
+            { (it as ImmutableSpi).__get(idPropertyName) as ID },
             { it.convert() }
         )
     }
@@ -53,7 +52,7 @@ abstract class KBaseFactory<T : Convertable<C>, S : T, C : Any, ID, F : Any>(
     override suspend fun loadPermissions(ids: List<ID>): Map<ID, List<Permission>> {
         val values = internalFindByIds(ids, null)
         return values.associateBy(
-            { (it as ImmutableSpi).__get(idProperty.name()) as ID },
+            { (it as ImmutableSpi).__get(idPropertyName) as ID },
             { if (it is PermissionAwareIF) it.loadedPermissions() else emptyList() }
         )
     }

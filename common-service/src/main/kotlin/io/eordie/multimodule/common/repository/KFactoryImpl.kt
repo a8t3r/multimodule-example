@@ -122,7 +122,7 @@ open class KFactoryImpl<T : Any, S : T, ID : Comparable<ID>>(
     private val isPermissionAware = entityType.isSubclassOf(PermissionAwareIF::class)
     private val isOrganizationOwnerAware = entityType.isSubclassOf(OrganizationOwnerIF::class)
 
-    internal lateinit var idProperty: KPropExpression<ID>
+    internal lateinit var idPropertyName: String
     private lateinit var sortingExpressionsValue: Map<String, KPropExpression<out Comparable<*>>>
 
     internal class ConnectionWrapper(delegate: Connection, val context: CoroutineContext) : Connection by delegate
@@ -168,7 +168,7 @@ open class KFactoryImpl<T : Any, S : T, ID : Comparable<ID>>(
         }
         noCacheSql = sql.caches { disableAll() }
         sql.createQuery(entityType) {
-            idProperty = table.getId()
+            idPropertyName = table.getId<Any>().name()
             sortingExpressionsValue = sortingExpressions(table).associateBy { it.name() }
             select(constant(1))
         }
@@ -177,7 +177,7 @@ open class KFactoryImpl<T : Any, S : T, ID : Comparable<ID>>(
     open fun ResourceAcl.listPredicates(table: KNonNullTable<T>): List<KNonNullExpression<Boolean>> =
         emptyList()
 
-    private fun T.getId(): ID = (this as ImmutableSpi).__get(idProperty.name()) as ID
+    private fun T.getId(): ID = (this as ImmutableSpi).__get(idPropertyName) as ID
 
     open suspend fun calculatePermissions(acl: ResourceAcl, values: List<T>): Map<T, Set<Permission>> =
         if (!isPermissionAware) emptyMap() else {
@@ -390,7 +390,7 @@ open class KFactoryImpl<T : Any, S : T, ID : Comparable<ID>>(
         block: KMutableRootQuery<T>.() -> Unit
     ): (Pageable) -> List<Pair<ID, () -> Pageable>> {
         return { pageable ->
-            val cursor = InternalCursor.create(pageable, idProperty.name(), sortingExpressionsValue)
+            val cursor = InternalCursor.create(pageable, idPropertyName, sortingExpressionsValue)
             val limit = pageable.actualLimit()
             val data = createQuery(block, acl, cursor).limit(limit).execute()
             data.map {
@@ -565,8 +565,8 @@ open class KFactoryImpl<T : Any, S : T, ID : Comparable<ID>>(
 
     override suspend fun save(block: S.() -> Unit): T {
         val draft = produce(null, block)
-        val id = if (!(draft as ImmutableSpi).__isLoaded(idProperty.name())) null else {
-            draft.__get(idProperty.name()) as ID?
+        val id = if (!(draft as ImmutableSpi).__isLoaded(idPropertyName)) null else {
+            draft.__get(idPropertyName) as ID?
         }
         val value = if (id != null) findById(id) else loadByKeys(draft)
         val function: suspend (S) -> T = if (value == null) ::persist else ::update
