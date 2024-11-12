@@ -6,6 +6,7 @@ import io.eordie.multimodule.common.repository.interceptor.UpdatedEntityDraftInt
 import io.eordie.multimodule.common.repository.interceptor.VersionEntityDraftInterceptor
 import io.eordie.multimodule.common.utils.OpenTelemetryExecutorLog
 import io.micronaut.configuration.lettuce.cache.RedisCache
+import io.micronaut.context.ApplicationContext
 import io.micronaut.context.annotation.EachBean
 import io.micronaut.context.annotation.Factory
 import io.micronaut.context.env.Environment
@@ -16,8 +17,10 @@ import jakarta.inject.Singleton
 import org.babyfish.jimmer.meta.ImmutableType
 import org.babyfish.jimmer.sql.EnumType
 import org.babyfish.jimmer.sql.JSqlClient
+import org.babyfish.jimmer.sql.TransientResolver
 import org.babyfish.jimmer.sql.cache.Cache
 import org.babyfish.jimmer.sql.cache.chain.ChainCacheBuilder
+import org.babyfish.jimmer.sql.di.TransientResolverProvider
 import org.babyfish.jimmer.sql.dialect.Dialect
 import org.babyfish.jimmer.sql.dialect.PostgresDialect
 import org.babyfish.jimmer.sql.event.TriggerType
@@ -57,16 +60,25 @@ class DatasourceClientConfig {
         }
     }
 
+    @Singleton
+    fun transientResolverProvider(context: ApplicationContext): TransientResolverProvider {
+        return object : TransientResolverProvider {
+            override fun get(type: Class<TransientResolver<*, *>>, sqlClient: JSqlClient): TransientResolver<*, *> {
+                return context.getBean(type)
+            }
+        }
+    }
+
     @EachBean(JdbcOperations::class)
     @Singleton
     fun createClientByLock(
         executor: Executor,
-        dialect: Dialect,
         operations: JdbcOperations,
+        provider: TransientResolverProvider,
         scalarProviders: List<ScalarProvider<*, *>>,
         @Named("jimmer") cache: Optional<RedisCache>
     ): KSqlClient = JSqlClient.newBuilder()
-        .setDialect(dialect)
+        .setDialect(dialect())
         .apply {
             addScalarProvider(TPointProvider())
             addScalarProvider(TLineProvider())
@@ -83,6 +95,7 @@ class DatasourceClientConfig {
             VersionEntityDraftInterceptor()
         )
         .setExecutor(executor)
+        .setTransientResolverProvider(provider)
         .setDefaultEnumStrategy(EnumType.Strategy.ORDINAL)
         .apply {
             cache.ifPresent {
