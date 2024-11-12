@@ -14,17 +14,14 @@ plugins {
 
 val libs = extensions.getByType<VersionCatalogsExtension>().named("libs")
 val dekorateVersion = libs.findVersion("dekorate").get().toString()
-val jimmerVersion = libs.findVersion("jimmer").get().toString()
 
 dependencies {
-    ksp("org.babyfish.jimmer:jimmer-ksp:$jimmerVersion")
     kapt("io.dekorate:kubernetes-annotations:$dekorateVersion")
     kapt("io.dekorate:prometheus-annotations:$dekorateVersion")
 
     implementation(project(":model-contracts"))
     implementation(project(":common-service"))
 
-    implementation("org.babyfish.jimmer:jimmer-sql-kotlin:$jimmerVersion")
     compileOnly("io.dekorate:kubernetes-annotations:$dekorateVersion")
     compileOnly("io.dekorate:prometheus-annotations:$dekorateVersion")
 }
