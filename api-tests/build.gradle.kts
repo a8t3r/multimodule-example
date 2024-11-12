@@ -4,13 +4,16 @@ plugins {
 }
 
 dependencies {
-    implementation(libs.graphql.scalars)
+    ksp(libs.ksp.jimmer)
+    ksp(mn.micronaut.data.processor)
 
     implementation(project(":graphql-gateway"))
     implementation(project(":library-service"))
     implementation(project(":regions-service"))
     implementation(project(":organization-management"))
 
+    testImplementation(libs.graphql.scalars)
     testImplementation(mn.micronaut.data.tx)
     testImplementation(mn.micronaut.security)
+    testImplementation(libs.jimmer.sql.kotlin)
 }
