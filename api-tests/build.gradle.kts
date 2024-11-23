@@ -12,7 +12,7 @@ dependencies {
     implementation(project(":regions-service"))
     implementation(project(":organization-management"))
 
-    testImplementation(libs.graphql.scalars)
+    testImplementation(mn.graphql.java)
     testImplementation(mn.micronaut.data.tx)
     testImplementation(mn.micronaut.security)
     testImplementation(libs.jimmer.sql.kotlin)
