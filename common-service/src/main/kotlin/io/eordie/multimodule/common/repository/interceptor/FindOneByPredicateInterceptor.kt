@@ -46,7 +46,10 @@ class FindOneByPredicateInterceptor(
         val sqlBuilder = SqlBuilder(AstContext(baseQuery.sqlClient))
 
         baseQuery.applyVirtualPredicates(sqlBuilder.astContext)
-        accept(UseTableVisitor(sqlBuilder.astContext))
+
+        val visitor = UseTableVisitor(sqlBuilder.astContext)
+        accept(visitor)
+        visitor.allocateAliases()
 
         renderTo(sqlBuilder)
         val sqlResult = sqlBuilder.build()

@@ -121,7 +121,8 @@ class LibraryTest : AbstractApplicationTest() {
     fun `should get summary by complex filter`() = test {
         val initial = BooksFilter(
             authors = AuthorsFilter(
-                firstName = StringLiteralFilter(like = "John"), lastName = StringLiteralFilter(eq = "Doe")
+                firstName = StringLiteralFilter(like = "John"),
+                lastName = StringLiteralFilter(eq = "Doe")
             )
         )
         val filter = initial.copy(authors = initial.authors?.copy(books = initial))
@@ -157,7 +158,10 @@ class LibraryTest : AbstractApplicationTest() {
         val books = queryLibrary.books(
             BooksFilter(
                 name = StringLiteralFilter(
-                    eq = firstBook.name, startsWith = firstBook.name, endsWith = firstBook.name, like = firstBook.name
+                    eq = firstBook.name,
+                    startsWith = firstBook.name,
+                    endsWith = firstBook.name,
+                    like = firstBook.name
                 )
             )
         )
@@ -172,13 +176,20 @@ class LibraryTest : AbstractApplicationTest() {
         val books = queryLibrary.books(
             BooksFilter(
                 name = StringLiteralFilter(
-                    eq = firstBook.name, startsWith = firstBook.name, endsWith = firstBook.name, like = firstBook.name
-                ), authors = AuthorsFilter(
+                    eq = firstBook.name,
+                    startsWith = firstBook.name,
+                    endsWith = firstBook.name,
+                    like = firstBook.name
+                ),
+                authors = AuthorsFilter(
                     id = UUIDLiteralFilter(
                         of = firstBook.authorIds + secondBook.authorIds
                     ),
                     firstName = StringLiteralFilter(
-                        of = listOf("John", "Foo", "Bar"), nil = false, startsWith = "Jo", endsWith = "hn"
+                        of = listOf("John", "Foo", "Bar"),
+                        nil = false,
+                        startsWith = "Jo",
+                        endsWith = "hn"
                     ),
                 )
             )
