@@ -49,7 +49,7 @@ class FindOneByPredicateInterceptor(
 
         val visitor = UseTableVisitor(sqlBuilder.astContext)
         accept(visitor)
-        visitor.allocateAliases()
+        // visitor.allocateAliases()
 
         renderTo(sqlBuilder)
         val sqlResult = sqlBuilder.build()
