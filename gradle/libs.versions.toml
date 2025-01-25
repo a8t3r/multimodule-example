@@ -9,13 +9,14 @@ detekt = "1.23.7"
 dokka = "1.9.10"
 graphqlExtendedScalars = "2023-01-24T02-11-56-babda5f"
 graphqlKotlin = "8.3.0"
-jdk = "21"
+jdk = "19"
 jimmer = "0.9.45"
 junit = "5.11.4"
 kotlin = "1.9.24"
 kotlinxSerialization = "1.6.3"
 ksp = "1.9.24-1.0.20"
 ksp-auto-service = "1.2.0"
+ktor = "2.3.12"
 logging-jvm = "7.0.3"
 logitech = "1.20.0"
 micronaut = "4.7.4"
@@ -57,6 +58,9 @@ kotlinx-serialization-protobuf = { module = "org.jetbrains.kotlinx:kotlinx-seria
 ksp-auto-service = { module = "dev.zacsweers.autoservice:auto-service-ksp", version.ref = "ksp-auto-service" }
 ksp-gradle = { module = "com.google.devtools.ksp:symbol-processing-gradle-plugin", version.ref = "ksp" }
 ksp-jimmer = { module = "org.babyfish.jimmer:jimmer-ksp", version.ref = "jimmer" }
+ktor-client-cio = { module = "io.ktor:ktor-client-cio", version.ref = "ktor" }
+ktor-client-content-negotiation = { module = "io.ktor:ktor-client-content-negotiation", version.ref = "ktor" }
+ktor-serialization-jackson = { module = "io.ktor:ktor-serialization-jackson", version.ref = "ktor" }
 logitech-jts-core = { module = "org.locationtech.jts:jts-core", version.ref = "logitech" }
 micronaut-gradle = { module = "io.micronaut.gradle:micronaut-gradle-plugin", version.ref = "micronautPlugin" }
 micronaut-platform = { module = "io.micronaut.platform:micronaut-platform", version.ref = "micronaut" }

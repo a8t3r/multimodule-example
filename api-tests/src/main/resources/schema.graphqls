@@ -1,0 +1,691 @@
+"""Indicates an Input Object is a OneOf Input Object."""
+directive @oneOf on INPUT_OBJECT
+
+type AccessionRequest implements AuditLog {
+  createdAt(pattern: String): String!
+  id: UUID!
+  initiatedBy: User!
+  processedBy: User
+  rejectionMessage: String
+  status: AccessionRequestStatus!
+  updatedAt(pattern: String): String!
+  vat: String!
+}
+
+input AccessionRequestFilterInput {
+  id: UUIDLiteralFilterInput
+  organizationId: UUIDLiteralFilterInput
+  status: AccessionRequestStatusFilterInput
+}
+
+input AccessionRequestInput {
+  id: UUID
+  vat: String!
+}
+
+type AccessionRequestPage {
+  data: [AccessionRequest]
+  pageable: Pageable
+}
+
+enum AccessionRequestStatus {
+  CREATED
+  ACCEPTED
+  REJECTED
+}
+
+input AccessionRequestStatusFilterInput {
+  eq: AccessionRequestStatus
+  ne: AccessionRequestStatus
+  nil: Boolean
+  nof: [AccessionRequestStatus!]
+  of: [AccessionRequestStatus!]
+}
+
+interface AuditLog {
+  createdAt(pattern: String): String!
+  updatedAt(pattern: String): String!
+}
+
+type AuthenticationDetails {
+  currentOrganizationId: UUID
+  email: String!
+  emailVerified: Boolean!
+  locale: LocaleBinding!
+  organizationRoles: [OrganizationRoleBinding!]
+  roles: [Roles!]!
+  userId: UUID!
+  currentOrganization: Organization
+  organizationIds: [UUID]!
+  organizations: [Named!]!
+  user: User!
+}
+
+type Author implements AuditLog {
+  createdAt(pattern: String): String!
+  firstName: String!
+  id: UUID!
+  lastName: String
+  updatedAt(pattern: String): String!
+  books(filter: BooksFilterInput): [Book!]!
+  fullName: String!
+}
+
+input AuthorInput {
+  firstName: String
+  id: UUID
+  lastName: String
+}
+
+type AuthorPage {
+  data: [Author]
+  pageable: Pageable
+}
+
+input AuthorsFilterInput {
+  books: BooksFilterInput
+  createdAt: OffsetDateTimeLiteralFilterInput
+  firstName: StringLiteralFilterInput
+  hasBooks: Boolean
+  id: UUIDLiteralFilterInput
+  lastName: StringLiteralFilterInput
+  updatedAt: OffsetDateTimeLiteralFilterInput
+}
+
+enum BasePermission {
+  VIEW
+  MANAGE
+  PURGE
+}
+
+union BindingCriterion = ByFarmCriterion | ByRegionCriterion | GlobalCriterion
+
+type Book implements AuditLog {
+  authorIds: [UUID!]!
+  createdAt(pattern: String): String!
+  id: UUID!
+  name: String!
+  updatedAt(pattern: String): String!
+  authors: [Author!]!
+}
+
+input BookInput {
+  authors: [AuthorInput!]!
+  id: UUID
+  name: String!
+}
+
+type BookPage {
+  data: [Book]
+  pageable: Pageable
+}
+
+type BookSummary {
+  authorIds: [UUID!]!
+  ids: [UUID!]!
+  names: [String!]!
+  totalCount: Long!
+  authors: [Author!]!
+  books: [Book!]!
+}
+
+input BooksFilterInput {
+  authorIds: UUIDLiteralFilterInput
+  authorIdsSize: IntNumericFilterInput
+  authors: AuthorsFilterInput
+  createdAt: OffsetDateTimeLiteralFilterInput
+  hasAuthors: Boolean
+  id: UUIDLiteralFilterInput
+  name: StringLiteralFilterInput
+  updatedAt: OffsetDateTimeLiteralFilterInput
+}
+
+input BooleanLiteralFilterInput {
+  eq: Boolean
+  gt: Boolean
+  gte: Boolean
+  lt: Boolean
+  lte: Boolean
+  ne: Boolean
+  nil: Boolean
+  nof: [Boolean!]
+  of: [Boolean!]
+}
+
+type ByFarmCriterion {
+  farmId: UUID!
+  fieldIds: [UUID!]
+}
+
+input ByFarmCriterionInput {
+  farmId: UUID!
+  fieldIds: [UUID!]
+}
+
+type ByRegionCriterion {
+  regionId: Long!
+}
+
+input ByRegionCriterionInput {
+  regionId: Long!
+}
+
+"""A slightly refined version of RFC-3339 compliant DateTime Scalar"""
+scalar DateTime
+
+enum Direction {
+  INCOME
+  OUTCOME
+}
+
+input DomainFilterInput {
+  domain: StringLiteralFilterInput
+  id: UUIDLiteralFilterInput
+  verified: BooleanLiteralFilterInput
+}
+
+type EmployeeAcl {
+  farmId: UUID!
+  farmOwnerOrganizationId: UUID!
+  fieldIds: [UUID!]
+  roles: [Roles!]!
+}
+
+type FarmAcl {
+  farmId: UUID!
+  farmOwnerOrganizationId: UUID!
+  fieldIds: [UUID!]
+  id: UUID!
+  organizationId: UUID!
+  permissions: [BasePermission!]!
+  roles: [Roles!]!
+}
+
+input FarmAclFilterInput {
+  direction: Direction
+  farmId: UUIDLiteralFilterInput
+  farmOwnerOrganization: OrganizationsFilterInput
+  fieldId: UUIDLiteralFilterInput
+  organization: OrganizationsFilterInput
+  regionId: LongNumericFilterInput
+  relatedOrganizationId: UUIDLiteralFilterInput
+}
+
+input FarmAclInput {
+  farmId: UUID!
+  fieldIds: [UUID!]
+  id: UUID
+  organisationId: UUID!
+  roles: [Roles!]!
+}
+
+type FarmAclPage {
+  data: [FarmAcl]
+  pageable: Pageable
+}
+
+type GlobalCriterion {
+  includeAll: Boolean!
+}
+
+input IntNumericFilterInput {
+  eq: Int
+  gt: Int
+  gte: Int
+  lt: Int
+  lte: Int
+  ne: Int
+  nil: Boolean
+  nof: [Int!]
+  of: [Int!]
+}
+
+type Invitation {
+  departmentId: UUID
+  email: String!
+  id: UUID!
+  organizationId: UUID!
+  positionId: UUID
+  status: InvitationStatus!
+  userId: UUID
+  department: OrganizationDepartment
+  organization: Organization!
+  position: OrganizationPosition
+  user: User
+}
+
+input InvitationFilterInput {
+  direction: Direction
+  email: StringLiteralFilterInput
+  organizationId: UUIDLiteralFilterInput
+  status: InvitationStatusFilterInput
+}
+
+input InvitationInput {
+  departmentId: UUID
+  email: String!
+  id: UUID
+  positionId: UUID
+}
+
+type InvitationPage {
+  data: [Invitation]
+  pageable: Pageable
+}
+
+enum InvitationStatus {
+  CREATED
+  PENDING
+  ACCEPTED
+}
+
+input InvitationStatusFilterInput {
+  eq: InvitationStatus
+  ne: InvitationStatus
+  nil: Boolean
+  nof: [InvitationStatus!]
+  of: [InvitationStatus!]
+}
+
+type LocaleBinding {
+  country: String!
+  language: String!
+}
+
+"""A 64-bit signed integer"""
+scalar Long
+
+input LongNumericFilterInput {
+  eq: Long
+  gt: Long
+  gte: Long
+  lt: Long
+  lte: Long
+  ne: Long
+  nil: Boolean
+  nof: [Long!]
+  of: [Long!]
+}
+
+type Mutation {
+  deleteFarmAcl(farmAclId: UUID!): Boolean!
+  farmAcl(farmAcl: FarmAclInput!): FarmAcl!
+  modifyByFarmCriterion(departmentId: UUID!, binding: ByFarmCriterionInput!, plus: Boolean!): [BindingCriterion!]!
+  modifyByRegionCriterion(departmentId: UUID!, binding: ByRegionCriterionInput!, plus: Boolean!): [BindingCriterion!]!
+  modifyGlobalBinding(departmentId: UUID!, includeAll: Boolean!): [BindingCriterion!]!
+  deleteOrganization(organizationId: UUID!): Boolean!
+  organization(input: OrganizationInput!): Organization!
+  organizationByVat(vat: String!): Organization!
+  acceptInvitation(invitationId: UUID!): Boolean!
+  deleteInvitation(invitationId: UUID!): Boolean!
+  invitation(input: InvitationInput!): Invitation!
+  acceptAccessionRequest(requestId: UUID!): AccessionRequest!
+  accessionRequest(input: AccessionRequestInput!): AccessionRequest!
+  deleteJoinRequest(requestId: UUID!): Boolean!
+  rejectAccessionRequest(requestId: UUID!, rejectionMessage: String): AccessionRequest!
+  switchOrganization(organizationId: UUID!): Boolean!
+  updateToken: Boolean!
+  author(input: AuthorInput!): Author!
+  book(input: BookInput!): Book!
+  deleteBook(bookId: UUID!): Boolean!
+  changePositionsParent(previousParentId: UUID!, newParentId: UUID): Boolean!
+  deleteDepartment(departmentId: UUID!): Boolean!
+  deleteEmployee(departmentId: UUID, userId: UUID!): Boolean!
+  deletePosition(positionId: UUID!): Boolean!
+  department(input: OrganizationDepartmentInput!): OrganizationDepartment!
+  employee(employeeInput: OrganizationEmployeeInput!): OrganizationEmployee!
+  position(position: OrganizationPositionInput!): OrganizationPosition!
+}
+
+interface Named {
+  id: UUID!
+  name: String!
+}
+
+input OffsetDateTimeLiteralFilterInput {
+  eq: DateTime
+  gt: DateTime
+  gte: DateTime
+  lt: DateTime
+  lte: DateTime
+  ne: DateTime
+  nil: Boolean
+  nof: [DateTime!]
+  of: [DateTime!]
+}
+
+type Organization implements Named {
+  displayName: String
+  id: UUID!
+  name: String!
+  permissions: [BasePermission!]!
+  digest: OrganizationDigest!
+}
+
+type OrganizationDepartment {
+  id: UUID!
+  name: String!
+  organizationId: UUID!
+  bindings: [BindingCriterion!]!
+  organization: Organization!
+}
+
+input OrganizationDepartmentFilterInput {
+  farmId: UUIDLiteralFilterInput
+  fieldId: UUIDLiteralFilterInput
+  id: UUIDLiteralFilterInput
+  name: StringLiteralFilterInput
+  organization: OrganizationsFilterInput
+  organizationId: UUIDLiteralFilterInput
+  regionId: LongNumericFilterInput
+}
+
+input OrganizationDepartmentInput {
+  id: UUID
+  name: String!
+}
+
+type OrganizationDepartmentPage {
+  data: [OrganizationDepartment]
+  pageable: Pageable
+}
+
+type OrganizationDigest {
+  departmentsCount: Long!
+  domainsCount: Long!
+  employeesCount: Long!
+  membersCount: Long!
+  positionsCount: Long!
+}
+
+type OrganizationEmployee {
+  departmentId: UUID
+  organizationId: UUID!
+  positionId: UUID!
+  userId: UUID!
+  department: OrganizationDepartment
+  organization: Organization!
+  position: OrganizationPosition!
+  user: User!
+}
+
+input OrganizationEmployeeFilterInput {
+  department: OrganizationDepartmentFilterInput
+  organization: OrganizationsFilterInput
+  organizationId: UUIDLiteralFilterInput
+  position: OrganizationPositionFilterInput
+  user: UsersFilterInput
+  userId: UUIDLiteralFilterInput
+}
+
+type OrganizationEmployeeFilterSummary {
+  departmentIds: [UUID!]!
+  employeeIds: [UUID!]!
+  organizationIds: [UUID!]!
+  positionIds: [UUID!]!
+  totalCount: Long!
+  userIds: [UUID!]!
+  departments: [OrganizationDepartment!]!
+  employees: [OrganizationEmployee!]!
+  organizations: [Organization!]!
+  positions: [OrganizationPosition!]!
+  users: [User!]!
+}
+
+input OrganizationEmployeeInput {
+  departmentId: UUID
+  positionId: UUID!
+  userId: UUID!
+}
+
+type OrganizationEmployeePage {
+  data: [OrganizationEmployee]
+  pageable: Pageable
+}
+
+type OrganizationFilterSummary {
+  domainIds: [UUID!]!
+  organizationIds: [UUID!]!
+  totalCount: Long!
+  userIds: [UUID!]!
+}
+
+input OrganizationInput {
+  displayName: String
+  id: UUID
+  name: String!
+}
+
+type OrganizationPage {
+  data: [Organization]
+  pageable: Pageable
+}
+
+type OrganizationPosition implements AuditLog {
+  createdAt(pattern: String): String!
+  id: UUID!
+  name: String!
+  organizationId: UUID!
+  parentId: UUID
+  roles: [Roles!]!
+  updatedAt(pattern: String): String!
+  organization: Organization!
+  parent: OrganizationPosition
+  subordinates: [OrganizationPosition!]!
+}
+
+input OrganizationPositionFilterInput {
+  name: StringLiteralFilterInput
+  organization: OrganizationsFilterInput
+  organizationId: UUIDLiteralFilterInput
+  parentId: UUIDLiteralFilterInput
+}
+
+input OrganizationPositionInput {
+  id: UUID
+  name: String!
+  parentId: UUID
+  roles: [Roles!]!
+}
+
+type OrganizationPublicInformation {
+  address: String!
+  inn: String!
+  kpp: String!
+  location: TPoint
+  name: String!
+  ogrn: String!
+}
+
+input OrganizationPublicInformationFilterInput {
+  vat: StringLiteralFilterInput
+}
+
+input OrganizationPublicInformationInput {
+  organizationId: UUID
+  query: String
+  vat: String
+}
+
+type OrganizationRoleBinding {
+  organizationId: UUID!
+  organizationName: String!
+  roles: [Roles!]!
+}
+
+input OrganizationsFilterInput {
+  createdBy: UUIDLiteralFilterInput
+  domains: DomainFilterInput
+  id: UUIDLiteralFilterInput
+  information: OrganizationPublicInformationFilterInput
+  members: UsersFilterInput
+  name: StringLiteralFilterInput
+}
+
+type Pageable {
+  cursor: String
+  limit: Int
+  orderBy: [SortOrder!]
+  supportedOrders: [String]
+}
+
+input PageableInput {
+  cursor: String
+  limit: Int
+  orderBy: [SortOrderInput!]
+  supportedOrders: [String]
+}
+
+type Query {
+  suggestions(filter: OrganizationPublicInformationInput!): [OrganizationPublicInformation!]!
+  pageable(pageable: PageableInput!): Pageable!
+  accessionRequests(filter: AccessionRequestFilterInput, pageable: PageableInput): AccessionRequestPage!
+  departments(filter: OrganizationDepartmentFilterInput, pageable: PageableInput): OrganizationDepartmentPage!
+  employeeSummary(filter: OrganizationEmployeeFilterInput!): OrganizationEmployeeFilterSummary!
+  employees(filter: OrganizationEmployeeFilterInput, pageable: PageableInput): OrganizationEmployeePage!
+  positions(filter: OrganizationPositionFilterInput): [OrganizationPosition!]!
+  farmAcl(farmAclId: UUID!): FarmAcl
+  queryFarmAcl(filter: FarmAclFilterInput, pageable: PageableInput): FarmAclPage!
+  activeEmployeeAcl: [EmployeeAcl!]!
+  users(filter: UsersFilterInput, pageable: PageableInput): UserPage!
+  authorById(id: UUID!): Author
+  authors(filter: AuthorsFilterInput, pageable: PageableInput): AuthorPage!
+  bookById(id: UUID!): Book
+  bookSummary(filter: BooksFilterInput): BookSummary!
+  books(filter: BooksFilterInput, pageable: PageableInput): BookPage!
+  me: AuthenticationDetails
+  supportedRoles: [Roles!]!
+  organization(id: UUID!): Organization
+  organizationSummary(filter: OrganizationsFilterInput): OrganizationFilterSummary!
+  organizations(filter: OrganizationsFilterInput, pageable: PageableInput): OrganizationPage!
+  region(regionId: Long!): Region
+  regionPath(regionId: Long!): [Region!]!
+  regions(filter: RegionsFilterInput, pageable: PageableInput): RegionPage!
+  invitation(invitationId: UUID!): Invitation
+  invitations(filter: InvitationFilterInput, pageable: PageableInput): InvitationPage!
+  findRegionsByPoint(point: TPoint!, country: String): [Region!]!
+}
+
+type Region {
+  country: String!
+  depth: Int!
+  id: Long!
+  parentId: Long
+  centroid: TPoint!
+  children: [Region!]!
+  geometry: TMultiPolygon!
+  name(lang: String): String!
+  parent: Region
+}
+
+type RegionPage {
+  data: [Region]
+  pageable: Pageable
+}
+
+input RegionsFilterInput {
+  country: StringLiteralFilterInput
+  depth: IntNumericFilterInput
+  id: LongNumericFilterInput
+  name: StringLiteralFilterInput
+  parentId: LongNumericFilterInput
+}
+
+enum Roles {
+  VIEW_ORGANIZATION
+  MANAGE_ORGANIZATION
+  VIEW_MEMBERS
+  MANAGE_MEMBERS
+  VIEW_ROLES
+  MANAGE_ROLES
+  VIEW_INVITATIONS
+  MANAGE_INVITATIONS
+  VIEW_IDENTITY_PROVIDERS
+  MANAGE_IDENTITY_PROVIDERS
+  MANAGE_ORGANIZATIONS
+  VIEW_ORGANIZATIONS
+  MANAGE_USERS
+  VIEW_USERS
+  CREATE_ORGANIZATION
+}
+
+enum SortDirection {
+  ASC
+  DESC
+}
+
+type SortOrder {
+  direction: SortDirection
+  property: String
+}
+
+input SortOrderInput {
+  direction: SortDirection
+  property: String
+}
+
+input StringLiteralFilterInput {
+  endsWith: String
+  eq: String
+  gt: String
+  gte: String
+  like: String
+  lt: String
+  lte: String
+  ne: String
+  nil: Boolean
+  nlike: String
+  nof: [String!]
+  of: [String!]
+  startsWith: String
+}
+
+"""Geo json multi polygon"""
+scalar TMultiPolygon
+
+"""Geo json point"""
+scalar TPoint
+
+"""A universally unique identifier compliant UUID Scalar"""
+scalar UUID
+
+input UUIDLiteralFilterInput {
+  eq: UUID
+  gt: UUID
+  gte: UUID
+  lt: UUID
+  lte: UUID
+  ne: UUID
+  nil: Boolean
+  nof: [UUID!]
+  of: [UUID!]
+}
+
+type User {
+  email: String!
+  emailVerified: Boolean!
+  enabled: Boolean!
+  firstName: String!
+  id: UUID!
+  lastName: String!
+  roles(role: Roles): [Roles!]!
+}
+
+type UserPage {
+  data: [User]
+  pageable: Pageable
+}
+
+input UsersFilterInput {
+  email: StringLiteralFilterInput
+  emailVerified: BooleanLiteralFilterInput
+  employee: OrganizationEmployeeFilterInput
+  firstName: StringLiteralFilterInput
+  hasEmployee: Boolean
+  id: UUIDLiteralFilterInput
+  lastName: StringLiteralFilterInput
+  organization: OrganizationsFilterInput
+  phoneNumber: StringLiteralFilterInput
+  phoneNumberVerified: BooleanLiteralFilterInput
+}
+
