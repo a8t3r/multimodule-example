@@ -238,7 +238,7 @@ class LibraryTest : AbstractApplicationTest() {
 
     @Test
     fun `should retrieve authors from book by graphql query`() = test {
-        val result = context.query {
+        val result = schema.query {
             books {
                 data {
                     id()
