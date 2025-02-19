@@ -30,7 +30,8 @@ class RefreshedIdTokenLoginHandler(
     accessTokenCookieConfiguration,
     redirectConfiguration,
     redirectService,
-    null
+    null,
+    emptyList()
 ) {
 
     private val logger = KotlinLogging.logger {}
