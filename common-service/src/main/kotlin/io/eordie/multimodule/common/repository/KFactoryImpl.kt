@@ -123,7 +123,7 @@ open class KFactoryImpl<T : Any, S : T, ID : Comparable<ID>>(
     private val isOrganizationOwnerAware = entityType.isSubclassOf(OrganizationOwnerIF::class)
 
     internal lateinit var idPropertyName: String
-    private lateinit var sortingExpressionsValue: Map<String, KPropExpression<out Comparable<*>>>
+    private lateinit var sortingExpressionKeys: Set<String>
 
     internal class ConnectionWrapper(delegate: Connection, val context: CoroutineContext) : Connection by delegate
 
@@ -169,7 +169,7 @@ open class KFactoryImpl<T : Any, S : T, ID : Comparable<ID>>(
         noCacheSql = sql.caches { disableAll() }
         sql.createQuery(entityType) {
             idPropertyName = table.getId<Any>().name()
-            sortingExpressionsValue = sortingExpressions(table).associateBy { it.name() }
+            sortingExpressionKeys = sortingExpressions(table).map { it.name() }.toSet()
             select(constant(1))
         }
     }
@@ -356,7 +356,7 @@ open class KFactoryImpl<T : Any, S : T, ID : Comparable<ID>>(
             val pager = createIdsPager(acl, block)
             val actualLimit = pageable.actualLimit()
             val items = mutableListOf<T>()
-            var nextPageable = pageable.copy(supportedOrders = sortingExpressionsValue.keys)
+            var nextPageable = pageable.copy(supportedOrders = sortingExpressionKeys)
 
             do {
                 // raw ids without permission checks
@@ -390,7 +390,7 @@ open class KFactoryImpl<T : Any, S : T, ID : Comparable<ID>>(
         block: KMutableRootQuery<T>.() -> Unit
     ): (Pageable) -> List<Pair<ID, () -> Pageable>> {
         return { pageable ->
-            val cursor = InternalCursor.create(pageable, idPropertyName, sortingExpressionsValue)
+            val cursor = InternalCursor.create(pageable, idPropertyName, sortingExpressionKeys)
             val limit = pageable.actualLimit()
             val data = createQuery(block, acl, cursor).limit(limit).execute()
             data.map {
@@ -416,7 +416,9 @@ open class KFactoryImpl<T : Any, S : T, ID : Comparable<ID>>(
                 error("too many sort orders")
             }
             orderBy(orderBy)
-            where(cursor.toPredicates(conversionService).or())
+            // initialize fresh copy of the expressions based on actual table instance
+            val sortingExpressions = sortingExpressions(table).associateBy { it.name() }
+            where(cursor.toPredicates(conversionService, sortingExpressions).or())
 
             val projection = orderBy.map { it.expression }.filterIsInstance<Selection<*>>()
             val (a, b, c, d, e) = projection + List(size = MAX_ALLOWED_SORTING - projection.size) { constant(1) }

@@ -25,7 +25,7 @@ import java.util.*
 internal class InternalCursor(
     private val orderBy: List<SortOrder>,
     private val properties: List<PropertySpec>,
-    private val sortingExpressions: Map<String, KPropExpression<out Comparable<*>>>
+    private val sortingExpressionKeys: Set<String>
 ) {
 
     @Serializable
@@ -41,15 +41,15 @@ internal class InternalCursor(
         fun create(
             pageable: Pageable,
             idPropertyName: String,
-            expressions: Map<String, KPropExpression<out Comparable<*>>>
+            sortingExpressionKeys: Set<String>
         ): InternalCursor {
             val cursor = pageable.cursor
             return if (cursor == null) {
                 val orderBy = pageable.orderBy.orEmpty() + SortOrder(idPropertyName, SortDirection.ASC)
-                InternalCursor(orderBy, emptyList(), expressions)
+                InternalCursor(orderBy, emptyList(), sortingExpressionKeys)
             } else {
                 val specs = proto.decodeFromByteArray<List<PropertySpec>>(Base64.getUrlDecoder().decode(cursor))
-                InternalCursor(specs.map { it.order }, specs, expressions)
+                InternalCursor(specs.map { it.order }, specs, sortingExpressionKeys)
             }
         }
     }
@@ -78,14 +78,14 @@ internal class InternalCursor(
             }
         }.orEmpty()
 
-        return InternalCursor(this.orderBy, nextProperties, sortingExpressions)
+        return InternalCursor(this.orderBy, nextProperties, sortingExpressionKeys)
     }
 
     fun asPageable(): Pageable {
         val nextCursor = if (properties.isEmpty()) null else {
             Base64.getEncoder().encodeToString(proto.encodeToByteArray(properties))
         }
-        return Pageable(nextCursor, supportedOrders = sortingExpressions.keys)
+        return Pageable(nextCursor, supportedOrders = sortingExpressionKeys)
     }
 
     private class Accumulator(
@@ -102,8 +102,11 @@ internal class InternalCursor(
         }
     }
 
-    fun toPredicates(conversionService: ConversionService): List<KNonNullExpression<Boolean>> {
-        return buildPropertyExpressions(conversionService)
+    fun toPredicates(
+        conversionService: ConversionService,
+        sortingExpressions: Map<String, KPropExpression<out Comparable<*>>>
+    ): List<KNonNullExpression<Boolean>> {
+        return buildPropertyExpressions(conversionService, sortingExpressions)
             .map { transformAsPredicates(it) }
             .fold(Accumulator()) { acc, (difference, equality) ->
                 acc.accept(difference, equality)
@@ -125,7 +128,10 @@ internal class InternalCursor(
         }
     }
 
-    private fun buildPropertyExpressions(conversionService: ConversionService): List<PropertyExpression> {
+    private fun buildPropertyExpressions(
+        conversionService: ConversionService,
+        sortingExpressions: Map<String, KPropExpression<out Comparable<*>>>
+    ): List<PropertyExpression> {
         return properties.map { spec ->
             val expression = requireNotNull(sortingExpressions[spec.order.property])
             val targetType = (expression as ExpressionImplementor<*>).type
