@@ -95,10 +95,10 @@ internal class InternalCursor(
      *      (a = ? and b = ? and c > ?) or
      *      (a = ? and b = ? and c = ? and d > ?)
      */
-    private class Accumulator(
-        val predicates: MutableList<KNonNullExpression<Boolean>> = mutableListOf(),
-        var equalityExpression: KNonNullExpression<Boolean>? = null
-    ) {
+    private class Accumulator {
+        val predicates: MutableList<KNonNullExpression<Boolean>> = mutableListOf()
+        private var equalityExpression: KNonNullExpression<Boolean>? = null
+
         fun accept(difference: KNonNullExpression<Boolean>, equality: KNonNullExpression<Boolean>): Accumulator {
             val predicate = and(equalityExpression, difference)
             if (predicate != null) {
