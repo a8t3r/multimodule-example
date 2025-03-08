@@ -88,6 +88,13 @@ internal class InternalCursor(
         return Pageable(nextCursor, supportedOrders = sortingExpressionKeys)
     }
 
+    /**
+     * (a, b, c, d) ->
+     *      (a > ?) or
+     *      (a = ? and b > ?) or
+     *      (a = ? and b = ? and c > ?) or
+     *      (a = ? and b = ? and c = ? and d > ?)
+     */
     private class Accumulator(
         val predicates: MutableList<KNonNullExpression<Boolean>> = mutableListOf(),
         var equalityExpression: KNonNullExpression<Boolean>? = null
