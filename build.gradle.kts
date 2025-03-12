@@ -8,6 +8,7 @@ plugins {
 
 versionCatalogUpdate {
     pin {
+        versions = setOf("ktor", "rsocket")
         libraries = setOf(
             libs.ksp.gradle,
             libs.kotlinx.coroutines.bom,
