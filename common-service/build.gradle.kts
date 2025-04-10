@@ -18,12 +18,14 @@ dependencies {
     implementation(ktx.kotlinxSerializationProtobuf)
     implementation(libs.kotlin.rsocket.transport.ktor.tcp)
 
-    implementation(mn.micronaut.redis.lettuce)
+    implementation(mn.micronaut.jmx)
     implementation(mn.micronaut.security.jwt)
+    implementation(mn.micronaut.redis.lettuce)
     implementation(mn.micronaut.tracing.opentelemetry.http)
     implementation(mn.micronaut.tracing.opentelemetry.kafka)
     implementation(mn.micronaut.kubernetes.discovery.client)
 
+    implementation(libs.jasync.postgresql)
     implementation(otel.opentelemetryExporterOtlp)
 
     implementation(mn.micronaut.kafka)

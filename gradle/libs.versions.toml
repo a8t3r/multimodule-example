@@ -10,6 +10,7 @@ detekt = "1.23.8"
 dokka = "2.0.0"
 graphqlExtendedScalars = "2023-01-24T02-11-56-babda5f"
 graphqlKotlin = "8.8.0"
+jasync = "2.2.4"
 # @keep unused
 jdk = "21"
 jimmer = "0.9.90"
@@ -39,6 +40,7 @@ dekorate-kubernetes-annotations = { module = "io.dekorate:kubernetes-annotations
 dekorate-prometheus-annotations = { module = "io.dekorate:prometheus-annotations", version.ref = "dekorate" }
 detekt-formatting = { module = "io.gitlab.arturbosch.detekt:detekt-formatting", version.ref = "detekt" }
 graphql-scalars = { module = "com.graphql-java:graphql-java-extended-scalars", version.ref = "graphqlExtendedScalars" }
+jasync-postgresql = { module = "com.github.jasync-sql:jasync-postgresql", version.ref = "jasync" }
 jimmer-sql-kotlin = { module = "org.babyfish.jimmer:jimmer-sql-kotlin", version.ref = "jimmer" }
 junit-bom = { module = "org.junit:junit-bom", version.ref = "junit" }
 kotlin-bom = { module = "org.jetbrains.kotlin:kotlin-bom", version.ref = "kotlin" }

@@ -22,6 +22,7 @@ class DataSourceMigrationRunner(
 
     override fun onCreated(event: BeanCreatedEvent<DataSource>): DataSource {
         val dataSource = event.bean
+        val isDefault = event.beanIdentifier.name == "default"
         if (event.beanDefinition is NameResolver) {
             (event.beanDefinition as NameResolver)
                 .resolveName()
@@ -29,10 +30,22 @@ class DataSourceMigrationRunner(
                 .ifPresent { flywayConfig: FlywayConfigurationProperties ->
                     val unwrappedDataSource = dataSourceResolver.map { it.resolve(dataSource) }.orElse(dataSource)
                     run(flywayConfig, unwrappedDataSource)
+
+                    if (isDefault) {
+                        runCommon(unwrappedDataSource)
+                    }
                 }
         }
 
         return dataSource
+    }
+
+    private fun runCommon(dataSource: DataSource) {
+        val properties = FlywayConfigurationProperties("default").apply {
+            fluentConfiguration.locations("classpath:/db/common/migration")
+            fluentConfiguration.baselineOnMigrate(true)
+        }
+        run(properties, dataSource)
     }
 
     private fun run(config: FlywayConfigurationProperties, dataSource: DataSource) {

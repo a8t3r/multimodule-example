@@ -54,7 +54,7 @@ style:
   ForbiddenComment:
     comments: [ 'TODO', 'FIXME', 'STOPSHIP' ]
   MagicNumber:
-    ignoreNumbers: [ "0", "1", "-1", "2", "3", "4", "5", "8", "16", "24", "32", "0xff", "10", "20", "100", "1000", "4326" ]
+    ignoreNumbers: [ "0", "1", "-1", "2", "3", "4", "5", "8", "16", "24", "32", "0xff", "10", "20", "100", "200", "300", "500", "1000", "4326" ]
   DestructuringDeclarationWithTooManyEntries:
     maxDestructuringEntries: 6
   VarCouldBeVal:
