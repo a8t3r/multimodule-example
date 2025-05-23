@@ -4,7 +4,6 @@ import io.eordie.multimodule.common.security.AuthenticationDetailsBuilder
 import io.eordie.multimodule.contracts.identitymanagement.models.AuthenticationDetails
 import io.eordie.multimodule.contracts.utils.JsonModule
 import io.micronaut.context.annotation.Requires
-import io.micronaut.http.HttpAttributes
 import io.micronaut.http.HttpHeaders
 import io.micronaut.http.HttpRequest
 import io.micronaut.security.authentication.Authentication
@@ -29,10 +28,6 @@ class PrincipalAuthenticationProvider : AuthenticationProvider {
         return getAuthentication(request)?.let { AuthenticationDetailsBuilder.of(it) }
     }
 
-    private fun getAuthentication(request: HttpRequest<*>): Authentication? {
-        return request.attributes.get(
-            HttpAttributes.PRINCIPAL.toString(),
-            Authentication::class.java
-        ).orElse(null)
-    }
+    private fun getAuthentication(request: HttpRequest<*>): Authentication? =
+        request.getUserPrincipal(Authentication::class.java).orElse(null)
 }

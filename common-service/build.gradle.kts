@@ -13,8 +13,8 @@ dependencies {
     implementation(project(":model-contracts"))
 
     implementation(mn.kotlin.reflect)
-    implementation(libs.kotlinx.serialization.json)
-    implementation(libs.kotlinx.serialization.protobuf)
+    implementation(ktx.kotlinxSerializationJson)
+    implementation(ktx.kotlinxSerializationProtobuf)
     implementation(libs.kotlin.rsocket.transport.ktor.tcp)
 
     implementation(mn.micronaut.redis.lettuce)
@@ -37,7 +37,6 @@ dependencies {
     implementation(mn.logback.classic)
     implementation(libs.logitech.jts.core)
     implementation(libs.jimmer.sql.kotlin)
-    implementation(libs.kotlin.logging.jvm)
     implementation(libs.kotlin.valiktor.core)
 
     implementation(mn.postgresql)

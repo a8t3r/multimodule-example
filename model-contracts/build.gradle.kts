@@ -13,6 +13,6 @@ dependencies {
     compileOnly(mn.micronaut.core)
     compileOnly(libs.kotlin.graphql.schema.generator)
 
-    implementation(libs.kotlinx.serialization.json)
-    implementation(libs.kotlinx.serialization.protobuf)
+    implementation(ktx.kotlinxSerializationJson)
+    implementation(ktx.kotlinxSerializationProtobuf)
 }

@@ -13,12 +13,9 @@ tasks.test {
     }
 }
 
-val libs = extensions.getByType<VersionCatalogsExtension>().named("libs")
-
 dependencies {
-    testImplementation(libs.findLibrary("truth").get())
+    testImplementation(libs.truth)
 
-    testImplementation(platform(libs.findLibrary("junit-bom").get()))
-    testImplementation("org.junit.jupiter:junit-jupiter-api")
-    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
+    testImplementation(junit.junitJupiterApi)
+    testImplementation(junit.junitJupiterEngine)
 }

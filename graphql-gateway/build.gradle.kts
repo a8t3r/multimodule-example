@@ -11,6 +11,6 @@ dependencies {
 
     implementation(libs.kotlin.graphql)
     implementation(libs.graphql.scalars)
-    implementation(libs.kotlinx.serialization.json)
+    implementation(ktx.kotlinxSerializationJson)
     implementation(libs.kotlin.graphql.persisted.queries)
 }

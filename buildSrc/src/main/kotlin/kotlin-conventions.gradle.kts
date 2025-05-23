@@ -1,6 +1,5 @@
 @file:Suppress("UnstableApiUsage")
 
-import gradle.kotlin.dsl.accessors._d31b883013e292cbd0ac2e670d6307c5.implementation
 import io.gitlab.arturbosch.detekt.Detekt
 import io.gitlab.arturbosch.detekt.DetektCreateBaselineTask
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
@@ -10,9 +9,9 @@ import java.net.URI
 
 plugins {
     kotlin("jvm")
-    id("io.gitlab.arturbosch.detekt")
-    id("com.autonomousapps.dependency-analysis")
-    id("io.github.leandroborgesferreira.dag-command")
+    alias(libs.plugins.detekt)
+    alias(libs.plugins.dagCommand)
+    alias(libs.plugins.dependencyAnalysis)
 }
 
 repositories {
@@ -23,9 +22,8 @@ repositories {
     }
 }
 
-val libs = extensions.getByType<VersionCatalogsExtension>().named("libs")
-val jdkVersion = libs.findVersion("jdk").get().toString()
-val kotlinVersion = libs.findVersion("kotlin").get().toString().substringBeforeLast(".").replace(".", "_")
+val jdkVersion = libs.versions.jdk.get()
+val kotlinVersion = libs.versions.kotlin.get().substringBeforeLast(".").replace(".", "_")
 
 java {
     val javaVersion = JavaVersion.valueOf("VERSION_$jdkVersion")
@@ -60,19 +58,18 @@ dagCommand {
 }
 
 dependencies {
-    implementation(platform("org.jetbrains.kotlin:kotlin-bom"))
-    implementation(platform(libs.findLibrary("kotlinx-coroutines-bom").get()))
+    implementation(ktn.kotlinStdlib)
+    implementation(ktn.kotlinStdlibJdk8)
+    implementation(ktx.kotlinxCoroutinesCore)
+    implementation(ktx.kotlinxCoroutinesJdk8)
+    implementation(ktx.kotlinxCoroutinesReactive)
 
-    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-jdk8")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactive")
-
-    implementation(libs.findLibrary("commons-lang").get())
-    implementation(libs.findLibrary("kotlin-logging-jvm").get())
-
-    detektPlugins(libs.findLibrary("detekt-formatting").get())
-    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test")
+    implementation(libs.commons.lang)
+    implementation(libs.kotlin.logging.jvm) {
+        exclude(group = "org.jetbrains.kotlin", module = "kotlin-stdlib")
+    }
+    detektPlugins(libs.detekt.formatting)
+    testImplementation(ktx.kotlinxCoroutinesTest)
 }
 
 tasks.withType<KotlinCompile<*>>().configureEach {

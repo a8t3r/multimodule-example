@@ -2,7 +2,6 @@ package io.eordie.multimodule.graphql.gateway.graphql
 
 import graphql.GraphQLContext
 import io.eordie.multimodule.common.security.context.AclContextElement
-import io.micronaut.http.HttpAttributes
 import io.micronaut.http.HttpRequest
 import io.micronaut.runtime.http.scope.RequestAware
 import io.micronaut.runtime.http.scope.RequestScope
@@ -12,13 +11,17 @@ import jakarta.inject.Inject
 @RequestScope
 open class GraphqlContextBuilder : RequestAware {
 
+    companion object {
+        private const val INVOCATION_CONTEXT = "INVOCATION_CONTEXT"
+    }
+
     private lateinit var request: HttpRequest<*>
 
     @Inject
     private lateinit var providers: List<AuthenticationProvider>
 
     open fun prepareContext(builder: GraphQLContext.Builder): GraphQLContext.Builder {
-        return request.attributes.get(HttpAttributes.INVOCATION_CONTEXT, GraphQLContext::class.java)
+        return request.attributes.get(INVOCATION_CONTEXT, GraphQLContext::class.java)
             .map { builder.of(it) }
             .orElseGet { processContext(builder) }
     }
@@ -37,7 +40,7 @@ open class GraphqlContextBuilder : RequestAware {
 
     open fun buildContext(): GraphQLContext {
         val graphQLContext = prepareContext(GraphQLContext.newContext()).build()
-        request.attributes.put(HttpAttributes.INVOCATION_CONTEXT, graphQLContext)
+        request.attributes.put(INVOCATION_CONTEXT, graphQLContext)
         return graphQLContext
     }
 

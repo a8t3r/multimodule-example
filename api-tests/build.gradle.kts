@@ -36,9 +36,9 @@ dependencies {
     implementation(project(":regions-service"))
     implementation(project(":organization-management"))
 
-    implementation(libs.ktor.client.cio)
-    implementation(libs.ktor.serialization.jackson)
-    implementation(libs.ktor.client.content.negotiation)
+    implementation(ktor.ktorClientCio)
+    implementation(ktor.ktorSerializationJackson)
+    implementation(ktor.ktorClientContentNegotiation)
 
     testImplementation(mn.graphql.java)
     testImplementation(mn.micronaut.data.tx)

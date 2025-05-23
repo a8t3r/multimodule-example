@@ -6,6 +6,7 @@ import io.micronaut.http.HttpRequest
 import io.micronaut.security.config.SecurityConfiguration
 import io.micronaut.security.oauth2.client.OpenIdProviderMetadata
 import io.micronaut.security.oauth2.configuration.OauthClientConfiguration
+import io.micronaut.security.oauth2.endpoint.endsession.request.AuthorizationServerResolver
 import io.micronaut.security.oauth2.endpoint.endsession.request.EndSessionEndpoint
 import io.micronaut.security.oauth2.endpoint.endsession.request.EndSessionEndpointResolver
 import io.micronaut.security.oauth2.endpoint.endsession.request.OktaEndSessionEndpoint
@@ -19,9 +20,10 @@ import java.util.function.Supplier
 @Replaces(EndSessionEndpointResolver::class)
 class EndSessionEndpointResolverReplacement(
     beanContext: BeanContext,
+    serverResolver: AuthorizationServerResolver,
     private val tokenResolver: TokenResolver<HttpRequest<*>>,
     private val securityConfiguration: SecurityConfiguration
-) : EndSessionEndpointResolver(beanContext) {
+) : EndSessionEndpointResolver(beanContext, serverResolver) {
 
     override fun resolve(
         oauthClientConfiguration: OauthClientConfiguration,

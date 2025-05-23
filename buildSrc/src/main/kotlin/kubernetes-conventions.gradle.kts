@@ -8,22 +8,19 @@ plugins {
     id("testing-conventions")
     id("micronaut-conventions")
     id("io.micronaut.docker")
-    id("com.google.devtools.ksp")
+    alias(libs.plugins.ksp)
     `kotlin-kapt`
 }
 
-val libs = extensions.getByType<VersionCatalogsExtension>().named("libs")
-val dekorateVersion = libs.findVersion("dekorate").get().toString()
-
 dependencies {
-    kapt("io.dekorate:kubernetes-annotations:$dekorateVersion")
-    kapt("io.dekorate:prometheus-annotations:$dekorateVersion")
+    kapt(libs.dekorate.kubernetes.annotations)
+    kapt(libs.dekorate.prometheus.annotations)
 
     implementation(project(":model-contracts"))
     implementation(project(":common-service"))
 
-    compileOnly("io.dekorate:kubernetes-annotations:$dekorateVersion")
-    compileOnly("io.dekorate:prometheus-annotations:$dekorateVersion")
+    compileOnly(libs.dekorate.kubernetes.annotations)
+    compileOnly(libs.dekorate.prometheus.annotations)
 }
 
 val generatedTag: String get() =
