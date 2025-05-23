@@ -27,6 +27,12 @@ val libs = extensions.getByType<VersionCatalogsExtension>().named("libs")
 val jdkVersion = libs.findVersion("jdk").get().toString()
 val kotlinVersion = libs.findVersion("kotlin").get().toString().substringBeforeLast(".").replace(".", "_")
 
+java {
+    val javaVersion = JavaVersion.valueOf("VERSION_$jdkVersion")
+    sourceCompatibility = javaVersion
+    targetCompatibility = javaVersion
+}
+
 kotlin {
     jvmToolchain {
         languageVersion.set(JavaLanguageVersion.of(jdkVersion))
