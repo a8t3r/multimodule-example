@@ -32,7 +32,6 @@ micronautPlugin = "4.5.3"
 phaseTwo = "0.1.11"
 # @pin required kotlin 2.0
 rsocket = "0.16.0"
-rsocketLoadBalancer = "1.1.5"
 truth = "1.4.4"
 valiktor = "0.12.0"
 
@@ -51,7 +50,6 @@ kotlin-graphql-persisted-queries = { module = "com.expediagroup:graphql-kotlin-a
 kotlin-graphql-schema-generator = { module = "com.expediagroup:graphql-kotlin-schema-generator", version.ref = "graphqlKotlin" }
 kotlin-logging-jvm = { module = "io.github.oshai:kotlin-logging-jvm", version.ref = "logging-jvm" }
 kotlin-rsocket-ktor-server = { module = "io.rsocket.kotlin:rsocket-ktor-server", version.ref = "rsocket" }
-kotlin-rsocket-load-balancer = { module = "io.rsocket:rsocket-load-balancer", version.ref = "rsocketLoadBalancer" }
 kotlin-rsocket-transport-ktor-tcp = { module = "io.rsocket.kotlin:rsocket-transport-ktor-tcp", version.ref = "rsocket" }
 kotlin-valiktor-core = { module = "org.valiktor:valiktor-core", version.ref = "valiktor" }
 kotlinx-coroutines-bom = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-bom", version.ref = "coroutines" }
