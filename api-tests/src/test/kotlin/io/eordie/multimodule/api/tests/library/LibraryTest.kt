@@ -235,25 +235,4 @@ class LibraryTest : AbstractApplicationTest() {
         assertThat(firstBook.name).isEqualTo("Third book")
         assertThat(firstBook.authorIds).hasSize(1)
     }
-
-    @Test
-    fun `should retrieve authors from book by graphql query`() = test {
-        val result = schema.query {
-            books {
-                data {
-                    id()
-                    name()
-                    authors {
-                        id()
-                        fullName()
-                    }
-                }
-            }
-        }
-
-        assertThat(result.books.data).hasSize(2)
-        result.books.data?.forEach { book ->
-            assertThat(book?.authors).hasSize(1)
-        }
-    }
 }

@@ -52,9 +52,6 @@ abstract class AbstractApplicationTest {
         AuthenticationContextElement(details.copy(roles = details.roles + role))
 
     @Inject
-    lateinit var schema: SchemaContextProvider
-
-    @Inject
     lateinit var dataLoaderRegistry: (GraphQLContext) -> DataLoaderRegistry
 
     protected suspend fun env(): DataFetchingEnvironment {
