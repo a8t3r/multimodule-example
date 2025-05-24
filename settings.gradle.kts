@@ -13,25 +13,19 @@ dependencyResolutionManagement {
     }
 
     versionCatalogs {
-        val noPrefix: GeneratorConfig.UsingConfig.() -> Unit = {
-            aliasPrefixGenerator = GeneratorConfig.NO_PREFIX
+        fun String.generateFor(libraryAlias: String, vararg additionalAliases: String) {
+            generate(this) {
+                fromToml(libraryAlias, *additionalAliases) {
+                    aliasPrefixGenerator = GeneratorConfig.NO_PREFIX
+                }
+            }
         }
 
-        generate("ktor") {
-            fromToml("ktor-bom", uc = noPrefix)
-        }
-        generate("ktn") {
-            fromToml("kotlin-bom", uc = noPrefix)
-        }
-        generate("junit") {
-            fromToml("junit-bom", uc = noPrefix)
-        }
-        generate("ktx") {
-            fromToml("kotlinx-serialization-bom", "kotlinx-coroutines-bom", uc = noPrefix)
-        }
-        generate("otel") {
-            fromToml("opentelemetry-bom", uc = noPrefix)
-        }
+        "ktor".generateFor("ktor-bom")
+        "ktn".generateFor("kotlin-bom")
+        "junit".generateFor("junit-bom")
+        "otel".generateFor("opentelemetry-bom")
+        "ktx".generateFor("kotlinx-serialization-bom", "kotlinx-coroutines-bom")
     }
 }
 
