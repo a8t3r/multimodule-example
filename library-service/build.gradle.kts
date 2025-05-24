@@ -1,6 +1,6 @@
 plugins {
     `kubernetes-conventions`
-    id("io.micronaut.test-resources")
+    io.micronaut.`test-resources`
 }
 
 dependencies {

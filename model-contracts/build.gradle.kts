@@ -1,8 +1,8 @@
 plugins {
-    id("com.google.devtools.ksp")
-    id("kotlin-conventions")
-    id("testing-conventions")
-    kotlin("plugin.serialization")
+    com.google.devtools.ksp
+    `kotlin-conventions`
+    `testing-conventions`
+    `kotlinx-serialization`
 }
 
 dependencies {

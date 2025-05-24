@@ -1,9 +1,9 @@
 import com.bmuschko.gradle.docker.tasks.image.DockerPushImage
 
 plugins {
-    kotlin("plugin.serialization")
-    id("micronaut-conventions")
-    id("testing-conventions")
+    `micronaut-conventions`
+    `testing-conventions`
+    `kotlinx-serialization`
 }
 
 dependencies {
