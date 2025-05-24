@@ -7,9 +7,9 @@ plugins {
     id("kotlin-conventions")
     id("testing-conventions")
     id("micronaut-conventions")
-    id("io.micronaut.docker")
+    io.micronaut.docker
     alias(libs.plugins.ksp)
-    `kotlin-kapt`
+    org.jetbrains.kotlin.kapt
 }
 
 dependencies {

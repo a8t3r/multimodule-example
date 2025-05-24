@@ -8,7 +8,7 @@ import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
 import java.net.URI
 
 plugins {
-    kotlin("jvm")
+    org.jetbrains.kotlin.jvm
     alias(libs.plugins.detekt)
     alias(libs.plugins.dagCommand)
     alias(libs.plugins.dependencyAnalysis)
