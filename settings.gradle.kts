@@ -29,6 +29,8 @@ dependencyResolutionManagement {
     }
 }
 
+enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
+
 rootProject.name = "multimodule-example"
 include(":graphql-gateway")
 include(":model-contracts")

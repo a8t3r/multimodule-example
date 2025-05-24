@@ -10,7 +10,7 @@ dependencies {
     ksp(libs.ksp.jimmer)
     annotationProcessor(mn.micronaut.tracing.opentelemetry.annotation)
 
-    implementation(project(":model-contracts"))
+    implementation(projects.modelContracts)
 
     implementation(mn.kotlin.reflect)
     implementation(ktx.kotlinxSerializationJson)

@@ -7,10 +7,10 @@ dependencies {
     ksp(libs.ksp.jimmer)
     ksp(mn.micronaut.data.processor)
 
-    implementation(project(":graphql-gateway"))
-    implementation(project(":library-service"))
-    implementation(project(":regions-service"))
-    implementation(project(":organization-management"))
+    implementation(projects.graphqlGateway)
+    implementation(projects.libraryService)
+    implementation(projects.regionsService)
+    implementation(projects.organizationManagement)
 
     implementation(ktor.ktorClientCio)
     implementation(ktor.ktorSerializationJackson)
