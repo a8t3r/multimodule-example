@@ -18,6 +18,7 @@ jdk = "21"
 jimmer = "0.9.69"
 junit = "5.13.0-RC1"
 opentelemetry = "1.48.0"
+kobby = "5.0.0"
 # @pin required kotlin 2.0
 kotlin = "1.9.25"
 # @pin required kotlin 2.0
@@ -69,6 +70,7 @@ dagCommand = { id = "io.github.leandroborgesferreira.dag-command", version.ref =
 dependencyAnalysis = { id = "com.autonomousapps.dependency-analysis", version.ref = "dependency-analysis" }
 detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
 dokka = { id = "org.jetbrains.dokka", version.ref = "dokka" }
+kobby = { id = "io.github.ermadmi78.kobby", version.ref = "kobby" }
 kotlin = { id = "org.jetbrains.kotlin", version.ref = "kotlin" }
 kotlinAllOpen = { id = "org.jetbrains.kotlin.plugin.allopen", version.ref = "kotlin" }
 kotlinNoArg = { id = "org.jetbrains.kotlin.plugin.noarg", version.ref = "kotlin" }
