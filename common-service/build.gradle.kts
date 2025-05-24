@@ -23,7 +23,7 @@ dependencies {
     implementation(mn.micronaut.tracing.opentelemetry.kafka)
     implementation(mn.micronaut.kubernetes.discovery.client)
 
-    implementation("io.opentelemetry:opentelemetry-exporter-otlp")
+    implementation(otel.opentelemetryExporterOtlp)
 
     implementation(mn.micronaut.kafka)
     implementation(mn.micronaut.data.model)

@@ -32,9 +32,9 @@ dependencies {
     implementation(mn.micronaut.micrometer.core)
     implementation(mn.micronaut.micrometer.registry.prometheus)
 
-    implementation("io.opentelemetry:opentelemetry-api")
-    implementation("io.opentelemetry:opentelemetry-context")
-    implementation("io.opentelemetry:opentelemetry-extension-kotlin") {
+    implementation(otel.opentelemetryApi)
+    implementation(otel.opentelemetryContext)
+    implementation(otel.opentelemetryExtensionKotlin) {
         exclude(group = "org.jetbrains.kotlin")
     }
 

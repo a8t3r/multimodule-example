@@ -16,6 +16,7 @@ jdk = "21"
 # @pin required kotlin 2.0
 jimmer = "0.9.69"
 junit = "5.13.0-RC1"
+opentelemetry = "1.48.0"
 # @pin required kotlin 2.0
 kotlin = "1.9.25"
 # @pin required kotlin 2.0
@@ -44,6 +45,7 @@ detekt-formatting = { module = "io.gitlab.arturbosch.detekt:detekt-formatting", 
 graphql-scalars = { module = "com.graphql-java:graphql-java-extended-scalars", version.ref = "graphqlExtendedScalars" }
 jimmer-sql-kotlin = { module = "org.babyfish.jimmer:jimmer-sql-kotlin", version.ref = "jimmer" }
 junit-bom = { module = "org.junit:junit-bom", version.ref = "junit" }
+opentelemetry-bom = { module = "io.opentelemetry:opentelemetry-bom", version.ref = "opentelemetry" }
 kotlin-bom = { module = "org.jetbrains.kotlin:kotlin-bom", version.ref = "kotlin" }
 kotlin-graphql = { module = "com.expediagroup:graphql-kotlin-server", version.ref = "graphqlKotlin" }
 kotlin-graphql-persisted-queries = { module = "com.expediagroup:graphql-kotlin-automatic-persisted-queries", version.ref = "graphqlKotlin" }

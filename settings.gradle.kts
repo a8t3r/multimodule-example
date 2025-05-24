@@ -29,6 +29,9 @@ dependencyResolutionManagement {
         generate("ktx") {
             fromToml("kotlinx-serialization-bom", "kotlinx-coroutines-bom", uc = noPrefix)
         }
+        generate("otel") {
+            fromToml("opentelemetry-bom", uc = noPrefix)
+        }
     }
 }
 
