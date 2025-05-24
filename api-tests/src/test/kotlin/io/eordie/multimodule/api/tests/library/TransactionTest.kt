@@ -1,6 +1,9 @@
 package io.eordie.multimodule.api.tests.library
 
-import com.google.common.truth.Truth.assertThat
+import assertk.assertThat
+import assertk.assertions.contains
+import assertk.assertions.isNotNull
+import assertk.assertions.isNull
 import io.eordie.multimodule.api.tests.AbstractApplicationTest
 import io.eordie.multimodule.library.models.AuthorModel
 import io.eordie.multimodule.library.models.BookModel
@@ -45,7 +48,7 @@ class TransactionTest : AbstractApplicationTest() {
             }
         }
         assertThat(e).isNotNull()
-        assertThat(e.message).contains("rollback")
+        assertThat(e.message).isNotNull().contains("rollback")
         assertThat(book.id).isNotNull()
         assertThat(books.findById(book.id)).isNull()
         assertThat(author.id).isNotNull()
@@ -80,7 +83,7 @@ class TransactionTest : AbstractApplicationTest() {
             }
         }
         assertThat(e).isNotNull()
-        assertThat(e.message).contains("rollback")
+        assertThat(e.message).isNotNull().contains("rollback")
         assertThat(book.id).isNotNull()
         assertThat(books.findById(book.id)).isNull()
         assertThat(author.id).isNotNull()
@@ -108,7 +111,7 @@ class TransactionTest : AbstractApplicationTest() {
             }
         }
         assertThat(e).isNotNull()
-        assertThat(e.message).contains("rollback")
+        assertThat(e.message).isNotNull().contains("rollback")
         assertThat(author.id).isNotNull()
         assertThat(authors.findById(author.id)).isNull()
     }
@@ -145,7 +148,7 @@ class TransactionTest : AbstractApplicationTest() {
             }
         }
         assertThat(e).isNotNull()
-        assertThat(e.message).contains("rollback")
+        assertThat(e.message).isNotNull().contains("rollback")
         assertThat(book.id).isNotNull()
         assertThat(books.findById(book.id)).isNull()
         assertThat(author.id).isNotNull()
@@ -184,7 +187,7 @@ class TransactionTest : AbstractApplicationTest() {
             }
         }
         assertThat(e).isNotNull()
-        assertThat(e.message).contains("rollback")
+        assertThat(e.message).isNotNull().contains("rollback")
         assertThat(book.id).isNotNull()
         assertThat(books.findById(book.id)).isNull()
         assertThat(author.id).isNotNull()

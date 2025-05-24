@@ -1,6 +1,17 @@
 package io.eordie.multimodule.api.tests.library
 
-import com.google.common.truth.Truth.assertThat
+import assertk.assertThat
+import assertk.assertions.containsAtLeast
+import assertk.assertions.containsExactly
+import assertk.assertions.containsExactlyInAnyOrder
+import assertk.assertions.hasSize
+import assertk.assertions.isEmpty
+import assertk.assertions.isEqualTo
+import assertk.assertions.isNotEmpty
+import assertk.assertions.isNotEqualTo
+import assertk.assertions.isNotNull
+import assertk.assertions.isNull
+import assertk.assertions.isTrue
 import io.eordie.multimodule.api.tests.AbstractApplicationTest
 import io.eordie.multimodule.contracts.basic.filters.OffsetDateTimeLiteralFilter
 import io.eordie.multimodule.contracts.basic.filters.StringLiteralFilter
@@ -93,7 +104,7 @@ class LibraryTest : AbstractApplicationTest() {
         val books = queryLibrary.books(BooksFilter(), pageable)
         assertThat(books).isNotNull()
         assertThat(books.pageable.cursor).isNull()
-        assertThat(books.pageable.supportedOrders).containsAtLeast("name", "numberOfAuthors")
+        assertThat(books.pageable.supportedOrders).isNotNull().containsAtLeast("name", "numberOfAuthors")
         assertThat(books.data).hasSize(2)
         compareBooks(books.data[0], secondBook)
         compareBooks(books.data[1], firstBook)
@@ -103,8 +114,8 @@ class LibraryTest : AbstractApplicationTest() {
     fun `should get summary of books`() = test {
         val summary = queryLibrary.bookSummary(BooksFilter())
         assertThat(summary.totalCount).isEqualTo(2)
-        assertThat(summary.ids).containsExactly(firstBook.id, secondBook.id)
-        assertThat(summary.names).containsExactly(firstBook.name, secondBook.name)
+        assertThat(summary.ids).containsExactlyInAnyOrder(firstBook.id, secondBook.id)
+        assertThat(summary.names).containsExactlyInAnyOrder(firstBook.name, secondBook.name)
         assertThat(summary.authorIds).isNotEmpty()
     }
 

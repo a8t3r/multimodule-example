@@ -1,6 +1,9 @@
 package io.eordie.multimodule.api.tests.organizations
 
-import com.google.common.truth.Truth.assertThat
+import assertk.assertThat
+import assertk.assertions.hasSize
+import assertk.assertions.isEmpty
+import assertk.assertions.isEqualTo
 import io.eordie.multimodule.contracts.basic.exception.AccessDeniedException
 import io.eordie.multimodule.contracts.utils.Roles.MANAGE_ORGANIZATION
 import org.junit.jupiter.api.BeforeEach

@@ -1,6 +1,10 @@
 package io.eordie.multimodule.api.tests.organizations
 
-import com.google.common.truth.Truth.assertThat
+import assertk.assertThat
+import assertk.assertions.hasSize
+import assertk.assertions.isEmpty
+import assertk.assertions.isEqualTo
+import assertk.assertions.isNotNull
 import io.eordie.multimodule.api.tests.AuthUtils.authWith
 import io.eordie.multimodule.contracts.organization.models.acl.ByFarmCriterion
 import io.eordie.multimodule.contracts.organization.models.acl.FarmAcl
@@ -60,7 +64,7 @@ class FarmAclTest : AbstractOrganizationTest() {
             val acl = employeeAclQueries.activeEmployeeAcl()
             assertThat(acl).hasSize(1)
             assertThat(acl[0].farmId).isEqualTo(farmId)
-            assertThat(acl[0].fieldIds).hasSize(3)
+            assertThat(acl[0].fieldIds).isNotNull().hasSize(3)
             assertThat(acl[0].fieldIds).isEqualTo(fieldIds)
         }
 
@@ -75,7 +79,7 @@ class FarmAclTest : AbstractOrganizationTest() {
             val acl = employeeAclQueries.activeEmployeeAcl()
             assertThat(acl).hasSize(1)
             assertThat(acl[0].farmId).isEqualTo(farmId)
-            assertThat(acl[0].fieldIds).hasSize(2)
+            assertThat(acl[0].fieldIds).isNotNull().hasSize(2)
             assertThat(acl[0].fieldIds).isEqualTo(fieldIds.take(2))
         }
 

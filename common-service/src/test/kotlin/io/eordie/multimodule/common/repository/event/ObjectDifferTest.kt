@@ -1,6 +1,9 @@
 package io.eordie.multimodule.common.repository.event
 
-import com.google.common.truth.Truth.assertThat
+import assertk.assertThat
+import assertk.assertions.containsExactly
+import assertk.assertions.isEmpty
+import assertk.assertions.isNotNull
 import io.eordie.multimodule.contracts.library.models.Author
 import org.junit.jupiter.api.Test
 import java.time.OffsetDateTime

@@ -1,5 +1,6 @@
 [versions]
 auto-service = "1.1.1"
+assertk = "0.28.1"
 commons-lang = "3.17.0"
 # @pin required kotlin 2.0
 coroutines = "1.9.0"
@@ -33,11 +34,11 @@ micronautPlugin = "4.5.3"
 phaseTwo = "0.1.11"
 # @pin required kotlin 2.0
 rsocket = "0.16.0"
-truth = "1.4.4"
 valiktor = "0.12.0"
 
 [libraries]
 auto-service = { module = "com.google.auto.service:auto-service-annotations", version.ref = "auto-service" }
+assertk = { module = "com.willowtreeapps.assertk:assertk", version.ref = "assertk" }
 commons-lang = { module = "org.apache.commons:commons-lang3", version.ref = "commons-lang" }
 dekorate-kubernetes-annotations = { module = "io.dekorate:kubernetes-annotations", version.ref = "dekorate" }
 dekorate-prometheus-annotations = { module = "io.dekorate:prometheus-annotations", version.ref = "dekorate" }
@@ -62,7 +63,6 @@ ktor-bom = { module = "io.ktor:ktor-bom", version.ref = "ktor" }
 logitech-jts-core = { module = "org.locationtech.jts:jts-core", version.ref = "logitech" }
 micronaut-platform = { module = "io.micronaut.platform:micronaut-platform", version.ref = "micronaut" }
 phaseTwo-admin-client = { module = "io.phasetwo:phasetwo-admin-client", version.ref = "phaseTwo" }
-truth = { module = "com.google.truth:truth", version.ref = "truth" }
 
 [plugins]
 dagCommand = { id = "io.github.leandroborgesferreira.dag-command", version.ref = "dag-command" }

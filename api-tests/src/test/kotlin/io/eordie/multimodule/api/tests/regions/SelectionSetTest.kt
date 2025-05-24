@@ -1,6 +1,8 @@
 package io.eordie.multimodule.api.tests.regions
 
-import com.google.common.truth.Truth.assertThat
+import assertk.assertThat
+import assertk.assertions.isEqualTo
+import assertk.assertions.isNull
 import io.eordie.multimodule.api.tests.AbstractApplicationTest
 import io.eordie.multimodule.common.security.context.SelectionSetContextElement
 import io.eordie.multimodule.contracts.basic.filters.LongNumericFilter

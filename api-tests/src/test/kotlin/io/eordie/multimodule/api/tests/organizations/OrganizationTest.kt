@@ -1,6 +1,13 @@
 package io.eordie.multimodule.api.tests.organizations
 
-import com.google.common.truth.Truth.assertThat
+import assertk.assertThat
+import assertk.assertions.contains
+import assertk.assertions.containsExactly
+import assertk.assertions.hasSize
+import assertk.assertions.isEmpty
+import assertk.assertions.isEqualTo
+import assertk.assertions.isNotNull
+import assertk.assertions.isNull
 import io.eordie.multimodule.api.tests.AuthUtils.authWith
 import io.eordie.multimodule.contracts.basic.exception.ValidationException
 import io.eordie.multimodule.contracts.basic.filters.StringLiteralFilter
@@ -134,7 +141,7 @@ class OrganizationTest : AbstractOrganizationTest() {
         }
         assertThat(e.errors).hasSize(1)
         assertThat(e.errors[0].constraint).isEqualTo("MissingPermission")
-        assertThat(e.errors[0].params).containsEntry("permission", "PURGE")
+        assertThat(e.errors[0].params).contains("permission", "PURGE")
     }
 
     @Test

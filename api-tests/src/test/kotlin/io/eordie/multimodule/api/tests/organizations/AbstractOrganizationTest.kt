@@ -1,6 +1,8 @@
 package io.eordie.multimodule.api.tests.organizations
 
-import com.google.common.truth.Truth.assertThat
+import assertk.assertThat
+import assertk.assertions.containsExactlyInAnyOrder
+import assertk.assertions.hasSize
 import io.eordie.multimodule.api.tests.AbstractApplicationTest
 import io.eordie.multimodule.api.tests.AuthUtils.authWith
 import io.eordie.multimodule.contracts.basic.filters.UUIDLiteralFilter
@@ -125,7 +127,7 @@ abstract class AbstractOrganizationTest : AbstractApplicationTest() {
 
         val positions = structureQueries.positions(currentOrganization, OrganizationPositionFilter())
         assertThat(positions).hasSize(4)
-        assertThat(positions.map { it.name to it.parentId }).containsExactly(
+        assertThat(positions.map { it.name to it.parentId }).containsExactlyInAnyOrder(
             ctoPosition.name to null,
             seniorPosition.name to ctoPosition.id,
             qaSeniorPosition.name to ctoPosition.id,

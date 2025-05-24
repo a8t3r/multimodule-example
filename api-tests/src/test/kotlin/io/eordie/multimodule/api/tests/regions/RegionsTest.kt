@@ -1,6 +1,11 @@
 package io.eordie.multimodule.api.tests.regions
 
-import com.google.common.truth.Truth.assertThat
+import assertk.assertThat
+import assertk.assertions.containsExactly
+import assertk.assertions.hasSize
+import assertk.assertions.isEmpty
+import assertk.assertions.isEqualTo
+import assertk.assertions.isNull
 import io.eordie.multimodule.api.tests.AbstractApplicationTest
 import io.eordie.multimodule.contracts.basic.filters.IntNumericFilter
 import io.eordie.multimodule.contracts.basic.filters.LongNumericFilter
@@ -31,7 +36,7 @@ class RegionsTest : AbstractApplicationTest() {
     fun `should get region path by id`() = test {
         val regions = regions.regionPath(2804758)
         assertThat(regions).hasSize(2)
-        assertThat(regions.map { it.id }).containsExactly(9407L, 2804758L).inOrder()
+        assertThat(regions.map { it.id }).containsExactly(9407L, 2804758L)
     }
 
     @Test

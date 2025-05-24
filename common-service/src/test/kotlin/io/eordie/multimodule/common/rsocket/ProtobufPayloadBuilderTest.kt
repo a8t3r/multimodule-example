@@ -1,6 +1,10 @@
 package io.eordie.multimodule.common.rsocket
 
-import com.google.common.truth.Truth.assertThat
+import assertk.assertThat
+import assertk.assertions.isEqualTo
+import assertk.assertions.isNotNull
+import assertk.assertions.isNull
+import assertk.assertions.startsWith
 import io.eordie.multimodule.common.rsocket.meta.ProtobufPayloadBuilder
 import io.eordie.multimodule.contracts.basic.filters.UUIDLiteralFilter
 import io.eordie.multimodule.contracts.basic.paging.Page
@@ -102,7 +106,7 @@ class ProtobufPayloadBuilderTest {
             val payload = buildPayload { data { writeInt(0) } }
             proto.decodeFromPayload(payload, pageOfBooks)
         }
-        assertThat(ex.message).startsWith("Field 'pageable' is required for type")
+        assertThat(ex.message).isNotNull().startsWith("Field 'pageable' is required for type")
     }
 
     @Test

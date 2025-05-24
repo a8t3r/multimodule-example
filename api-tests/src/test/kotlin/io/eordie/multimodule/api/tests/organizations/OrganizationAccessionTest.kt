@@ -1,6 +1,11 @@
 package io.eordie.multimodule.api.tests.organizations
 
-import com.google.common.truth.Truth.assertThat
+import assertk.assertThat
+import assertk.assertions.hasSize
+import assertk.assertions.isEqualTo
+import assertk.assertions.isNotEmpty
+import assertk.assertions.isNotNull
+import assertk.assertions.isNull
 import io.eordie.multimodule.api.tests.AuthUtils.authWith
 import io.eordie.multimodule.contracts.basic.exception.ValidationException
 import io.eordie.multimodule.contracts.identitymanagement.models.CurrentOrganization

@@ -14,7 +14,8 @@ tasks.test {
 }
 
 dependencies {
-    testImplementation(libs.truth)
+    testImplementation(libs.assertk)
+    testImplementation(ktn.kotlinTest)
 
     testImplementation(junit.junitJupiterApi)
     testImplementation(junit.junitJupiterEngine)

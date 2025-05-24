@@ -1,6 +1,11 @@
 package io.eordie.multimodule.api.tests.organizations
 
-import com.google.common.truth.Truth.assertThat
+import assertk.assertThat
+import assertk.assertions.containsExactlyInAnyOrder
+import assertk.assertions.hasSize
+import assertk.assertions.isEqualTo
+import assertk.assertions.isNotNull
+import assertk.assertions.isNull
 import io.eordie.multimodule.contracts.basic.exception.ValidationException
 import io.eordie.multimodule.contracts.organization.models.structure.OrganizationPositionFilter
 import io.eordie.multimodule.contracts.organization.models.structure.OrganizationPositionInput
@@ -44,7 +49,7 @@ class OrganizationPositionsTest : AbstractOrganizationTest() {
 
         val positions = structureQueries.positions(developersOrg, OrganizationPositionFilter())
         assertThat(positions).hasSize(4)
-        assertThat(positions.map { it.name to it.parentId }).containsExactly(
+        assertThat(positions.map { it.name to it.parentId }).containsExactlyInAnyOrder(
             "CTO" to null,
             "Senior Developer" to ctoId,
             "QA Senior Developer" to ctoId,
@@ -88,7 +93,7 @@ class OrganizationPositionsTest : AbstractOrganizationTest() {
 
         val positions = structureQueries.positions(developersOrg)
         assertThat(positions).hasSize(2)
-        assertThat(positions.map { it.name to (it.parentId == null) }).containsExactly(
+        assertThat(positions.map { it.name to (it.parentId == null) }).containsExactlyInAnyOrder(
             "CTO" to true,
             "Senior Developer" to false
         )

@@ -1,6 +1,16 @@
 package io.eordie.multimodule.api.tests.organizations
 
-import com.google.common.truth.Truth.assertThat
+import assertk.assertThat
+import assertk.assertions.containsAtLeast
+import assertk.assertions.containsExactly
+import assertk.assertions.hasSize
+import assertk.assertions.isEqualTo
+import assertk.assertions.isGreaterThanOrEqualTo
+import assertk.assertions.isIn
+import assertk.assertions.isInstanceOf
+import assertk.assertions.isNotEmpty
+import assertk.assertions.isNotNull
+import assertk.assertions.isNull
 import io.eordie.multimodule.api.tests.AuthUtils.authWith
 import io.eordie.multimodule.contracts.basic.filters.Direction
 import io.eordie.multimodule.contracts.basic.filters.StringLiteralFilter
@@ -119,7 +129,7 @@ class EmploymentToDepartmentsWithCustomBindingsTest : AbstractOrganizationTest()
             organization = OrganizationsFilter(id = UUIDLiteralFilter(eq = developersOrg.id))
         )
         val users = userQueries.users(filter).data
-        assertThat(users.size).isAtLeast(2)
+        assertThat(users.size).isGreaterThanOrEqualTo(2)
         assertThat(users.map { it.id }).containsAtLeast(developer1, developer2)
 
         val structure = createExampleStructure(developersOrg)
@@ -223,15 +233,15 @@ class EmploymentToDepartmentsWithCustomBindingsTest : AbstractOrganizationTest()
     fun `verify full access to available farms`() = test(organizationManager) {
         val acl = employeeAclQueries.internalActiveResourceAcl(developer1, developersOrg.id)
         assertThat(acl).isNotNull()
-        assertThat(acl?.auth?.roles).containsExactly(VIEW_ORGANIZATION)
+        assertThat(acl?.auth?.roles).isNotNull().containsExactly(VIEW_ORGANIZATION)
 
         val entries = acl?.entries.orEmpty()
         assertThat(entries).hasSize(2)
-        assertThat(entries[0].farmId).isAnyOf(farmAcl[0].farmId, farmAcl[1].farmId)
-        assertThat(entries[0].fieldIds).hasSize(3)
+        assertThat(entries[0].farmId).isIn(farmAcl[0].farmId, farmAcl[1].farmId)
+        assertThat(entries[0].fieldIds).isNotNull().hasSize(3)
 
-        assertThat(entries[1].farmId).isAnyOf(farmAcl[0].farmId, farmAcl[1].farmId)
-        assertThat(entries[1].fieldIds).hasSize(3)
+        assertThat(entries[1].farmId).isIn(farmAcl[0].farmId, farmAcl[1].farmId)
+        assertThat(entries[1].fieldIds).isNotNull().hasSize(3)
     }
 
     @Test
@@ -239,15 +249,15 @@ class EmploymentToDepartmentsWithCustomBindingsTest : AbstractOrganizationTest()
     fun `verify specific access to available farms`() = test(organizationManager) {
         val acl = employeeAclQueries.internalActiveResourceAcl(developer2, developersOrg.id)
         assertThat(acl).isNotNull()
-        assertThat(acl?.auth?.roles).containsExactly(VIEW_ORGANIZATION)
+        assertThat(acl?.auth?.roles).isNotNull().containsExactly(VIEW_ORGANIZATION)
 
         val entries = acl?.entries.orEmpty()
         assertThat(entries).hasSize(2)
-        assertThat(entries[0].farmId).isAnyOf(farmAcl[0].farmId, farmAcl[1].farmId)
-        assertThat(entries[0].fieldIds).hasSize(3)
+        assertThat(entries[0].farmId).isIn(farmAcl[0].farmId, farmAcl[1].farmId)
+        assertThat(entries[0].fieldIds).isNotNull().hasSize(3)
 
-        assertThat(entries[1].farmId).isAnyOf(farmAcl[0].farmId, farmAcl[1].farmId)
-        assertThat(entries[1].fieldIds).hasSize(3)
+        assertThat(entries[1].farmId).isIn(farmAcl[0].farmId, farmAcl[1].farmId)
+        assertThat(entries[1].fieldIds).isNotNull().hasSize(3)
     }
 
     @Test
@@ -264,11 +274,12 @@ class EmploymentToDepartmentsWithCustomBindingsTest : AbstractOrganizationTest()
             fun ensureEntries(entries: List<EmployeeAcl>?) {
                 assertThat(entries).isNotNull()
                 assertThat(entries!!).hasSize(2)
-                assertThat(entries[0].farmId).isAnyOf(farmAcl[0].farmId, farmAcl[1].farmId)
-                assertThat(entries[0].fieldIds).hasSize(2)
+                assertThat(entries[0].farmId).isNotNull()
+                assertThat(entries[0].farmId).isIn(farmAcl[0].farmId, farmAcl[1].farmId)
+                assertThat(entries[0].fieldIds).isNotNull().hasSize(2)
 
-                assertThat(entries[1].farmId).isAnyOf(farmAcl[0].farmId, farmAcl[1].farmId)
-                assertThat(entries[1].fieldIds).hasSize(2)
+                assertThat(entries[1].farmId).isIn(farmAcl[0].farmId, farmAcl[1].farmId)
+                assertThat(entries[1].fieldIds).isNotNull().hasSize(2)
             }
 
             ensureEntries(employeeAclQueries.internalActiveResourceAcl(developer1, developersOrg.id)?.entries)
@@ -288,7 +299,7 @@ class EmploymentToDepartmentsWithCustomBindingsTest : AbstractOrganizationTest()
                 assertThat(entries).isNotNull()
                 assertThat(entries!!).hasSize(1)
                 assertThat(entries[0].farmId).isEqualTo(farmAcl[1].farmId)
-                assertThat(entries[0].fieldIds).hasSize(2)
+                assertThat(entries[0].fieldIds).isNotNull().hasSize(2)
             }
 
             ensureEntries(employeeAclQueries.internalActiveResourceAcl(developer1, developersOrg.id)?.entries)

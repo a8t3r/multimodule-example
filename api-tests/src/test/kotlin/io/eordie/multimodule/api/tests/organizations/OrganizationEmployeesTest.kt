@@ -1,6 +1,12 @@
 package io.eordie.multimodule.api.tests.organizations
 
-import com.google.common.truth.Truth.assertThat
+import assertk.assertThat
+import assertk.assertions.containsExactlyInAnyOrder
+import assertk.assertions.hasSize
+import assertk.assertions.isEmpty
+import assertk.assertions.isEqualTo
+import assertk.assertions.isIn
+import assertk.assertions.isNull
 import io.eordie.multimodule.contracts.organization.models.structure.OrganizationDepartment
 import io.eordie.multimodule.contracts.organization.models.structure.OrganizationPosition
 import org.junit.jupiter.api.BeforeEach
@@ -60,12 +66,12 @@ class OrganizationEmployeesTest : AbstractOrganizationTest() {
         assertThat(employees).hasSize(2)
 
         assertThat(employees[0].organizationId).isEqualTo(developersOrg.id)
-        assertThat(employees[0].departmentId).isAnyOf(null, department.id)
+        assertThat(employees[0].departmentId).isIn(null, department.id)
         assertThat(employees[0].positionId).isEqualTo(position.id)
         assertThat(employees[0].userId).isEqualTo(developer1)
 
         assertThat(employees[1].organizationId).isEqualTo(developersOrg.id)
-        assertThat(employees[0].departmentId).isAnyOf(null, department.id)
+        assertThat(employees[0].departmentId).isIn(null, department.id)
         assertThat(employees[1].positionId).isEqualTo(position.id)
         assertThat(employees[1].userId).isEqualTo(developer1)
     }
@@ -92,7 +98,7 @@ class OrganizationEmployeesTest : AbstractOrganizationTest() {
 
         var employees = structureQueries.employees(developersOrg).data
         assertThat(employees).hasSize(2)
-        assertThat(employees.map { it.userId }).containsExactly(
+        assertThat(employees.map { it.userId }).containsExactlyInAnyOrder(
             employee1.userId,
             employee2.userId
         )
@@ -110,7 +116,7 @@ class OrganizationEmployeesTest : AbstractOrganizationTest() {
 
         var employees = structureQueries.employees(developersOrg).data
         assertThat(employees).hasSize(2)
-        assertThat(employees.map { it.userId }).containsExactly(
+        assertThat(employees.map { it.userId }).containsExactlyInAnyOrder(
             employee1.userId,
             employee2.userId
         )
