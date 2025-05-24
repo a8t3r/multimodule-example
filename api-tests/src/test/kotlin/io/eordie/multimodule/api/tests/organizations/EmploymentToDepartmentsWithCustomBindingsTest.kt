@@ -3,6 +3,7 @@ package io.eordie.multimodule.api.tests.organizations
 import assertk.assertThat
 import assertk.assertions.containsAtLeast
 import assertk.assertions.containsExactly
+import assertk.assertions.extracting
 import assertk.assertions.hasSize
 import assertk.assertions.isEqualTo
 import assertk.assertions.isGreaterThanOrEqualTo
@@ -16,6 +17,7 @@ import io.eordie.multimodule.contracts.basic.filters.Direction
 import io.eordie.multimodule.contracts.basic.filters.StringLiteralFilter
 import io.eordie.multimodule.contracts.basic.filters.UUIDLiteralFilter
 import io.eordie.multimodule.contracts.organization.models.OrganizationsFilter
+import io.eordie.multimodule.contracts.organization.models.User
 import io.eordie.multimodule.contracts.organization.models.UsersFilter
 import io.eordie.multimodule.contracts.organization.models.acl.ByFarmCriterion
 import io.eordie.multimodule.contracts.organization.models.acl.EmployeeAcl
@@ -130,7 +132,7 @@ class EmploymentToDepartmentsWithCustomBindingsTest : AbstractOrganizationTest()
         )
         val users = userQueries.users(filter).data
         assertThat(users.size).isGreaterThanOrEqualTo(2)
-        assertThat(users.map { it.id }).containsAtLeast(developer1, developer2)
+        assertThat(users).extracting(User::id).containsAtLeast(developer1, developer2)
 
         val structure = createExampleStructure(developersOrg)
         val junior = structure.getValue("Junior Developer")
@@ -148,7 +150,7 @@ class EmploymentToDepartmentsWithCustomBindingsTest : AbstractOrganizationTest()
 
         val users = userQueries.users(filter).data
         assertThat(users).hasSize(2)
-        assertThat(users.map { it.id }).containsExactly(developer1, developer2)
+        assertThat(users).extracting(User::id).containsExactly(developer1, developer2)
     }
 
     @Test
@@ -163,7 +165,7 @@ class EmploymentToDepartmentsWithCustomBindingsTest : AbstractOrganizationTest()
 
         val users = userQueries.users(filter).data
         assertThat(users).hasSize(1)
-        assertThat(users.map { it.id }).containsExactly(developer1)
+        assertThat(users).extracting(User::id).containsExactly(developer1)
     }
 
     @Test
@@ -178,7 +180,7 @@ class EmploymentToDepartmentsWithCustomBindingsTest : AbstractOrganizationTest()
 
         val users = userQueries.users(filter).data
         assertThat(users).hasSize(1)
-        assertThat(users.map { it.id }).containsExactly(developer2)
+        assertThat(users).extracting(User::id).containsExactly(developer2)
     }
 
     @Test
@@ -193,7 +195,7 @@ class EmploymentToDepartmentsWithCustomBindingsTest : AbstractOrganizationTest()
 
         val users = userQueries.users(filter).data
         assertThat(users).hasSize(2)
-        assertThat(users.map { it.id }).containsExactly(developer1, developer2)
+        assertThat(users).extracting(User::id).containsExactly(developer1, developer2)
     }
 
     @Test
@@ -209,7 +211,7 @@ class EmploymentToDepartmentsWithCustomBindingsTest : AbstractOrganizationTest()
 
         val users = userQueries.users(filter).data
         assertThat(users).hasSize(2)
-        assertThat(users.map { it.id }).containsExactly(developer1, developer2)
+        assertThat(users).extracting(User::id).containsExactly(developer1, developer2)
     }
 
     @Test
@@ -225,7 +227,7 @@ class EmploymentToDepartmentsWithCustomBindingsTest : AbstractOrganizationTest()
 
         val users = userQueries.users(filter).data
         assertThat(users).hasSize(2)
-        assertThat(users.map { it.id }).containsExactly(developer1, developer2)
+        assertThat(users).extracting(User::id).containsExactly(developer1, developer2)
     }
 
     @Test

@@ -1,12 +1,15 @@
 package io.eordie.multimodule.api.tests.organizations
 
+import assertk.all
 import assertk.assertThat
 import assertk.assertions.containsExactlyInAnyOrder
+import assertk.assertions.extracting
 import assertk.assertions.hasSize
 import assertk.assertions.isEqualTo
 import assertk.assertions.isNotNull
 import assertk.assertions.isNull
 import io.eordie.multimodule.contracts.basic.exception.ValidationException
+import io.eordie.multimodule.contracts.organization.models.structure.OrganizationPosition
 import io.eordie.multimodule.contracts.organization.models.structure.OrganizationPositionFilter
 import io.eordie.multimodule.contracts.organization.models.structure.OrganizationPositionInput
 import org.junit.jupiter.api.BeforeEach
@@ -48,13 +51,16 @@ class OrganizationPositionsTest : AbstractOrganizationTest() {
         )
 
         val positions = structureQueries.positions(developersOrg, OrganizationPositionFilter())
-        assertThat(positions).hasSize(4)
-        assertThat(positions.map { it.name to it.parentId }).containsExactlyInAnyOrder(
-            "CTO" to null,
-            "Senior Developer" to ctoId,
-            "QA Senior Developer" to ctoId,
-            "Junior Developer" to ctoId
-        )
+        assertThat(positions).all {
+            hasSize(4)
+            extracting(OrganizationPosition::name, OrganizationPosition::parentId)
+                .containsExactlyInAnyOrder(
+                    "CTO" to null,
+                    "Senior Developer" to ctoId,
+                    "QA Senior Developer" to ctoId,
+                    "Junior Developer" to ctoId
+                )
+        }
     }
 
     @Test
@@ -92,10 +98,13 @@ class OrganizationPositionsTest : AbstractOrganizationTest() {
         assertThat(seniorPosition.parentId).isEqualTo(ctoPosition.id)
 
         val positions = structureQueries.positions(developersOrg)
-        assertThat(positions).hasSize(2)
-        assertThat(positions.map { it.name to (it.parentId == null) }).containsExactlyInAnyOrder(
-            "CTO" to true,
-            "Senior Developer" to false
-        )
+        assertThat(positions).all {
+            hasSize(2)
+            extracting(OrganizationPosition::name) { it.parentId == null }
+                .containsExactlyInAnyOrder(
+                    "CTO" to true,
+                    "Senior Developer" to false
+                )
+        }
     }
 }

@@ -2,12 +2,14 @@ package io.eordie.multimodule.api.tests.organizations
 
 import assertk.assertThat
 import assertk.assertions.containsExactlyInAnyOrder
+import assertk.assertions.extracting
 import assertk.assertions.hasSize
 import assertk.assertions.isEmpty
 import assertk.assertions.isEqualTo
 import assertk.assertions.isIn
 import assertk.assertions.isNull
 import io.eordie.multimodule.contracts.organization.models.structure.OrganizationDepartment
+import io.eordie.multimodule.contracts.organization.models.structure.OrganizationEmployee
 import io.eordie.multimodule.contracts.organization.models.structure.OrganizationPosition
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -98,7 +100,7 @@ class OrganizationEmployeesTest : AbstractOrganizationTest() {
 
         var employees = structureQueries.employees(developersOrg).data
         assertThat(employees).hasSize(2)
-        assertThat(employees.map { it.userId }).containsExactlyInAnyOrder(
+        assertThat(employees).extracting(OrganizationEmployee::userId).containsExactlyInAnyOrder(
             employee1.userId,
             employee2.userId
         )
@@ -116,7 +118,7 @@ class OrganizationEmployeesTest : AbstractOrganizationTest() {
 
         var employees = structureQueries.employees(developersOrg).data
         assertThat(employees).hasSize(2)
-        assertThat(employees.map { it.userId }).containsExactlyInAnyOrder(
+        assertThat(employees).extracting(OrganizationEmployee::userId).containsExactlyInAnyOrder(
             employee1.userId,
             employee2.userId
         )

@@ -1,7 +1,9 @@
 package io.eordie.multimodule.api.tests.organizations
 
+import assertk.all
 import assertk.assertThat
 import assertk.assertions.containsExactlyInAnyOrder
+import assertk.assertions.extracting
 import assertk.assertions.hasSize
 import io.eordie.multimodule.api.tests.AbstractApplicationTest
 import io.eordie.multimodule.api.tests.AuthUtils.authWith
@@ -126,13 +128,17 @@ abstract class AbstractOrganizationTest : AbstractApplicationTest() {
         val juniorPosition = newPosition(currentOrganization, "Junior Developer", seniorPosition)
 
         val positions = structureQueries.positions(currentOrganization, OrganizationPositionFilter())
-        assertThat(positions).hasSize(4)
-        assertThat(positions.map { it.name to it.parentId }).containsExactlyInAnyOrder(
-            ctoPosition.name to null,
-            seniorPosition.name to ctoPosition.id,
-            qaSeniorPosition.name to ctoPosition.id,
-            juniorPosition.name to seniorPosition.id
-        )
+        assertThat(positions).all {
+            hasSize(4)
+            extracting(OrganizationPosition::name, OrganizationPosition::parentId)
+                .containsExactlyInAnyOrder(
+                    ctoPosition.name to null,
+                    seniorPosition.name to ctoPosition.id,
+                    qaSeniorPosition.name to ctoPosition.id,
+                    juniorPosition.name to seniorPosition.id
+                )
+        }
+
         return positions.associateBy { it.name }
     }
 }

@@ -3,6 +3,7 @@ package io.eordie.multimodule.api.tests.organizations
 import assertk.assertThat
 import assertk.assertions.containsAtLeast
 import assertk.assertions.containsOnly
+import assertk.assertions.extracting
 import assertk.assertions.hasSize
 import assertk.assertions.isEmpty
 import assertk.assertions.isGreaterThanOrEqualTo
@@ -10,6 +11,7 @@ import assertk.assertions.isNotNull
 import assertk.assertions.isNull
 import io.eordie.multimodule.contracts.basic.filters.StringLiteralFilter
 import io.eordie.multimodule.contracts.organization.models.OrganizationsFilter
+import io.eordie.multimodule.contracts.organization.models.User
 import io.eordie.multimodule.contracts.organization.models.UsersFilter
 import org.junit.jupiter.api.Test
 
@@ -25,7 +27,7 @@ class UsersQueryTest : AbstractOrganizationTest() {
 
         assertThat(page.pageable.cursor).isNull()
         assertThat(page.data.size).isGreaterThanOrEqualTo(2)
-        assertThat(page.data.map { it.id }).containsAtLeast(developer1, developer2)
+        assertThat(page.data).extracting(User::id).containsAtLeast(developer1, developer2)
     }
 
     @Test
@@ -39,7 +41,7 @@ class UsersQueryTest : AbstractOrganizationTest() {
 
         assertThat(page.pageable.cursor).isNull()
         assertThat(page.data.size).isGreaterThanOrEqualTo(2)
-        assertThat(page.data.map { it.id }).containsAtLeast(developer1, developer2)
+        assertThat(page.data).extracting(User::id).containsAtLeast(developer1, developer2)
     }
 
     @Test
@@ -59,7 +61,7 @@ class UsersQueryTest : AbstractOrganizationTest() {
     fun `should load users by id`() = test(organizationManager) {
         val users = userQueries.loadUserByIds(listOf(developer1, developer2)).values
         assertThat(users.size).isGreaterThanOrEqualTo(2)
-        assertThat(users.map { it.id }).containsAtLeast(developer1, developer2)
+        assertThat(users).extracting(User::id).containsAtLeast(developer1, developer2)
     }
 
     @Test

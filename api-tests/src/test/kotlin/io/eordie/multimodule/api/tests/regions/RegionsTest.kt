@@ -2,6 +2,7 @@ package io.eordie.multimodule.api.tests.regions
 
 import assertk.assertThat
 import assertk.assertions.containsExactly
+import assertk.assertions.extracting
 import assertk.assertions.hasSize
 import assertk.assertions.isEmpty
 import assertk.assertions.isEqualTo
@@ -10,6 +11,7 @@ import io.eordie.multimodule.api.tests.AbstractApplicationTest
 import io.eordie.multimodule.contracts.basic.filters.IntNumericFilter
 import io.eordie.multimodule.contracts.basic.filters.LongNumericFilter
 import io.eordie.multimodule.contracts.basic.filters.StringLiteralFilter
+import io.eordie.multimodule.contracts.regions.models.Region
 import io.eordie.multimodule.contracts.regions.models.RegionsFilter
 import io.eordie.multimodule.contracts.regions.service.RegionQueries
 import jakarta.inject.Inject
@@ -36,7 +38,7 @@ class RegionsTest : AbstractApplicationTest() {
     fun `should get region path by id`() = test {
         val regions = regions.regionPath(2804758)
         assertThat(regions).hasSize(2)
-        assertThat(regions.map { it.id }).containsExactly(9407L, 2804758L)
+        assertThat(regions).extracting(Region::id).containsExactly(9407L, 2804758L)
     }
 
     @Test
