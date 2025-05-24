@@ -1,13 +1,16 @@
 package io.eordie.multimodule.api.tests.organizations
 
+import assertk.all
 import assertk.assertThat
 import assertk.assertions.containsExactlyInAnyOrder
+import assertk.assertions.each
 import assertk.assertions.extracting
 import assertk.assertions.hasSize
 import assertk.assertions.isEmpty
 import assertk.assertions.isEqualTo
 import assertk.assertions.isIn
 import assertk.assertions.isNull
+import assertk.assertions.prop
 import io.eordie.multimodule.contracts.organization.models.structure.OrganizationDepartment
 import io.eordie.multimodule.contracts.organization.models.structure.OrganizationEmployee
 import io.eordie.multimodule.contracts.organization.models.structure.OrganizationPosition
@@ -35,7 +38,7 @@ class OrganizationEmployeesTest : AbstractOrganizationTest() {
 
         val employees = structureQueries.employees(developersOrg).data
         assertThat(employees).hasSize(1)
-        val employee = employees[0]
+        val employee = employees.first()
         assertThat(employee.organizationId).isEqualTo(developersOrg.id)
         assertThat(employee.departmentId).isEqualTo(department.id)
         assertThat(employee.positionId).isEqualTo(position.id)
@@ -50,7 +53,7 @@ class OrganizationEmployeesTest : AbstractOrganizationTest() {
 
         val employees = structureQueries.employees(developersOrg).data
         assertThat(employees).hasSize(1)
-        val employee = employees[0]
+        val employee = employees.first()
         assertThat(employee.organizationId).isEqualTo(developersOrg.id)
         assertThat(employee.departmentId).isNull()
         assertThat(employee.positionId).isEqualTo(position.id)
@@ -65,17 +68,15 @@ class OrganizationEmployeesTest : AbstractOrganizationTest() {
         newEmployee(developersOrg, developer1, department, position)
 
         val employees = structureQueries.employees(developersOrg).data
-        assertThat(employees).hasSize(2)
-
-        assertThat(employees[0].organizationId).isEqualTo(developersOrg.id)
-        assertThat(employees[0].departmentId).isIn(null, department.id)
-        assertThat(employees[0].positionId).isEqualTo(position.id)
-        assertThat(employees[0].userId).isEqualTo(developer1)
-
-        assertThat(employees[1].organizationId).isEqualTo(developersOrg.id)
-        assertThat(employees[0].departmentId).isIn(null, department.id)
-        assertThat(employees[1].positionId).isEqualTo(position.id)
-        assertThat(employees[1].userId).isEqualTo(developer1)
+        assertThat(employees).all {
+            hasSize(2)
+            each {
+                it.prop(OrganizationEmployee::organizationId).isEqualTo(developersOrg.id)
+                it.prop(OrganizationEmployee::departmentId).isIn(null, department.id)
+                it.prop(OrganizationEmployee::positionId).isEqualTo(position.id)
+                it.prop(OrganizationEmployee::userId).isEqualTo(developer1)
+            }
+        }
     }
 
     @Test
@@ -99,11 +100,14 @@ class OrganizationEmployeesTest : AbstractOrganizationTest() {
         val employee2 = newEmployee(developersOrg, developer2, department, position)
 
         var employees = structureQueries.employees(developersOrg).data
-        assertThat(employees).hasSize(2)
-        assertThat(employees).extracting(OrganizationEmployee::userId).containsExactlyInAnyOrder(
-            employee1.userId,
-            employee2.userId
-        )
+        assertThat(employees).all {
+            hasSize(2)
+            extracting(OrganizationEmployee::userId)
+                .containsExactlyInAnyOrder(
+                    employee1.userId,
+                    employee2.userId
+                )
+        }
 
         structureMutations.deleteDepartment(department.id)
 
@@ -117,11 +121,14 @@ class OrganizationEmployeesTest : AbstractOrganizationTest() {
         val employee2 = newEmployee(developersOrg, developer2, department, structure.getValue("Junior Developer"))
 
         var employees = structureQueries.employees(developersOrg).data
-        assertThat(employees).hasSize(2)
-        assertThat(employees).extracting(OrganizationEmployee::userId).containsExactlyInAnyOrder(
-            employee1.userId,
-            employee2.userId
-        )
+        assertThat(employees).all {
+            hasSize(2)
+            extracting(OrganizationEmployee::userId)
+                .containsExactlyInAnyOrder(
+                    employee1.userId,
+                    employee2.userId
+                )
+        }
 
         structureMutations.deletePosition(employee1.positionId)
 
