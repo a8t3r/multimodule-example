@@ -1,12 +1,11 @@
 package io.eordie.multimodule.api.tests
 
-import com.fasterxml.jackson.databind.SerializationFeature
-import com.fasterxml.jackson.module.kotlin.jsonMapper
 import io.eordie.multimodule.common.security.context.getAuthenticationContext
-import io.ktor.client.*
-import io.ktor.client.engine.cio.*
-import io.ktor.client.plugins.contentnegotiation.*
-import io.ktor.serialization.jackson.*
+import io.eordie.multimodule.contracts.utils.JsonModule
+import io.ktor.client.HttpClient
+import io.ktor.client.engine.cio.CIO
+import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.serialization.kotlinx.json.json
 import io.micronaut.http.HttpHeaders
 import io.micronaut.runtime.server.EmbeddedServer
 import jakarta.inject.Singleton
@@ -20,6 +19,8 @@ import kobby.kotlin.entity.QueryProjection
 import kobby.kotlin.entity.Subscription
 import kobby.kotlin.entity.SubscriptionProjection
 import kobby.kotlin.schemaContextOf
+import kobby.kotlin.schemaJson
+import kotlinx.serialization.encodeToString
 import kotlin.coroutines.coroutineContext
 
 @Singleton
@@ -27,16 +28,13 @@ class SchemaContextProvider(private val server: EmbeddedServer) : SchemaContext 
 
     private val client = HttpClient(CIO) {
         install(ContentNegotiation) {
-            jackson {
-                disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
-            }
+            json(schemaJson)
         }
     }
 
-    private val mapper = jsonMapper { }
     private val headers: suspend () -> Map<String, String> = {
         val auth = coroutineContext.getAuthenticationContext()
-        mapOf(HttpHeaders.X_AUTH_TOKEN to mapper.writeValueAsString(auth))
+        mapOf(HttpHeaders.X_AUTH_TOKEN to JsonModule.getInstance().encodeToString(auth))
     }
 
     private val context by lazy {

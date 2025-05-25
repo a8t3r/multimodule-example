@@ -3,6 +3,7 @@ import io.github.ermadmi78.kobby.task.KobbyKotlin
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
+    `kotlinx-serialization`
     `kubernetes-conventions`
     io.micronaut.`test-resources`
     alias(libs.plugins.kobby)
@@ -12,7 +13,7 @@ kobby {
     kotlin {
         dto {
             serialization {
-                enabled = false
+                enabled = true
             }
         }
         adapter {
@@ -23,9 +24,11 @@ kobby {
             }
         }
         scalars = mapOf(
-            "UUID" to typeOf("java.util", "UUID"),
+            "UUID" to typeOf("java.util", "UUID")
+                .serializer("io.eordie.multimodule.contracts.utils.JsonModule", "UUIDSerializer"),
             "Date" to typeOf("java.time", "LocalDate"),
-            "DateTime" to typeOf("java.time", "OffsetDateTime"),
+            "DateTime" to typeOf("java.time", "OffsetDateTime")
+                .serializer("io.eordie.multimodule.contracts.utils.JsonModule", "OffsetDateTimeSerializer"),
             "TPoint" to typeOf("io.eordie.multimodule.contracts.basic.geometry", "TPoint"),
             "TPolygon" to typeOf("io.eordie.multimodule.contracts.basic.geometry", "TPolygon"),
             "TMultiPolygon" to typeOf("io.eordie.multimodule.contracts.basic.geometry", "TMultiPolygon")
@@ -43,8 +46,9 @@ dependencies {
     implementation(projects.organizationManagement)
 
     implementation(ktor.ktorClientCio)
-    implementation(ktor.ktorSerializationJackson)
-    implementation(ktor.ktorClientContentNegotiation)
+    implementation(ktx.kotlinxSerializationJson)
+    implementation(ktor.ktorSerializationKotlinxJson)
+    implementation(ktor.ktorClientContentNegotiationJvm)
 
     testImplementation(mn.graphql.java)
     testImplementation(mn.micronaut.data.tx)
