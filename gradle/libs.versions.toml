@@ -72,8 +72,6 @@ detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
 dokka = { id = "org.jetbrains.dokka", version.ref = "dokka" }
 kobby = { id = "io.github.ermadmi78.kobby", version.ref = "kobby" }
 kotlin = { id = "org.jetbrains.kotlin", version.ref = "kotlin" }
-kotlinAllOpen = { id = "org.jetbrains.kotlin.plugin.allopen", version.ref = "kotlin" }
-kotlinNoArg = { id = "org.jetbrains.kotlin.plugin.noarg", version.ref = "kotlin" }
 kotlinSerialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlinxSerialization" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 micronaut = { id = "io.micronaut.application", version.ref = "micronautPlugin" }
