@@ -16,6 +16,7 @@ kobby {
             }
         }
         adapter {
+            extendedApi = true
             ktor {
                 simpleEnabled = true
                 compositeEnabled = false

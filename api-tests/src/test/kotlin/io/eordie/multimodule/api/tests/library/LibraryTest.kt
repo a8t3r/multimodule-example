@@ -1,5 +1,6 @@
 package io.eordie.multimodule.api.tests.library
 
+import assertk.all
 import assertk.assertThat
 import assertk.assertions.containsAtLeast
 import assertk.assertions.containsExactly
@@ -12,6 +13,7 @@ import assertk.assertions.isNotEqualTo
 import assertk.assertions.isNotNull
 import assertk.assertions.isNull
 import assertk.assertions.isTrue
+import assertk.assertions.key
 import io.eordie.multimodule.api.tests.AbstractApplicationTest
 import io.eordie.multimodule.contracts.basic.filters.OffsetDateTimeLiteralFilter
 import io.eordie.multimodule.contracts.basic.filters.StringLiteralFilter
@@ -33,6 +35,7 @@ import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import java.time.OffsetDateTime
+import kotlin.test.assertNotNull
 
 @Sql("truncate-library.sql", phase = Sql.Phase.BEFORE_ALL)
 class LibraryTest : AbstractApplicationTest() {
@@ -262,8 +265,16 @@ class LibraryTest : AbstractApplicationTest() {
             }
         }
 
-        assertThat(result.books.data).isNotNull().hasSize(2)
-        result.books.data?.forEach { book ->
+        assertThat(result.__errors()).isNotNull().isEmpty()
+        assertThat(result.__extensions()).isNotNull().all {
+            hasSize(1)
+            key("openTelemetry.traceId").isNotNull()
+        }
+
+        val books = result.books.data
+        assertThat(books).isNotNull().hasSize(2)
+        assertNotNull(books)
+        books.forEach { book ->
             assertThat(book?.authors).isNotNull().hasSize(1)
         }
     }
