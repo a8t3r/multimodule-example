@@ -10,6 +10,11 @@ plugins {
 
 kobby {
     kotlin {
+        dto {
+            serialization {
+                enabled = false
+            }
+        }
         adapter {
             ktor {
                 simpleEnabled = true
