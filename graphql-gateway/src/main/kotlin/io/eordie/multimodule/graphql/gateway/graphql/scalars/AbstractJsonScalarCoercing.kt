@@ -8,6 +8,7 @@ import graphql.schema.CoercingParseLiteralException
 import graphql.schema.CoercingSerializeException
 import io.eordie.multimodule.contracts.utils.JsonModule
 import kotlinx.serialization.KSerializer
+import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.serializer
 import java.util.*
 import kotlin.reflect.KClass
@@ -27,6 +28,11 @@ abstract class AbstractJsonScalarCoercing<In : Any, Out : Any>(
     abstract fun fromInput(input: In): Out
     abstract fun toInput(output: Out): In
 
+    override fun parseValue(input: Any, graphQLContext: GraphQLContext, locale: Locale): In? {
+        val element = GraphqlValueConverter.toJsonElement(input)
+        return parseJsonElement(element)
+    }
+
     override fun serialize(input: Any, graphQLContext: GraphQLContext, locale: Locale): Out? {
         if (!inputType.isInstance(input)) {
             throw CoercingSerializeException("Invalid input class ${input.javaClass.name}")
@@ -45,8 +51,11 @@ abstract class AbstractJsonScalarCoercing<In : Any, Out : Any>(
         graphQLContext: GraphQLContext,
         locale: Locale
     ): In? {
-        val jsTree = GraphqlValueConverter.convert(input)
+        val tree = GraphqlValueConverter.convert(input)
+        return parseJsonElement(tree)
+    }
 
+    private fun parseJsonElement(jsTree: JsonElement): In {
         try {
             val out = json.decodeFromJsonElement(outSerializer, jsTree)
             return toInput(out)

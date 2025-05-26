@@ -16,6 +16,19 @@ import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.JsonPrimitive
 
 object GraphqlValueConverter {
+
+    fun toJsonElement(value: Any?): JsonElement = when (value) {
+        null -> JsonNull
+        is JsonElement -> value
+        is Number -> JsonPrimitive(value)
+        is Boolean -> JsonPrimitive(value)
+        is String -> JsonPrimitive(value)
+        is Array<*> -> JsonArray(value.map { toJsonElement(it) })
+        is List<*> -> JsonArray(value.map { toJsonElement(it) })
+        is Map<*, *> -> JsonObject(value.map { it.key.toString() to toJsonElement(it.value) }.toMap())
+        else -> error("too complex type")
+    }
+
     fun convert(input: Value<*>): JsonElement {
         return when (input) {
             is NullValue -> JsonNull

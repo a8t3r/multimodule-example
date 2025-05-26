@@ -29,9 +29,9 @@ kobby {
             "Date" to typeOf("java.time", "LocalDate"),
             "DateTime" to typeOf("java.time", "OffsetDateTime")
                 .serializer("io.eordie.multimodule.contracts.utils.JsonModule", "OffsetDateTimeSerializer"),
-            "TPoint" to typeOf("io.eordie.multimodule.contracts.basic.geometry", "TPoint"),
-            "TPolygon" to typeOf("io.eordie.multimodule.contracts.basic.geometry", "TPolygon"),
-            "TMultiPolygon" to typeOf("io.eordie.multimodule.contracts.basic.geometry", "TMultiPolygon")
+            "TPoint" to typeOf("io.eordie.multimodule.contracts.basic.geometry", "GeoJsonPoint"),
+            "TPolygon" to typeOf("io.eordie.multimodule.contracts.basic.geometry", "GeoJsonPolygon"),
+            "TMultiPolygon" to typeOf("io.eordie.multimodule.contracts.basic.geometry", "GeoJsonMultiPolygon")
         )
     }
 }
