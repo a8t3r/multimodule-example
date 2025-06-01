@@ -11,6 +11,11 @@ plugins {
 
 kobby {
     kotlin {
+        entity {
+            projection {
+                enableNotationWithoutParentheses = true
+            }
+        }
         dto {
             serialization {
                 enabled = true

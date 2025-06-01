@@ -1,22 +1,29 @@
 package io.eordie.multimodule.api.tests.regions
 
+import assertk.all
 import assertk.assertThat
 import assertk.assertions.containsExactly
+import assertk.assertions.each
 import assertk.assertions.extracting
 import assertk.assertions.hasSize
 import assertk.assertions.isEmpty
 import assertk.assertions.isEqualTo
+import assertk.assertions.isIn
+import assertk.assertions.isNotNull
 import assertk.assertions.isNull
+import assertk.assertions.prop
 import io.eordie.multimodule.api.tests.AbstractApplicationTest
 import io.eordie.multimodule.contracts.basic.filters.IntNumericFilter
 import io.eordie.multimodule.contracts.basic.filters.LongNumericFilter
 import io.eordie.multimodule.contracts.basic.filters.StringLiteralFilter
+import io.eordie.multimodule.contracts.basic.geometry.GeoJsonPoint
 import io.eordie.multimodule.contracts.regions.models.Region
 import io.eordie.multimodule.contracts.regions.models.RegionsFilter
 import io.eordie.multimodule.contracts.regions.service.RegionQueries
 import jakarta.inject.Inject
 import kotlinx.coroutines.future.await
 import org.junit.jupiter.api.Test
+import kobby.kotlin.entity.Region as GraphqlRegion
 
 class RegionsTest : AbstractApplicationTest() {
 
@@ -81,5 +88,26 @@ class RegionsTest : AbstractApplicationTest() {
         assertThat(region.depth).isEqualTo(0)
         assertThat(region.parentId).isNull()
         assertThat(region.country).isEqualTo("AD")
+    }
+
+    @Test
+    fun `should find region by point`() = test {
+        val result = schema.query {
+            findRegionsByPoint(point = GeoJsonPoint(1.576090241356109, 42.54523447931922)) {
+                country = "AD"
+                id
+                country
+                centroid
+            }
+        }
+
+        assertThat(result.findRegionsByPoint).isNotNull().all {
+            hasSize(2)
+            each {
+                it.prop(GraphqlRegion::id).isIn(9407L, 2804755L)
+                it.prop(GraphqlRegion::centroid).isNotNull()
+                it.prop(GraphqlRegion::country).isEqualTo("AD")
+            }
+        }
     }
 }

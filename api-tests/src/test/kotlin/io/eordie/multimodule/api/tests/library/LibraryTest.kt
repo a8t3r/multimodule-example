@@ -255,11 +255,11 @@ class LibraryTest : AbstractApplicationTest() {
         val result = schema.query {
             books {
                 data {
-                    id()
-                    name()
+                    id
+                    name
                     authors {
-                        id()
-                        fullName()
+                        id
+                        fullName
                     }
                 }
             }

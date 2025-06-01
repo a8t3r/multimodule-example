@@ -1,4 +1,4 @@
-"""Indicates an Input Object is a OneOf Input Object."""
+directive @selection on FIELD_DEFINITION
 directive @oneOf on INPUT_OBJECT
 
 type AccessionRequest implements AuditLog {
@@ -563,7 +563,7 @@ type Query {
   regions(filter: RegionsFilterInput, pageable: PageableInput): RegionPage!
   invitation(invitationId: UUID!): Invitation
   invitations(filter: InvitationFilterInput, pageable: PageableInput): InvitationPage!
-  findRegionsByPoint(point: TPoint!, country: String): [Region!]!
+  findRegionsByPoint(point: TPoint!, country: String): [Region!]! @selection
 }
 
 type Region {

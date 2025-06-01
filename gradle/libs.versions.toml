@@ -18,7 +18,7 @@ jdk = "21"
 jimmer = "0.9.69"
 junit = "5.13.0-RC1"
 opentelemetry = "1.48.0"
-kobby = "5.1.0-beta.01"
+kobby = "5.2.0"
 # @pin required kotlin 2.0
 kotlin = "1.9.25"
 # @pin required kotlin 2.0
