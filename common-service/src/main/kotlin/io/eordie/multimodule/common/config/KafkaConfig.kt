@@ -2,6 +2,7 @@ package io.eordie.multimodule.common.config
 
 import io.eordie.multimodule.contracts.basic.event.MutationEvent
 import io.eordie.multimodule.contracts.utils.JsonModule
+import io.eordie.multimodule.contracts.utils.safeCast
 import io.micronaut.configuration.kafka.serde.CompositeSerdeRegistry
 import io.micronaut.configuration.kafka.serde.SerdeRegistry
 import io.micronaut.context.annotation.Bean
@@ -43,7 +44,6 @@ class KafkaConfig {
     }
 
     @Bean
-    @Suppress("UNCHECKED_CAST")
     @Replaces(CompositeSerdeRegistry::class)
     fun serdeSerdeRegistry(): SerdeRegistry {
         return object : SerdeRegistry {
@@ -52,18 +52,20 @@ class KafkaConfig {
                     super.pickDeserializer(argument)
                 } else {
                     val generic = argument.typeVariables.getValue("T").type
-                    val serializer = proto.serializersModule.serializer(
-                        MutationEvent::class.createType(listOf(KTypeProjection.invariant(generic.kotlin.createType())))
-                    ) as KSerializer<T>
+                    val serializer: KSerializer<T> = safeCast(
+                        proto.serializersModule.serializer(
+                            MutationEvent::class.createType(listOf(KTypeProjection.invariant(generic.kotlin.createType())))
+                        )
+                    )
                     ProtoSerde(serializer).deserializer()
                 }
             }
 
             override fun <T : Any?> getSerde(type: Class<T>): Serde<T> {
                 return if (type.isAssignableFrom(String::class.java)) {
-                    StringSerde() as Serde<T>
+                    safeCast(StringSerde())
                 } else {
-                    val serializer = proto.serializersModule.serializer(type) as KSerializer<T>
+                    val serializer: KSerializer<T> = safeCast(proto.serializersModule.serializer(type))
                     ProtoSerde(serializer)
                 }
             }

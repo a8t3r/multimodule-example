@@ -2,6 +2,7 @@
 
 package io.eordie.multimodule.common.repository.ext
 
+import io.eordie.multimodule.contracts.utils.safeCast
 import org.babyfish.jimmer.sql.kt.ast.expression.KExpression
 import org.babyfish.jimmer.sql.kt.ast.expression.KNonNullExpression
 import org.babyfish.jimmer.sql.kt.ast.expression.and
@@ -31,13 +32,12 @@ inline fun <reified V : Any> KExpression<*>.cast(): KNonNullExpression<V> {
     }
 }
 
-@Suppress("UNCHECKED_CAST")
 fun <T : Any> KExpression<List<T>>.intersection(values: Array<T>): KNonNullExpression<List<T>> {
     val expression = this
-    return sql(List::class, "array_intersect(%e, array[%v])") {
+    return safeCast(sql(List::class, "array_intersect(%e, array[%v])") {
         value(values)
         expression(expression)
-    } as KNonNullExpression<List<T>>
+    })
 }
 
 fun <T : Any> KExpression<List<T>>.overlap(values: Array<T>): KNonNullExpression<Boolean> {
@@ -48,12 +48,13 @@ fun <T : Any> KExpression<List<T>>.overlap(values: Array<T>): KNonNullExpression
     }
 }
 
-val <T : Any> KExpression<List<T>>.arraySize: KNonNullExpression<Int> get() = run {
-    val expression = this
-    return sql(Int::class, "array_length(%e, 1)") {
-        expression(expression)
+val <T : Any> KExpression<List<T>>.arraySize: KNonNullExpression<Int>
+    get() = run {
+        val expression = this
+        return sql(Int::class, "array_length(%e, 1)") {
+            expression(expression)
+        }
     }
-}
 
 fun <T : Any> KExpression<List<T>>.arrayLike(pattern: String): KNonNullExpression<Boolean> {
     val expression = this

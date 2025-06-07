@@ -13,6 +13,8 @@ import io.eordie.multimodule.contracts.basic.filters.ComparableFilter
 import io.eordie.multimodule.contracts.basic.filters.IntNumericFilter
 import io.eordie.multimodule.contracts.basic.filters.LiteralFilter
 import io.eordie.multimodule.contracts.basic.filters.StringLiteralFilter
+import io.eordie.multimodule.contracts.utils.safeCast
+import io.eordie.multimodule.contracts.utils.uncheckedCast
 import org.babyfish.jimmer.sql.kt.ast.expression.KExpression
 import org.babyfish.jimmer.sql.kt.ast.expression.KNonNullExpression
 
@@ -37,27 +39,26 @@ fun <F : LiteralFilter<T>, T : Any> KExpression<T>.accept(filter: F?): KNonNullE
     }
 }
 
-@Suppress("UNCHECKED_CAST")
 private fun <F : LiteralFilter<T>, T : Any> dispatchSingle(filter: F): SpecificationBuilder<F, T> {
-    return when (filter) {
-        is StringLiteralFilter -> StringLiteralSpecificationBuilder()
-        is ComparableFilter<*> -> ComparableLiteralSpecificationBuilder()
-        else -> EmbeddedSpecificationBuilder()
-    } as SpecificationBuilder<F, T>
+    return safeCast(
+        when (filter) {
+            is StringLiteralFilter -> StringLiteralSpecificationBuilder()
+            is ComparableFilter<*> -> ComparableLiteralSpecificationBuilder()
+            else -> EmbeddedSpecificationBuilder()
+        }
+    )
 }
 
-@Suppress("UNCHECKED_CAST")
 private fun <F : LiteralFilter<T>, T : Any> dispatchMany(filter: F): ListEmbeddedSpecificationBuilder<F, T> {
     return when (filter) {
-        is StringLiteralFilter -> StringListSpecificationBuilder() as ListEmbeddedSpecificationBuilder<F, T>
+        is StringLiteralFilter -> safeCast(StringListSpecificationBuilder())
         is ComparableFilter<*> -> {
-            @Suppress("BOUNDS_NOT_ALLOWED_IF_BOUNDED_BY_TYPE_PARAMETER")
-            fun <R> typeArgument(): Class<R> where R : T, R : Comparable<T> {
-                return GenericTypes.getTypeArgument(filter, ComparableFilter::class).java as Class<R>
+            fun <R : Comparable<R>> typeArgument(filter: ComparableFilter<R>): Class<R> {
+                return GenericTypes.getTypeArgument(filter, ComparableFilter::class).java.uncheckedCast()
             }
-
-            ComparableListSpecificationBuilder(typeArgument()) as ListEmbeddedSpecificationBuilder<F, T>
+            safeCast(ComparableListSpecificationBuilder(typeArgument(filter)))
         }
+
         else -> error("unknown filter type: ${filter::class.simpleName}")
     }
 }

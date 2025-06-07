@@ -14,7 +14,6 @@ import io.eordie.multimodule.contracts.identitymanagement.models.LocaleBinding
 import io.eordie.multimodule.contracts.library.models.BooksFilter
 import io.eordie.multimodule.contracts.utils.Roles
 import io.eordie.multimodule.contracts.utils.UuidStr
-import io.ktor.utils.io.core.*
 import io.micronaut.core.annotation.Introspected
 import io.rsocket.kotlin.payload.buildPayload
 import io.rsocket.kotlin.payload.data
@@ -48,7 +47,7 @@ class ProtobufPayloadBuilderTest {
     fun `should serde data class`() {
         val expected = BookDemo(UUID.randomUUID(), "foobar", listOf(UUID.randomUUID()))
         val payload = proto.encodeToPayload(expected, BookDemo::class.createType())
-        val actual = proto.decodeFromPayload(payload, BookDemo::class)
+        val actual = proto.decodeFromPayload(payload, BookDemo::class.createType())
         assertThat(expected).isEqualTo(actual)
     }
 
@@ -123,7 +122,7 @@ class ProtobufPayloadBuilderTest {
 
         val actual = proto.decodeFromPayload(
             proto.encodeToPayload(expected, AuthenticationDetails::class.createType()),
-            AuthenticationDetails::class
+            AuthenticationDetails::class.createType()
         )
         assertThat(actual).isEqualTo(expected)
     }

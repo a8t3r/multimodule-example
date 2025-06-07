@@ -147,7 +147,7 @@ open class RemoteRoute(
             .map { it.mimeType to it.content }
             .firstNotNullOfOrNull { (mimeType, content) ->
                 when (mimeType) {
-                    ExceptionalMetadata.mimeType -> throw content.read(ExceptionalMetadata).ex
+                    ExceptionalMetadata.mimeType -> throw content.read(ExceptionalMetadata).ex.unwrapStackTrace()
                     AclMetadata.mimeType -> AclContextElement().apply { initialize(content.read(AclMetadata).acl) }
                     else -> null
                 }

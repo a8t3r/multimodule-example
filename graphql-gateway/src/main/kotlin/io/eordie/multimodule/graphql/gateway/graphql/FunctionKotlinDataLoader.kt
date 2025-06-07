@@ -4,6 +4,7 @@ import com.expediagroup.graphql.dataloader.KotlinDataLoader
 import graphql.GraphQLContext
 import io.eordie.multimodule.common.rsocket.client.getServiceInterface
 import io.eordie.multimodule.contracts.Query
+import io.eordie.multimodule.contracts.utils.uncheckedCast
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.future.future
 import org.dataloader.DataLoader
@@ -77,7 +78,7 @@ class FunctionKotlinDataLoader(
                     }
                 }
         } else {
-            // if batching unsupported then perform naive invocations
+            // if batching unsupported, then perform naive invocations
             preparedArgs.forEach { (argumentValues, indexedValue) ->
                 val key = indexedValue.value
                 result[indexedValue.index] = callSuspend(key, argumentValues)
@@ -87,8 +88,7 @@ class FunctionKotlinDataLoader(
         return result
     }
 
-    @Suppress("UNCHECKED_CAST")
     private suspend fun <T> callSuspend(id: Any?, argumentValues: List<Any?>): T {
-        return function.callSuspend(instance, id, *argumentValues.toTypedArray()) as T
+        return function.callSuspend(instance, id, *argumentValues.toTypedArray()).uncheckedCast()
     }
 }

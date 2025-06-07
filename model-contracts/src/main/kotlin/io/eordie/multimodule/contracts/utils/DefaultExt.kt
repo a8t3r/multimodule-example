@@ -8,11 +8,10 @@ inline fun <reified T> safeCast(input: Any?): T = requireNotNull(input as? T)
 @Suppress("UNCHECKED_CAST")
 fun <T> Any?.uncheckedCast(): T = requireNotNull(this as? T)
 
-@Suppress("UNCHECKED_CAST")
 fun <T> getIntrospection(targetClass: KClass<*>): BeanIntrospection<T> {
     return beanIntrospections.getOrPut(targetClass) {
         BeanIntrospection.getIntrospection(targetClass.java)
-    } as BeanIntrospection<T>
+    }.uncheckedCast()
 }
 
 val beanIntrospections = mutableMapOf<KClass<*>, BeanIntrospection<*>>()

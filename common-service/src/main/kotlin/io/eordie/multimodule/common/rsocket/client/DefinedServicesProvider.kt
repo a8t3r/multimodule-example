@@ -3,6 +3,7 @@ package io.eordie.multimodule.common.rsocket.client
 import io.eordie.multimodule.common.rsocket.client.route.RouteFactory
 import io.eordie.multimodule.contracts.Mutation
 import io.eordie.multimodule.contracts.Query
+import io.eordie.multimodule.contracts.utils.safeCast
 import io.micronaut.context.ApplicationContextProvider
 import io.micronaut.context.RuntimeBeanDefinition
 import io.micronaut.context.annotation.Secondary
@@ -38,8 +39,7 @@ class DefinedServicesProvider {
         return sequence {
             val reader = BufferedReader(InputStreamReader(stream))
             reader.lines().asSequence().forEach { line ->
-                @Suppress("UNCHECKED_CAST")
-                val serviceInterface: Class<Any> = Class.forName(line) as Class<Any>
+                val serviceInterface: Class<Any> = safeCast(Class.forName(line))
 
                 yield(
                     // apply the lowest priority during candidate bean picking

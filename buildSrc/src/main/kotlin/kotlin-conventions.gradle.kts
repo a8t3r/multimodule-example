@@ -39,7 +39,7 @@ kotlin {
         @Suppress("SpellCheckingInspection")
         freeCompilerArgs = listOf(
             "-Xjsr305=strict",
-            "-Xcontext-receivers"
+            "-Xcontext-parameters"
         )
         allWarningsAsErrors = false
         jvmTarget.set(JvmTarget.valueOf("JVM_$jdkVersion"))

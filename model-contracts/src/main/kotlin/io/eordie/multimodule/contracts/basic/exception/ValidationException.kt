@@ -17,12 +17,6 @@ class ValidationException(
 
     override val message get() = "validation errors occurred: $errors"
 
-    override fun createCopy(): BaseRuntimeException {
-        val exception = ValidationException(errors)
-        exception.initCause(this)
-        return exception
-    }
-
     override fun extensions(): Map<String, Any> = mapOf(
         "constraints" to errors.associateBy({ it.dataPath }, { it.message })
     )

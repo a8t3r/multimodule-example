@@ -3,6 +3,7 @@ package io.eordie.multimodule.common.repository.interceptor
 import io.eordie.multimodule.common.filter.FiltersRegistry
 import io.eordie.multimodule.common.security.context.Microservices
 import io.eordie.multimodule.common.utils.OpenTelemetryExecutorLog
+import io.eordie.multimodule.contracts.utils.safeCast
 import io.micronaut.aop.MethodInvocationContext
 import io.micronaut.context.ApplicationContext
 import io.micronaut.core.annotation.Internal
@@ -58,11 +59,15 @@ class FindOneByPredicateInterceptor(
         return sqlResult.copy(_1 = finalQuery)
     }
 
-    @Suppress("UNCHECKED_CAST")
     private fun <X : Any, V> KConfigurableRootQuery<X, V>.asNative(): ConfigurableRootQueryImpl<Table<X>, V> {
         val query = this
-        val javaQuery = ReflectionUtils.getFieldValue(query::class.java, "_javaQuery", query).get()
-        return javaQuery as ConfigurableRootQueryImpl<Table<X>, V>
+        return safeCast(
+            ReflectionUtils.getFieldValue(
+                query::class.java,
+                "_javaQuery",
+                query
+            ).get()
+        )
     }
 
     fun intercept(sql: KSqlClient, rootEntity: KClass<Any>, context: MethodInvocationContext<Any, Any>): Any? {

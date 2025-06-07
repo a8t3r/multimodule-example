@@ -19,7 +19,7 @@ interface ProjectionSupportTrait<T : Convertable<C>, C : Any, ID, F : Any> : Fil
     val dependencies: Set<KProperty1<T, *>> get() = emptySet()
 
     suspend fun queryById(id: ID): C? {
-        return findById(id)?.convert()
+        return findById(id, null)?.convert()
     }
 
     suspend fun query(filter: F, pageable: Pageable?): Page<C> {

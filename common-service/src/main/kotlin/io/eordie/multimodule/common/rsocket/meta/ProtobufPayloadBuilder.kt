@@ -1,7 +1,6 @@
 package io.eordie.multimodule.common.rsocket.meta
 
 import io.eordie.multimodule.contracts.utils.ProtobufModule
-import io.eordie.multimodule.contracts.utils.uncheckedCast
 import io.ktor.utils.io.core.readBytes
 import io.ktor.utils.io.core.writeFully
 import io.rsocket.kotlin.payload.Payload
@@ -13,9 +12,7 @@ import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.serializer
 import kotlin.coroutines.CoroutineContext
-import kotlin.reflect.KClass
 import kotlin.reflect.KType
-import kotlin.reflect.full.createType
 
 @OptIn(ExperimentalSerializationApi::class)
 class ProtobufPayloadBuilder {
@@ -25,9 +22,6 @@ class ProtobufPayloadBuilder {
     private fun getSerializer(type: KType): KSerializer<Any?> {
         return proto.serializersModule.serializer(type)
     }
-
-    fun <T : Any> decodeFromPayload(payload: Payload, targetType: KClass<T>): T? =
-        decodeFromPayload(payload, targetType.createType()).uncheckedCast()
 
     fun decodeFromPayload(payload: Payload, targetType: KType): Any? {
         val size = payload.data.readInt()

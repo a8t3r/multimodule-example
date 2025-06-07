@@ -10,6 +10,7 @@ import io.eordie.multimodule.common.rsocket.client.rsocket.KubernetesRSocketFact
 import io.eordie.multimodule.common.rsocket.client.rsocket.LocalRSocketFactory
 import io.eordie.multimodule.common.rsocket.client.rsocket.RSocketLocalFactory
 import io.eordie.multimodule.contracts.basic.loader.EntityLoader
+import io.eordie.multimodule.contracts.utils.safeCast
 import io.micronaut.context.BeanLocator
 import io.micronaut.inject.qualifiers.Qualifiers.byName
 import jakarta.inject.Singleton
@@ -53,7 +54,6 @@ class GenericEntityLoader(
             .proxy()
     }
 
-    @Suppress("UNCHECKED_CAST")
     private suspend fun loadByFactory(
         factory: Optional<KBaseFactory<*, *, *, *, *>>,
         context: CoroutineContext,
@@ -64,7 +64,7 @@ class GenericEntityLoader(
             ids.isEmpty() -> emptyMap()
             factory.isPresent && !isSimulateRemoteRouting -> {
                 withContext(context) {
-                    factory.get().load(ids as List<Nothing>)
+                    factory.get().load(safeCast(ids))
                 }
             }
             else -> {

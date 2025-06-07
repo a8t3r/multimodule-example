@@ -40,8 +40,8 @@ class TypeConverters {
 
     @Bean
     @Primary
-    fun <T : Any> emptyOptionalToListTypeConverter(): TypeConverter<Optional<T>, List<T>> =
+    fun <T : Any> optionalToListTypeConverter(): TypeConverter<Optional<T>, List<T>> =
         TypeConverter<Optional<T>, List<T>> { obj, _, _ ->
-            if (obj.isEmpty) Optional.of(emptyList()) else Optional.empty()
+            obj.map { listOf(it) }.or { Optional.of(emptyList()) }
         }
 }

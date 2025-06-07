@@ -16,11 +16,9 @@ import io.eordie.multimodule.common.utils.extendWith
 import io.eordie.multimodule.contracts.annotations.Secured
 import io.eordie.multimodule.contracts.annotations.Valid
 import io.eordie.multimodule.contracts.basic.exception.BaseRuntimeException
-import io.eordie.multimodule.contracts.basic.exception.ExceptionDefinition
 import io.eordie.multimodule.contracts.basic.exception.UnexpectedInvocationException
 import io.eordie.multimodule.contracts.basic.exception.ValidationException
 import io.github.oshai.kotlinlogging.KotlinLogging
-import io.ktor.utils.io.core.*
 import io.micronaut.context.BeanLocator
 import io.opentelemetry.api.trace.Span
 import io.opentelemetry.api.trace.Tracer
@@ -143,10 +141,12 @@ class InvocationHelper(private val beanLocator: BeanLocator, private val tracer:
                 is BaseRuntimeException -> reason
                 is ConstraintViolationException -> ValidationException(reason.toErrors(context))
                 else -> {
-                    logger.error(ex) { "unexpected exception" }
-                    UnexpectedInvocationException(ExceptionDefinition(reason))
+                    UnexpectedInvocationException(
+                        reason.message,
+                        reason::class.simpleName
+                    )
                 }
-            }
+            }.wrapStackTrace(reason)
         } finally {
             span.end()
         }

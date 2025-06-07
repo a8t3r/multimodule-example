@@ -7,13 +7,14 @@ import graphql.schema.Coercing
 import graphql.schema.CoercingParseLiteralException
 import graphql.schema.CoercingSerializeException
 import io.eordie.multimodule.contracts.utils.JsonModule
+import io.eordie.multimodule.contracts.utils.safeCast
+import io.eordie.multimodule.contracts.utils.uncheckedCast
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.serializer
 import java.util.*
 import kotlin.reflect.KClass
 
-@Suppress("UNCHECKED_CAST")
 abstract class AbstractJsonScalarCoercing<In : Any, Out : Any>(
     private val inputType: KClass<In>,
     outputType: KClass<Out>
@@ -23,7 +24,7 @@ abstract class AbstractJsonScalarCoercing<In : Any, Out : Any>(
         private val json = JsonModule.getInstance()
     }
 
-    private val outSerializer = json.serializersModule.serializer(outputType.javaObjectType) as KSerializer<Out>
+    private val outSerializer: KSerializer<Out> = safeCast(json.serializersModule.serializer(outputType.javaObjectType))
 
     abstract fun fromInput(input: In): Out
     abstract fun toInput(output: Out): In
@@ -39,7 +40,7 @@ abstract class AbstractJsonScalarCoercing<In : Any, Out : Any>(
         }
 
         return try {
-            fromInput(input as In)
+            fromInput(input.uncheckedCast())
         } catch (e: Exception) {
             throw CoercingSerializeException(e.message, e)
         }
