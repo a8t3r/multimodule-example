@@ -153,7 +153,7 @@ open class KFactoryImpl<T : Any, S : T, ID : Comparable<ID>>(
     }
 
     context(resourceAcl: ResourceAcl)
-    fun KNonNullTable<*>.accept(filter: Any?): KNonNullExpression<Boolean>? {
+    infix fun KNonNullTable<*>.accept(filter: Any?): KNonNullExpression<Boolean>? {
         return filter?.let { registry.toPredicates(resourceAcl, it, this) }
     }
 

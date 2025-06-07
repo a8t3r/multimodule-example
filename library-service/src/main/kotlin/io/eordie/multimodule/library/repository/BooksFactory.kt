@@ -3,6 +3,7 @@ package io.eordie.multimodule.library.repository
 import io.eordie.multimodule.common.filter.accept
 import io.eordie.multimodule.common.filter.acceptMany
 import io.eordie.multimodule.common.repository.KBaseFactory
+import io.eordie.multimodule.common.repository.ext.arraySize
 import io.eordie.multimodule.common.repository.ext.negateUnless
 import io.eordie.multimodule.contracts.library.models.Book
 import io.eordie.multimodule.contracts.library.models.BooksFilter
@@ -29,9 +30,10 @@ class BooksFactory : KBaseFactory<BookModel, BookModelDraft, Book, UUID, BooksFi
 
     override fun ResourceAcl.toPredicates(filter: BooksFilter, table: KNonNullTable<BookModel>): List<KNonNullExpression<Boolean>> {
         return listOfNotNull(
-            table.id.accept(filter.id),
-            table.name.accept(filter.name),
-            table.authorIds.acceptMany(filter.authorIds, filter.authorIdsSize),
+            table.id accept filter.id,
+            table.name accept filter.name,
+            table.authorIds acceptMany filter.authorIds,
+            table.authorIds.arraySize accept filter.authorIdsSize,
             table.authors { accept(filter.authors) }.negateUnless(filter.hasAuthors)
         )
     }

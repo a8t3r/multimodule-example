@@ -15,6 +15,7 @@ import assertk.assertions.isNull
 import assertk.assertions.isTrue
 import assertk.assertions.key
 import io.eordie.multimodule.api.tests.AbstractApplicationTest
+import io.eordie.multimodule.contracts.basic.filters.IntNumericFilter
 import io.eordie.multimodule.contracts.basic.filters.OffsetDateTimeLiteralFilter
 import io.eordie.multimodule.contracts.basic.filters.StringLiteralFilter
 import io.eordie.multimodule.contracts.basic.filters.UUIDLiteralFilter
@@ -195,6 +196,7 @@ class LibraryTest : AbstractApplicationTest() {
                     endsWith = firstBook.name,
                     like = firstBook.name
                 ),
+                authorIdsSize = IntNumericFilter(gt = 0),
                 authors = AuthorsFilter(
                     id = UUIDLiteralFilter(
                         of = firstBook.authorIds + secondBook.authorIds
