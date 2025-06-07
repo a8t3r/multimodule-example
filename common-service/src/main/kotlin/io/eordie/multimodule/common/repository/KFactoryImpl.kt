@@ -22,6 +22,7 @@ import io.eordie.multimodule.contracts.basic.exception.ValidationException
 import io.eordie.multimodule.contracts.basic.paging.Page
 import io.eordie.multimodule.contracts.basic.paging.Pageable
 import io.eordie.multimodule.contracts.organization.models.acl.ResourceAcl
+import io.eordie.multimodule.contracts.utils.uncheckedCast
 import io.micronaut.context.ApplicationContext
 import io.micronaut.core.convert.ConversionService
 import io.micronaut.core.type.Argument
@@ -71,7 +72,7 @@ import kotlin.jvm.optionals.getOrNull
 import kotlin.reflect.KClass
 import kotlin.reflect.full.isSubclassOf
 
-@Suppress("TooManyFunctions", "UNCHECKED_CAST")
+@Suppress("TooManyFunctions")
 open class KFactoryImpl<T : Any, S : T, ID : Comparable<ID>>(
     val entityType: KClass<T>
 ) : KFactory<T, S, ID> {
@@ -95,8 +96,8 @@ open class KFactoryImpl<T : Any, S : T, ID : Comparable<ID>>(
 
     private val validator: EntityValidator<T>? by lazy {
         context.findBean(
-            Argument.of(EntityValidator::class.java, entityType.java) as Argument<EntityValidator<T>>
-        ).getOrNull()
+            Argument.of(EntityValidator::class.java, entityType.java)
+        ).getOrNull()?.uncheckedCast()
     }
 
     protected val registry: FiltersRegistry get() = registryProvider.get()
@@ -176,7 +177,7 @@ open class KFactoryImpl<T : Any, S : T, ID : Comparable<ID>>(
     open fun ResourceAcl.listPredicates(table: KNonNullTable<T>): List<KNonNullExpression<Boolean>> =
         emptyList()
 
-    private fun T.getId(): ID = (this as ImmutableSpi).__get(idPropertyName) as ID
+    private fun T.getId(): ID = (this as ImmutableSpi).__get(idPropertyName).uncheckedCast()
 
     open suspend fun calculatePermissions(acl: ResourceAcl, values: List<T>): Map<T, Set<Permission>> =
         if (!isPermissionAware) emptyMap() else {
@@ -207,7 +208,7 @@ open class KFactoryImpl<T : Any, S : T, ID : Comparable<ID>>(
 
             block(it)
         }
-        return Internal.produce(immutableType, base, consumer) as D
+        return Internal.produce(immutableType, base, consumer).uncheckedCast()
     }
 
     suspend fun resourceAcl(): ResourceAcl = microservices.get().buildAcl(coroutineContext, requireEmployeeAcl)
@@ -421,7 +422,7 @@ open class KFactoryImpl<T : Any, S : T, ID : Comparable<ID>>(
 
             val projection = orderBy.map { it.expression }.filterIsInstance<Selection<*>>()
             val (a, b, c, d, e) = projection + List(size = MAX_ALLOWED_SORTING - projection.size) { constant(1) }
-            select(table.getId<ID>() as Selection<ID>, a, b, c, d, e)
+            select(table.getId<ID>().uncheckedCast(), a, b, c, d, e)
         }
     }
 
@@ -567,7 +568,7 @@ open class KFactoryImpl<T : Any, S : T, ID : Comparable<ID>>(
     override suspend fun save(block: S.() -> Unit): T {
         val draft = produce(null, block)
         val id = if (!(draft as ImmutableSpi).__isLoaded(idPropertyName)) null else {
-            draft.__get(idPropertyName) as ID?
+            draft.__get(idPropertyName).uncheckedCast<ID?>()
         }
         val value = if (id != null) findById(id) else loadByKeys(draft)
         val function: suspend (S) -> T = if (value == null) ::persist else ::update
