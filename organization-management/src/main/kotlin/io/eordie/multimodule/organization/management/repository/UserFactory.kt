@@ -60,7 +60,7 @@ class UserFactory : KBaseFactory<UserModel, UserModelDraft, User, UUID, UsersFil
         return with(table.asTableEx().`attributes?`) {
             and(
                 or(name.isNull(), name eq attributeName),
-                value.accept(filter)
+                value accept filter
             )
         }
     }
@@ -70,17 +70,17 @@ class UserFactory : KBaseFactory<UserModel, UserModelDraft, User, UUID, UsersFil
         table: KNonNullTable<UserModel>
     ): List<KNonNullExpression<Boolean>> {
         return listOfNotNull(
-            table.id.accept(filter.id),
-            table.firstName.accept(filter.firstName),
-            table.lastName.accept(filter.lastName),
-            table.email.accept(filter.email),
-            table.emailVerified.accept(filter.emailVerified),
-            table.membership { organization.accept(filter.organization) },
+            table.id accept filter.id,
+            table.firstName accept filter.firstName,
+            table.lastName accept filter.lastName,
+            table.email accept filter.email,
+            table.emailVerified accept filter.emailVerified,
+            table.membership { organization accept filter.organization },
             table.membership {
                 employees {
                     and(
                         table.id eq userId,
-                        asTableEx().accept(filter.employee)
+                        asTableEx() accept filter.employee
                     )
                 }.negateUnless(filter.hasEmployee)
             }.takeIf { anyNotNull(filter.employee, filter.hasEmployee) },

@@ -59,17 +59,17 @@ class FarmAclFactory : BaseOrganizationFactory<FarmAclModel, FarmAclModelDraft, 
                 val field = if (it == Direction.INCOME) table.organizationId else table.farmOwnerOrganizationId
                 field valueIn auth.organizationIds()
             },
-            table.farmId.accept(filter.farmId),
-            table.fieldIds.acceptMany(filter.fieldId),
-            table.organization.accept(filter.organization),
-            table.farmOwnerOrganization.accept(filter.farmOwnerOrganization),
+            table.farmId accept filter.farmId,
+            table.fieldIds acceptMany filter.fieldId,
+            table.organization accept filter.organization,
+            table.farmOwnerOrganization accept filter.farmOwnerOrganization,
             filter.regionId?.let {
-                table.farmRegion.regionIds.acceptMany(it)
+                table.farmRegion.regionIds acceptMany it
             },
             filter.relatedOrganizationId?.let {
                 or(
-                    table.organizationId.accept(it),
-                    table.farmOwnerOrganizationId.accept(it)
+                    table.organizationId accept it,
+                    table.farmOwnerOrganizationId accept it
                 )
             }
         )

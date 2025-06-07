@@ -95,12 +95,12 @@ class OrganizationEmployeeFactory :
         return listOfNotNull(
             // membership is required for employment
             table.member.organizationId eq table.organizationId,
-            table.organizationId.accept(filter.organizationId),
-            table.userId.accept(filter.userId),
-            table.user.accept(filter.user),
-            table.organization.accept(filter.organization),
-            table.department.accept(filter.department),
-            table.position.accept(filter.position)
+            table.organizationId accept filter.organizationId,
+            table.userId accept filter.userId,
+            table.user accept filter.user,
+            table.organization accept filter.organization,
+            table.department accept filter.department,
+            table.position accept filter.position
         )
     }
 }

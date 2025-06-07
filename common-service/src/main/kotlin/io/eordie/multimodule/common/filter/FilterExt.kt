@@ -19,12 +19,9 @@ import org.babyfish.jimmer.sql.kt.ast.expression.KNonNullExpression
 infix fun <F : LiteralFilter<T>, T : Any> KExpression<List<T>>.acceptMany(
     filter: F?
 ): KNonNullExpression<Boolean>? {
-    val expression = this
-    return buildList {
-        if (filter != null) {
-            addAll(dispatchMany(filter).invoke(filter, expression))
-        }
-    }.and()
+    return if (filter == null) null else {
+        dispatchMany(filter).invoke(filter, this).and()
+    }
 }
 
 infix fun <F : LiteralFilter<T>, T : Any> KExpression<T>.accept(filter: F?): KNonNullExpression<Boolean>? {

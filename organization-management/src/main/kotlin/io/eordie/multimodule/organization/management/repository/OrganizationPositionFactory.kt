@@ -32,10 +32,10 @@ class OrganizationPositionFactory :
         table: KNonNullTable<OrganizationPositionModel>
     ): List<KNonNullExpression<Boolean>> {
         return listOfNotNull(
-            table.name.accept(filter.name),
-            table.parentId.accept(filter.parentId),
-            table.organization.accept(filter.organization),
-            table.organizationId.accept(filter.organizationId)
+            table.name accept filter.name,
+            table.parentId accept filter.parentId,
+            table.organization accept filter.organization,
+            table.organizationId accept filter.organizationId
         )
     }
 

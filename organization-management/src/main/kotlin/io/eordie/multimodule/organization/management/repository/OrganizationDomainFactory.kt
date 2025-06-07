@@ -25,8 +25,8 @@ class OrganizationDomainFactory :
         filter: DomainFilter,
         table: KNonNullTable<OrganizationDomainModel>
     ): List<KNonNullExpression<Boolean>> = listOfNotNull(
-        table.id.accept(filter.id),
-        table.domain.accept(filter.domain),
-        table.verified.accept(filter.verified)
+        table.id accept filter.id,
+        table.domain accept filter.domain,
+        table.verified accept filter.verified
     )
 }

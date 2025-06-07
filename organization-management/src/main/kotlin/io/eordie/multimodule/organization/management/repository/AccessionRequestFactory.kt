@@ -55,8 +55,8 @@ class AccessionRequestFactory :
         filter: AccessionRequestFilter,
         table: KNonNullTable<AccessionRequestModel>
     ) = listOfNotNull(
-        table.id.accept(filter.id),
-        table.status.accept(filter.status),
-        table.organizationId.accept(filter.organizationId)
+        table.id accept filter.id,
+        table.status accept filter.status,
+        table.organizationId accept filter.organizationId
     )
 }

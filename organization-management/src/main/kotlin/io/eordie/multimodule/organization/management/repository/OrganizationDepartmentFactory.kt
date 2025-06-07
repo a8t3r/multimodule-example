@@ -74,12 +74,12 @@ class OrganizationDepartmentFactory :
     fun findBindingsByFilter(filter: DepartmentBindingFilter): List<DepartmentBindingView> {
         return sql.createQuery(DepartmentBindingView::class) {
             where(
-                table.departmentId.accept(filter.departmentId),
-                table.organizationId.accept(filter.organizationId),
-                table.farmOwnerOrganizationId.accept(filter.farmOwnerOrganizationId),
-                table.farmId.accept(filter.farmId),
+                table.departmentId accept filter.departmentId,
+                table.organizationId accept filter.organizationId,
+                table.farmOwnerOrganizationId accept filter.farmOwnerOrganizationId,
+                table.farmId accept filter.farmId,
                 table.fieldIds.acceptMany(filter.fieldId),
-                table.farmRegionIds.acceptMany(filter.regionId)
+                table.farmRegionIds acceptMany filter.regionId
             )
             select(table)
         }.execute()
@@ -90,16 +90,16 @@ class OrganizationDepartmentFactory :
         table: KNonNullTable<OrganizationDepartmentModel>
     ): List<KNonNullExpression<Boolean>> {
         return listOfNotNull(
-            table.id.accept(filter.id),
-            table.name.accept(filter.name),
-            table.organization.accept(filter.organization),
-            table.organizationId.accept(filter.organizationId),
-            table.bindingViews { farmId.accept(filter.farmId) },
-            table.bindingViews { farmRegionIds.acceptMany(filter.regionId) },
+            table.id accept filter.id,
+            table.name accept filter.name,
+            table.organization accept filter.organization,
+            table.organizationId accept filter.organizationId,
+            table.bindingViews { farmId accept filter.farmId },
+            table.bindingViews { farmRegionIds acceptMany filter.regionId },
             table.bindingViews {
                 or(
                     fieldIds.isNull(),
-                    fieldIds.acceptMany(filter.fieldId)
+                    fieldIds acceptMany filter.fieldId
                 ).takeIf { filter.fieldId != null }
             }
         )

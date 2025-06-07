@@ -73,15 +73,15 @@ class RegionsFactory : KBaseFactory<OsmRegionTreeModel, OsmRegionTreeModelDraft,
         filter: RegionsFilter,
         table: KNonNullTable<OsmRegionTreeModel>
     ): List<KNonNullExpression<Boolean>> = listOfNotNull(
-        table.id.accept(filter.id),
-        table.country.accept(filter.country),
-        table.depth.accept(filter.depth),
-        table.parentId.accept(filter.parentId),
+        table.id accept filter.id,
+        table.country accept filter.country,
+        table.depth accept filter.depth,
+        table.parentId accept filter.parentId,
         filter.name?.let {
             val ex = table.relation.asTableEx()
             or(
-                ex.tags.name().accept(it),
-                ex.tags.name(auth.locale.language).accept(it)
+                ex.tags.name() accept it,
+                ex.tags.name(auth.locale.language) accept it
             )
         }
     )

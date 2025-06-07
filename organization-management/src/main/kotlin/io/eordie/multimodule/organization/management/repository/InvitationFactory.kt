@@ -55,9 +55,9 @@ class InvitationFactory : KBaseFactory<InvitationModel, InvitationModelDraft, In
         filter: InvitationFilter,
         table: KNonNullTable<InvitationModel>
     ): List<KNonNullExpression<Boolean>> = listOfNotNull(
-        table.email.accept(filter.email),
-        table.organizationId.accept(filter.organizationId),
-        table.status.accept(filter.status),
+        table.email accept filter.email,
+        table.organizationId accept filter.organizationId,
+        table.status accept filter.status,
         filter.direction?.let {
             if (it == Direction.INCOME) {
                 table.email eq auth.email

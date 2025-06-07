@@ -26,10 +26,10 @@ class AuthorsFactory :
         table: KNonNullTable<AuthorModel>
     ): List<KNonNullExpression<Boolean>> {
         return listOfNotNull(
-            table.id.accept(filter.id),
-            table.firstName.accept(filter.firstName),
-            table.lastName.accept(filter.lastName),
-            table.books { accept(filter.books) }.negateUnless(filter.hasBooks)
+            table.id accept filter.id,
+            table.firstName accept filter.firstName,
+            table.lastName accept filter.lastName,
+            table.books { this accept filter.books }.negateUnless(filter.hasBooks)
         )
     }
 }
