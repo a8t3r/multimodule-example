@@ -2,6 +2,7 @@ package io.eordie.multimodule.common.repository.interceptor
 
 import io.eordie.multimodule.common.repository.KBaseFactory
 import io.eordie.multimodule.common.repository.KRepository
+import io.eordie.multimodule.contracts.utils.safeCast
 import io.micronaut.aop.InterceptorBean
 import io.micronaut.aop.MethodInterceptor
 import io.micronaut.aop.MethodInvocationContext
@@ -54,7 +55,7 @@ class DefaultKRepositoryInterceptor(
         return if (factoryMethod != null) {
             requireNotNull(factoryMethod.javaMethod).invoke(factoryBean, *(context.parameterValues))
         } else if (context.stringValue(Query::class.java).isPresent) {
-            filterInterceptor.intercept(factoryBean.sql, factoryBean.entityType as KClass<Any>, context)
+            filterInterceptor.intercept(factoryBean.sql, safeCast<KClass<Any>>(factoryBean.entityType), context)
         } else {
             error("No query present in method")
         }

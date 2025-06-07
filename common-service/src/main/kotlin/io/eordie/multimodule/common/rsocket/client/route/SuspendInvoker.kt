@@ -1,5 +1,6 @@
 package io.eordie.multimodule.common.rsocket.client.route
 
+import io.eordie.multimodule.contracts.utils.uncheckedCast
 import io.micronaut.context.BeanLocator
 import io.micronaut.kotlin.context.getBean
 import io.opentelemetry.api.OpenTelemetry
@@ -30,7 +31,7 @@ abstract class SuspendInvoker(val kotlinIFace: KClass<*>, val beanLocator: BeanL
             when (method.name) {
                 "toString" -> "$tag proxy over [${contract.simpleName}]"
                 else -> {
-                    val continuation = arguments.last() as? Continuation<Any?>
+                    val continuation = arguments.last() as? Continuation<*>
                     if (continuation != null) {
                         val updatedArguments = if (isRemote) Arrays.copyOf(arguments, arguments.size - 1) else arguments
                         val call: suspend () -> Any? = {
@@ -38,7 +39,7 @@ abstract class SuspendInvoker(val kotlinIFace: KClass<*>, val beanLocator: BeanL
                         }
 
                         call.startCoroutine(
-                            Continuation(continuation.context) { continuation.resumeWith(it) }
+                            Continuation(continuation.context) { continuation.resumeWith(it.uncheckedCast()) }
                         )
                         kotlin.coroutines.intrinsics.COROUTINE_SUSPENDED
                     } else {
@@ -57,6 +58,6 @@ abstract class SuspendInvoker(val kotlinIFace: KClass<*>, val beanLocator: BeanL
                     }
                 }
             }
-        } as C
+        }.uncheckedCast()
     }
 }

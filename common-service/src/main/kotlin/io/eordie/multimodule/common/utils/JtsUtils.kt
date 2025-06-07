@@ -7,6 +7,7 @@ import io.eordie.multimodule.contracts.basic.geometry.TLine
 import io.eordie.multimodule.contracts.basic.geometry.TMultiPolygon
 import io.eordie.multimodule.contracts.basic.geometry.TPoint
 import io.eordie.multimodule.contracts.basic.geometry.TPolygon
+import io.eordie.multimodule.contracts.utils.uncheckedCast
 import org.locationtech.jts.geom.Coordinate
 import org.locationtech.jts.geom.CoordinateSequence
 import org.locationtech.jts.geom.Geometry
@@ -89,7 +90,7 @@ object JtsUtils {
                 is LineString -> geom.tLine()
                 else -> error("unknown geometry type: ${geom.geometryType}")
             }
-        } as T
+        }.uncheckedCast()
     }
 
     fun asWKBCached(g: TPolygon): String {

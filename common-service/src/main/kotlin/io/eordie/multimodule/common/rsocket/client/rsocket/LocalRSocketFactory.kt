@@ -1,12 +1,13 @@
 package io.eordie.multimodule.common.rsocket.client.rsocket
 
 import io.eordie.multimodule.contracts.basic.ModuleDefinition
-import io.ktor.network.sockets.*
+import io.ktor.network.sockets.InetSocketAddress
 import io.micronaut.context.BeanLocator
 import io.micronaut.kotlin.context.getBean
 import io.rsocket.kotlin.RSocket
 import io.rsocket.kotlin.core.RSocketConnector
-import io.rsocket.kotlin.transport.ktor.tcp.TcpClientTransport
+import io.rsocket.kotlin.transport.ktor.tcp.KtorTcpClientTransport
+import kotlin.coroutines.EmptyCoroutineContext
 
 class LocalRSocketFactory(private val beanLocator: BeanLocator) : RSocketLocalFactory {
     private lateinit var connection: RSocket
@@ -14,7 +15,7 @@ class LocalRSocketFactory(private val beanLocator: BeanLocator) : RSocketLocalFa
     override suspend fun rsocket(module: ModuleDefinition): RSocket {
         if (!this::connection.isInitialized) {
             val address = beanLocator.getBean<InetSocketAddress>()
-            val transport = TcpClientTransport("localhost", address.port)
+            val transport = KtorTcpClientTransport(EmptyCoroutineContext).target("localhost", address.port)
             val connector = RSocketConnector {
                 reconnectable(5)
             }

@@ -1,4 +1,5 @@
 import com.bmuschko.gradle.docker.tasks.image.DockerPushImage
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompilationTask
 
 plugins {
     `micronaut-conventions`
@@ -48,4 +49,10 @@ dependencies {
 
 tasks.withType<DockerPushImage> {
     enabled = false
+}
+
+tasks.withType<KotlinCompilationTask<*>>().configureEach {
+    compilerOptions {
+        optIn.add("kotlinx.serialization.ExperimentalSerializationApi")
+    }
 }

@@ -6,6 +6,7 @@ import io.eordie.multimodule.contracts.annotations.Group
 import io.eordie.multimodule.contracts.annotations.Valid
 import io.eordie.multimodule.contracts.basic.exception.ValidationError
 import io.eordie.multimodule.contracts.basic.exception.ValidationException
+import io.eordie.multimodule.contracts.utils.safeCast
 import io.micronaut.context.BeanLocator
 import io.micronaut.core.type.Argument
 import kotlinx.coroutines.withContext
@@ -55,11 +56,13 @@ object ValidationCheck {
         arguments: List<Pair<KParameter, Any>>
     ): ValidationException? {
         val errors = arguments.flatMap { (parameter, value) ->
-            val validator = beanLocator.findBean(
-                Argument.of(EntityValidator::class.java, Argument.of(parameter.type.javaType))
-            ).orElseThrow {
-                error("no validator found for type ${parameter.type}")
-            } as EntityValidator<Any>
+            val validator: EntityValidator<Any> = safeCast(
+                beanLocator.findBean(
+                    Argument.of(EntityValidator::class.java, Argument.of(parameter.type.javaType))
+                ).orElseThrow {
+                    error("no validator found for type ${parameter.type}")
+                }
+            )
 
             val groups = parameter.findAnnotations(Valid::class).single().value.toSet()
 

@@ -71,7 +71,7 @@ import kotlin.jvm.optionals.getOrNull
 import kotlin.reflect.KClass
 import kotlin.reflect.full.isSubclassOf
 
-@Suppress("TooManyFunctions")
+@Suppress("TooManyFunctions", "UNCHECKED_CAST")
 open class KFactoryImpl<T : Any, S : T, ID : Comparable<ID>>(
     val entityType: KClass<T>
 ) : KFactory<T, S, ID> {
@@ -446,9 +446,9 @@ open class KFactoryImpl<T : Any, S : T, ID : Comparable<ID>>(
         }
 
         return wrapped {
-            sql.entities.save(entity, it) {
+            sql.entities.saveCommand(entity) {
                 setMode(SaveMode.INSERT_ONLY)
-            }
+            }.execute(it)
         }.get()
     }
 
@@ -464,9 +464,9 @@ open class KFactoryImpl<T : Any, S : T, ID : Comparable<ID>>(
         }
 
         val result = wrapped {
-            sql.entities.save(entity, it) {
+            sql.entities.saveCommand(entity) {
                 setMode(SaveMode.UPDATE_ONLY)
-            }
+            }.execute(it)
         }
         return if (!result.isModified) error("entity wasn't modified") else result.get()
     }

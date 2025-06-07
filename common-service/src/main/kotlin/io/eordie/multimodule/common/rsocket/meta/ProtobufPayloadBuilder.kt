@@ -1,11 +1,14 @@
 package io.eordie.multimodule.common.rsocket.meta
 
 import io.eordie.multimodule.contracts.utils.ProtobufModule
-import io.ktor.utils.io.core.*
+import io.eordie.multimodule.contracts.utils.uncheckedCast
+import io.ktor.utils.io.core.readBytes
+import io.ktor.utils.io.core.writeFully
 import io.rsocket.kotlin.payload.Payload
 import io.rsocket.kotlin.payload.PayloadBuilder
 import io.rsocket.kotlin.payload.buildPayload
 import io.rsocket.kotlin.payload.data
+import kotlinx.io.Sink
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.serializer
@@ -24,7 +27,7 @@ class ProtobufPayloadBuilder {
     }
 
     fun <T : Any> decodeFromPayload(payload: Payload, targetType: KClass<T>): T? =
-        decodeFromPayload(payload, targetType.createType()) as T?
+        decodeFromPayload(payload, targetType.createType()).uncheckedCast()
 
     fun decodeFromPayload(payload: Payload, targetType: KType): Any? {
         val size = payload.data.readInt()
@@ -73,7 +76,7 @@ class ProtobufPayloadBuilder {
         }
     }
 
-    fun encodeToPacketBuilder(value: Any?, type: KType): BytePacketBuilder.() -> Unit = {
+    fun encodeToPacketBuilder(value: Any?, type: KType): Sink.() -> Unit = {
         if (value == null) writeInt(0) else {
             val data = proto.encodeToByteArray(getSerializer(type), value)
             writeInt(data.size)

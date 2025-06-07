@@ -17,13 +17,15 @@ import io.micronaut.core.io.socket.SocketUtils
 import io.opentelemetry.api.OpenTelemetry
 import io.rsocket.kotlin.ConnectionAcceptor
 import io.rsocket.kotlin.core.RSocketServer
-import io.rsocket.kotlin.transport.ktor.tcp.TcpServer
-import io.rsocket.kotlin.transport.ktor.tcp.TcpServerTransport
+import io.rsocket.kotlin.transport.ktor.tcp.KtorTcpServerTransport
 import jakarta.inject.Singleton
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.launch
 import org.slf4j.LoggerFactory
+import kotlin.coroutines.EmptyCoroutineContext
 import kotlin.reflect.KSuspendFunction2
 import kotlin.reflect.full.functions
 
@@ -83,8 +85,8 @@ class RsocketServerFactory {
     fun createServer(
         localAddress: InetSocketAddress,
         connectionAcceptor: ConnectionAcceptor
-    ): TcpServer {
-        val transport = TcpServerTransport(localAddress) { }
+    ): Job {
+        val transport = KtorTcpServerTransport(EmptyCoroutineContext).target(localAddress)
         val connector = RSocketServer { }
 
         val job = SupervisorJob()
@@ -94,7 +96,9 @@ class RsocketServerFactory {
             }
         )
 
-        logger.info("started rsocket server at $localAddress")
-        return connector.bindIn(scope, transport, connectionAcceptor)
+        return scope.launch {
+            logger.info("started rsocket server at $localAddress")
+            connector.startServer(transport, connectionAcceptor)
+        }
     }
 }

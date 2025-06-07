@@ -43,6 +43,7 @@ class KafkaConfig {
     }
 
     @Bean
+    @Suppress("UNCHECKED_CAST")
     @Replaces(CompositeSerdeRegistry::class)
     fun serdeSerdeRegistry(): SerdeRegistry {
         return object : SerdeRegistry {

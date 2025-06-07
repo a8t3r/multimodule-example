@@ -2,8 +2,8 @@ package io.eordie.multimodule.common.repository.loader
 
 import io.eordie.multimodule.common.rsocket.client.route.RemoteRoute
 import io.eordie.multimodule.common.rsocket.client.rsocket.RSocketLocalFactory
-import io.eordie.multimodule.contracts.basic.Permission
 import io.eordie.multimodule.contracts.basic.loader.EntityLoader
+import io.eordie.multimodule.contracts.utils.safeCast
 import io.micronaut.context.BeanLocator
 import java.lang.reflect.Method
 import kotlin.coroutines.CoroutineContext
@@ -40,12 +40,7 @@ class EntityLoaderRoute(
 
     suspend fun load(ids: List<Any>, context: CoroutineContext): Map<Any, Any> {
         val method = requireNotNull(suspendedLoad.javaMethod)
-        return invoke(method, context, arrayOf(ids)) as Map<Any, Any>
-    }
-
-    suspend fun loadPermissions(ids: List<Any>, context: CoroutineContext): Map<Any, List<Permission>> {
-        val method = requireNotNull(suspendedLoadPermissions.javaMethod)
-        return invoke(method, context, arrayOf(ids)) as Map<Any, List<Permission>>
+        return safeCast(invoke(method, context, arrayOf(ids)))
     }
 
     override fun getReturnType(method: Method): KType = returnType

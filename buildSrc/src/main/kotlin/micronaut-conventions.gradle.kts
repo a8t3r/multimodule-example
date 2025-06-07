@@ -34,9 +34,7 @@ dependencies {
 
     implementation(otel.opentelemetryApi)
     implementation(otel.opentelemetryContext)
-    implementation(otel.opentelemetryExtensionKotlin) {
-        exclude(group = "org.jetbrains.kotlin")
-    }
+    implementation(otel.opentelemetryExtensionKotlin)
 
     runtimeOnly(mn.snakeyaml)
     testImplementation("io.micronaut.testresources:micronaut-test-resources-jdbc-postgresql")

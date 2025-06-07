@@ -16,6 +16,7 @@ import io.eordie.multimodule.contracts.basic.filters.NumericFilter
 import io.eordie.multimodule.contracts.basic.filters.OffsetDateTimeLiteralFilter
 import io.eordie.multimodule.contracts.organization.models.acl.ResourceAcl
 import io.eordie.multimodule.contracts.utils.getIntrospection
+import io.eordie.multimodule.contracts.utils.safeCast
 import io.micronaut.core.beans.BeanIntrospection
 import io.micronaut.core.beans.BeanProperty
 import jakarta.inject.Singleton
@@ -50,8 +51,9 @@ class FiltersRegistry(
     }
 
     fun <F : Any, T : Any> toPredicates(acl: ResourceAcl, filter: F, table: KNonNullTable<T>): KNonNullExpression<Boolean>? {
-        val (filterSupport, targetClass) = (index[filter::class] as? Pair<FilterSupportTrait<T, *, F>, KClass<T>>)
-            ?: error("unregistered filter type ${filter::class.simpleName}")
+        val (filterSupport, targetClass) = safeCast<Pair<FilterSupportTrait<T, *, F>, KClass<T>>> (
+            index[filter::class] ?: error("unregistered filter type ${filter::class.simpleName}")
+        )
 
         val i = getIntrospection<F>(filter::class)
         val ownPredicates = with(filterSupport) {

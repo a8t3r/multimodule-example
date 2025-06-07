@@ -8,6 +8,7 @@ import io.eordie.multimodule.contracts.basic.event.MutationEvent
 import io.eordie.multimodule.contracts.basic.loader.EntityLoader
 import io.eordie.multimodule.contracts.basic.paging.Page
 import io.eordie.multimodule.contracts.basic.paging.Pageable
+import io.eordie.multimodule.contracts.utils.uncheckedCast
 import jakarta.inject.Inject
 import jakarta.inject.Provider
 import kotlinx.coroutines.flow.Flow
@@ -41,10 +42,12 @@ abstract class KBaseFactory<T : Convertable<C>, S : T, C : Any, ID, F : Any>(
         }
     }
 
+    private fun T.getId(): ID = (this as ImmutableSpi).__get(idPropertyName).uncheckedCast()
+
     override suspend fun load(ids: List<ID>): Map<ID, C> {
         val values = internalFindByIds(ids, null)
         return values.associateBy(
-            { (it as ImmutableSpi).__get(idPropertyName) as ID },
+            { it.getId() },
             { it.convert() }
         )
     }
@@ -52,8 +55,8 @@ abstract class KBaseFactory<T : Convertable<C>, S : T, C : Any, ID, F : Any>(
     override suspend fun loadPermissions(ids: List<ID>): Map<ID, List<Permission>> {
         val values = internalFindByIds(ids, null)
         return values.associateBy(
-            { (it as ImmutableSpi).__get(idPropertyName) as ID },
-            { if (it is PermissionAwareIF) it.loadedPermissions() else emptyList() }
+            { it.getId() },
+            { (it as? PermissionAwareIF)?.loadedPermissions() ?: emptyList() }
         )
     }
 

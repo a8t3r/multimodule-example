@@ -1,6 +1,7 @@
 package io.eordie.multimodule.common.rsocket.meta
 
-import io.ktor.utils.io.core.*
+import io.ktor.utils.io.core.readBytes
+import io.ktor.utils.io.core.writeFully
 import io.opentelemetry.api.trace.SpanContext
 import io.opentelemetry.api.trace.SpanId
 import io.opentelemetry.api.trace.TraceFlags
@@ -9,9 +10,10 @@ import io.opentelemetry.api.trace.TraceState
 import io.rsocket.kotlin.ExperimentalMetadataApi
 import io.rsocket.kotlin.core.CustomMimeType
 import io.rsocket.kotlin.core.MimeType
-import io.rsocket.kotlin.internal.BufferPool
 import io.rsocket.kotlin.metadata.Metadata
 import io.rsocket.kotlin.metadata.MetadataReader
+import kotlinx.io.Buffer
+import kotlinx.io.Sink
 
 @OptIn(ExperimentalMetadataApi::class)
 class OpenTelemetrySpanContextMetadata(val spanContext: SpanContext) : Metadata {
@@ -19,7 +21,7 @@ class OpenTelemetrySpanContextMetadata(val spanContext: SpanContext) : Metadata 
 
     override fun close() = Unit
 
-    override fun BytePacketBuilder.writeSelf() {
+    override fun Sink.writeSelf() {
         writeFully(spanContext.traceIdBytes)
         writeFully(spanContext.spanIdBytes)
         writeByte(spanContext.traceFlags.asByte())
@@ -38,8 +40,7 @@ class OpenTelemetrySpanContextMetadata(val spanContext: SpanContext) : Metadata 
 
     companion object Reader : MetadataReader<OpenTelemetrySpanContextMetadata> {
         override val mimeType: MimeType = CustomMimeType("message/x.opentelementry.tracing.v0")
-
-        override fun ByteReadPacket.read(pool: BufferPool): OpenTelemetrySpanContextMetadata {
+        override fun Buffer.read(): OpenTelemetrySpanContextMetadata {
             val traceId = TraceId.fromBytes(readBytes(16))
             val spanId = SpanId.fromBytes(readBytes(8))
             val traceFlags = TraceFlags.fromByte(readByte())
@@ -47,7 +48,7 @@ class OpenTelemetrySpanContextMetadata(val spanContext: SpanContext) : Metadata 
             val builder = TraceState.builder()
             var entriesSize = readInt()
             while (entriesSize-- > 0) {
-                builder.put(String(readBytes(readInt())), String(readBytes(readInt())))
+                builder.put(readBytes(readInt()).decodeToString(), readBytes(readInt()).decodeToString())
             }
 
             val spanContext = SpanContext.create(traceId, spanId, traceFlags, builder.build())

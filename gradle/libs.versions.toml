@@ -1,45 +1,39 @@
 [versions]
-auto-service = "1.1.1"
 assertk = "0.28.1"
+auto-service = "1.1.1"
 commons-lang = "3.17.0"
-# @pin required kotlin 2.0
-coroutines = "1.9.0"
+coroutines = "1.10.2"
 dag-command = "1.13.0"
-dekorate = "4.1.4"
-# @pin COMPILE_INCREMENTAL_WITH_ARTIFACT_TRANSFORM
-dependency-analysis = "2.8.2"
+dekorate = "4.1.5"
+dependency-analysis = "2.18.0"
 detekt = "1.23.8"
 dokka = "2.0.0"
 graphqlExtendedScalars = "2023-01-24T02-11-56-babda5f"
-graphqlKotlin = "8.7.0"
+graphqlKotlin = "8.8.0"
 # @keep unused
 jdk = "21"
-# @pin required kotlin 2.0
-jimmer = "0.9.69"
-junit = "5.13.0-RC1"
-opentelemetry = "1.48.0"
+jimmer = "0.9.89"
+junit = "5.13.1"
 kobby = "5.2.0"
-# @pin required kotlin 2.0
-kotlin = "1.9.25"
-# @pin required kotlin 2.0
-kotlinxSerialization = "1.6.3"
-# @pin required kotlin 2.0
-ksp = "1.9.25-1.0.20"
+kotlin = "2.1.21"
+kotlinxSerialization = "1.8.1"
+kotlinxSerializationPlugin = "2.1.21"
+ksp = "2.1.21-2.0.1"
 ksp-auto-service = "1.2.0"
-# @pin required kotlin 2.0
-ktor = "2.3.12"
-logging-jvm = "7.0.6"
+ktor = "3.1.3"
+logging-jvm = "7.0.7"
 logitech = "1.20.0"
 micronaut = "4.8.2"
 micronautPlugin = "4.5.3"
+# @pin
+opentelemetry = "1.48.0"
 phaseTwo = "0.1.11"
-# @pin required kotlin 2.0
-rsocket = "0.16.0"
+rsocket = "0.20.0"
 valiktor = "0.12.0"
 
 [libraries]
-auto-service = { module = "com.google.auto.service:auto-service-annotations", version.ref = "auto-service" }
 assertk = { module = "com.willowtreeapps.assertk:assertk", version.ref = "assertk" }
+auto-service = { module = "com.google.auto.service:auto-service-annotations", version.ref = "auto-service" }
 commons-lang = { module = "org.apache.commons:commons-lang3", version.ref = "commons-lang" }
 dekorate-kubernetes-annotations = { module = "io.dekorate:kubernetes-annotations", version.ref = "dekorate" }
 dekorate-prometheus-annotations = { module = "io.dekorate:prometheus-annotations", version.ref = "dekorate" }
@@ -47,7 +41,6 @@ detekt-formatting = { module = "io.gitlab.arturbosch.detekt:detekt-formatting", 
 graphql-scalars = { module = "com.graphql-java:graphql-java-extended-scalars", version.ref = "graphqlExtendedScalars" }
 jimmer-sql-kotlin = { module = "org.babyfish.jimmer:jimmer-sql-kotlin", version.ref = "jimmer" }
 junit-bom = { module = "org.junit:junit-bom", version.ref = "junit" }
-opentelemetry-bom = { module = "io.opentelemetry:opentelemetry-bom", version.ref = "opentelemetry" }
 kotlin-bom = { module = "org.jetbrains.kotlin:kotlin-bom", version.ref = "kotlin" }
 kotlin-graphql = { module = "com.expediagroup:graphql-kotlin-server", version.ref = "graphqlKotlin" }
 kotlin-graphql-persisted-queries = { module = "com.expediagroup:graphql-kotlin-automatic-persisted-queries", version.ref = "graphqlKotlin" }
@@ -63,6 +56,7 @@ ksp-jimmer = { module = "org.babyfish.jimmer:jimmer-ksp", version.ref = "jimmer"
 ktor-bom = { module = "io.ktor:ktor-bom", version.ref = "ktor" }
 logitech-jts-core = { module = "org.locationtech.jts:jts-core", version.ref = "logitech" }
 micronaut-platform = { module = "io.micronaut.platform:micronaut-platform", version.ref = "micronaut" }
+opentelemetry-bom = { module = "io.opentelemetry:opentelemetry-bom", version.ref = "opentelemetry" }
 phaseTwo-admin-client = { module = "io.phasetwo:phasetwo-admin-client", version.ref = "phaseTwo" }
 
 [plugins]
@@ -72,6 +66,6 @@ detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
 dokka = { id = "org.jetbrains.dokka", version.ref = "dokka" }
 kobby = { id = "io.github.ermadmi78.kobby", version.ref = "kobby" }
 kotlin = { id = "org.jetbrains.kotlin", version.ref = "kotlin" }
-kotlinSerialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlinxSerialization" }
+kotlinSerialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlinxSerializationPlugin" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 micronaut = { id = "io.micronaut.application", version.ref = "micronautPlugin" }

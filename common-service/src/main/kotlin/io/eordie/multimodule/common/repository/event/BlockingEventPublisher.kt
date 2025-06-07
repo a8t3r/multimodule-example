@@ -1,6 +1,7 @@
 package io.eordie.multimodule.common.repository.event
 
 import io.eordie.multimodule.contracts.basic.event.MutationEvent
+import io.eordie.multimodule.contracts.utils.safeCast
 import io.github.oshai.kotlinlogging.KotlinLogging
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
@@ -18,7 +19,7 @@ class BlockingEventPublisher(
             withContext(affectedBy) {
                 index[target.java]?.forEach { listener ->
                     logger.info { "Processing event of type ${target.simpleName} by ${listener.javaClass.simpleName}" }
-                    listener.onEvent(event as MutationEvent<Any>)
+                    listener.onEvent(safeCast<MutationEvent<Any>>(event))
                 }
             }
         }

@@ -3,8 +3,8 @@
 import io.gitlab.arturbosch.detekt.Detekt
 import io.gitlab.arturbosch.detekt.DetektCreateBaselineTask
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-import org.jetbrains.kotlin.gradle.dsl.KotlinCompile
 import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompilationTask
 import java.net.URI
 
 plugins {
@@ -37,11 +37,16 @@ kotlin {
     }
     compilerOptions {
         @Suppress("SpellCheckingInspection")
-        freeCompilerArgs = listOf("-Xjsr305=strict", "-Xcontext-receivers")
+        freeCompilerArgs = listOf(
+            "-Xjsr305=strict",
+            "-Xcontext-receivers"
+        )
         allWarningsAsErrors = false
         jvmTarget.set(JvmTarget.valueOf("JVM_$jdkVersion"))
+
+        // https://github.com/google/ksp/issues/1942
+        // apiVersion.set(KotlinVersion.valueOf("KOTLIN_$kotlinVersion"))
         languageVersion.set(KotlinVersion.valueOf("KOTLIN_$kotlinVersion"))
-        apiVersion.set(KotlinVersion.valueOf("KOTLIN_$kotlinVersion"))
     }
 }
 
@@ -65,15 +70,13 @@ dependencies {
     implementation(ktx.kotlinxCoroutinesReactive)
 
     implementation(libs.commons.lang)
-    implementation(libs.kotlin.logging.jvm) {
-        exclude(group = "org.jetbrains.kotlin", module = "kotlin-stdlib")
-    }
+    implementation(libs.kotlin.logging.jvm)
     detektPlugins(libs.detekt.formatting)
     testImplementation(ktx.kotlinxCoroutinesTest)
 }
 
-tasks.withType<KotlinCompile<*>>().configureEach {
-    kotlinOptions {
+tasks.withType<KotlinCompilationTask<*>>().configureEach {
+    compilerOptions {
         allWarningsAsErrors = false
     }
 }

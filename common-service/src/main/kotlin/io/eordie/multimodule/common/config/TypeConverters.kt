@@ -2,6 +2,7 @@ package io.eordie.multimodule.common.config
 
 import io.eordie.multimodule.contracts.identitymanagement.models.AuthenticationDetails
 import io.eordie.multimodule.contracts.utils.JsonModule
+import io.eordie.multimodule.contracts.utils.uncheckedCast
 import io.micronaut.context.annotation.Bean
 import io.micronaut.context.annotation.Factory
 import io.micronaut.context.annotation.Primary
@@ -17,7 +18,7 @@ class TypeConverters {
         collector: KFunction1<Array<T>, C>
     ): TypeConverter<PgArray, C> where M : MutableCollection<T> {
         return TypeConverter<PgArray, C> { obj, _, _ ->
-            val collection: C = collector.invoke((obj.array as Array<T>))
+            val collection: C = collector.invoke((obj.array.uncheckedCast()))
             Optional.of(collection)
         }
     }

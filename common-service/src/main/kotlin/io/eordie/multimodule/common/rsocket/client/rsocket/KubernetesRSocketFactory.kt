@@ -10,7 +10,7 @@ import io.micronaut.kotlin.context.getBean
 import io.micronaut.kubernetes.discovery.KubernetesDiscoveryClient
 import io.rsocket.kotlin.RSocket
 import io.rsocket.kotlin.core.RSocketConnector
-import io.rsocket.kotlin.transport.ktor.tcp.TcpClientTransport
+import io.rsocket.kotlin.transport.ktor.tcp.KtorTcpClientTransport
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
@@ -19,6 +19,7 @@ import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.reactive.asFlow
 import java.time.Duration
+import kotlin.coroutines.EmptyCoroutineContext
 
 class KubernetesRSocketFactory(beanLocator: BeanLocator) : RSocketLocalFactory {
     companion object {
@@ -32,7 +33,8 @@ class KubernetesRSocketFactory(beanLocator: BeanLocator) : RSocketLocalFactory {
         .expireAfterAccess(Duration.ofMinutes(EXPIRATION_MINUTES))
         .build(object : CacheLoader<String, Deferred<RSocket>>() {
             override fun load(hostAddress: String): Deferred<RSocket> {
-                val transport = TcpClientTransport(hostAddress, RsocketServerFactory.MIN_PORT)
+                val transport = KtorTcpClientTransport(EmptyCoroutineContext)
+                    .target(hostAddress, RsocketServerFactory.MIN_PORT)
                 val connector = RSocketConnector {
                     reconnectable(5)
                 }

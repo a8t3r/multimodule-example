@@ -1,6 +1,7 @@
 package io.eordie.multimodule.common.utils
 
 import io.eordie.multimodule.contracts.utils.ProtobufModule
+import io.eordie.multimodule.contracts.utils.uncheckedCast
 import io.micronaut.core.serialize.ObjectSerializer
 import io.micronaut.core.type.Argument
 import kotlinx.serialization.ExperimentalSerializationApi
@@ -9,6 +10,7 @@ import java.io.InputStream
 import java.io.OutputStream
 import java.util.*
 
+@Suppress("unused")
 @OptIn(ExperimentalSerializationApi::class)
 class ProtobufObjectSerializer : ObjectSerializer {
 
@@ -21,7 +23,7 @@ class ProtobufObjectSerializer : ObjectSerializer {
 
     override fun <T : Any> deserialize(bytes: ByteArray, requiredType: Argument<T>): Optional<T> {
         val serializer = proto.serializersModule.serializer(requiredType.type)
-        val value = proto.decodeFromByteArray(serializer, bytes) as T
+        val value = proto.decodeFromByteArray(serializer, bytes).uncheckedCast<T>()
         return Optional.of(value)
     }
 
