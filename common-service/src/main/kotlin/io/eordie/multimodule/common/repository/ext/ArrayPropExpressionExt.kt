@@ -18,12 +18,12 @@ private fun <T : Any> KExpression<List<T>>.operator(value: T, name: String): KNo
     }
 }
 
-fun <T : Any> KExpression<List<T>>.contains(value: T) = operator(value, "=")
-fun <T : Any> KExpression<List<T>>.notContains(value: T) = operator(value, "!=")
-fun <T : Any> KExpression<List<T>>.gt(value: T) = operator(value, "<")
-fun <T : Any> KExpression<List<T>>.ge(value: T) = operator(value, "<=")
-fun <T : Any> KExpression<List<T>>.lt(value: T) = operator(value, ">")
-fun <T : Any> KExpression<List<T>>.le(value: T) = operator(value, ">=")
+infix fun <T : Any> KExpression<List<T>>.contains(value: T) = operator(value, "=")
+infix fun <T : Any> KExpression<List<T>>.notContains(value: T) = operator(value, "!=")
+infix fun <T : Any> KExpression<List<T>>.gt(value: T) = operator(value, "<")
+infix fun <T : Any> KExpression<List<T>>.ge(value: T) = operator(value, "<=")
+infix fun <T : Any> KExpression<List<T>>.lt(value: T) = operator(value, ">")
+infix fun <T : Any> KExpression<List<T>>.le(value: T) = operator(value, ">=")
 
 inline fun <reified V : Any> KExpression<*>.cast(): KNonNullExpression<V> {
     val expression = this
@@ -32,7 +32,7 @@ inline fun <reified V : Any> KExpression<*>.cast(): KNonNullExpression<V> {
     }
 }
 
-fun <T : Any> KExpression<List<T>>.intersection(values: Array<T>): KNonNullExpression<List<T>> {
+infix fun <T : Any> KExpression<List<T>>.intersection(values: Array<T>): KNonNullExpression<List<T>> {
     val expression = this
     return safeCast(sql(List::class, "array_intersect(%e, array[%v])") {
         value(values)
@@ -40,7 +40,7 @@ fun <T : Any> KExpression<List<T>>.intersection(values: Array<T>): KNonNullExpre
     })
 }
 
-fun <T : Any> KExpression<List<T>>.overlap(values: Array<T>): KNonNullExpression<Boolean> {
+infix fun <T : Any> KExpression<List<T>>.overlap(values: Array<T>): KNonNullExpression<Boolean> {
     val expression = this
     return sql(Boolean::class, "%e && array[%v]") {
         value(values)
@@ -56,7 +56,7 @@ val <T : Any> KExpression<List<T>>.arraySize: KNonNullExpression<Int>
         }
     }
 
-fun <T : Any> KExpression<List<T>>.arrayLike(pattern: String): KNonNullExpression<Boolean> {
+infix fun <T : Any> KExpression<List<T>>.arrayLike(pattern: String): KNonNullExpression<Boolean> {
     val expression = this
     return sql(Boolean::class, "(array_to_string(%e, ',') ilike %v or array_to_string(%e, ',') ilike ',' || %v)") {
         expression(expression)

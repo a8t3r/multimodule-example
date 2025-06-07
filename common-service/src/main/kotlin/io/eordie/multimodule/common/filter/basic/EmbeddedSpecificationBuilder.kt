@@ -13,10 +13,10 @@ open class EmbeddedSpecificationBuilder<F : LiteralFilter<T>, T : Any> : Specifi
 
     override fun invoke(filter: F, path: KExpression<T>): List<KNonNullExpression<Boolean>> {
         return listOfNotNull(
-            filter.eq?.let { path.eq(it) },
-            filter.ne?.let { path.ne(it) },
-            filter.of?.let { path.valueIn(it) },
-            filter.nof?.let { path.valueNotIn(it) }
+            filter.eq?.let { path eq it },
+            filter.ne?.let { path ne it },
+            filter.of?.let { path valueIn it },
+            filter.nof?.let { path valueNotIn it }
         ) + super.invoke(filter, path)
     }
 }

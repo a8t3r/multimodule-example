@@ -99,7 +99,7 @@ class RegionsFactory : KBaseFactory<OsmRegionTreeModel, OsmRegionTreeModelDraft,
         val ids = sql.createQuery(OsmPlace::class) {
             where(
                 table.id.osmType eq 'R',
-                table.geometry.contains(point)
+                table.geometry contains point
             )
             select(table.id.osmId)
         }.execute()

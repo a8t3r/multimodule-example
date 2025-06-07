@@ -374,7 +374,7 @@ open class KFactoryImpl<T : Any, S : T, ID : Comparable<ID>>(
                 nextPageable = if (data.size < actualLimit) {
                     nextPageable.copy(cursor = null)
                 } else {
-                    // the empty slice means that current data page has no accessible elements
+                    // the empty slice means that the current data page has no accessible elements
                     val builder = (slice.lastOrNull() ?: data.lastOrNull())?.second
                     builder?.invoke() ?: nextPageable.copy(cursor = null)
                 }
@@ -415,7 +415,7 @@ open class KFactoryImpl<T : Any, S : T, ID : Comparable<ID>>(
                 error("too many sort orders")
             }
             orderBy(orderBy)
-            // initialize fresh copy of the expressions based on actual table instance
+            // initialize a fresh copy of the expressions based on the actual table instance
             val sortingExpressions = sortingExpressions(table).associateBy { it.name() }
             where(cursor.toPredicates(conversionService, sortingExpressions).or())
 

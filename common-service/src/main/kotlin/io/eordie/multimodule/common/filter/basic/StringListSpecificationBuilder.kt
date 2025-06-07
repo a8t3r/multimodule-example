@@ -14,10 +14,10 @@ class StringListSpecificationBuilder : ListEmbeddedSpecificationBuilder<StringLi
         path: KExpression<List<String>>
     ): List<KNonNullExpression<Boolean>> {
         val secondary = listOfNotNull(
-            filter.like?.takeIf { it.isNotEmpty() }?.let { path.arrayLike("%$it%") },
-            filter.nlike?.let { path.arrayLike("%$it%").not() },
-            filter.startsWith?.takeIf { it.isNotEmpty() }?.let { path.arrayLike("$it%") },
-            filter.endsWith?.takeIf { it.isNotEmpty() }?.let { path.arrayLike("%$it") }
+            filter.like?.takeIf { it.isNotEmpty() }?.let { path arrayLike "%$it%" },
+            filter.nlike?.let { (path arrayLike "%$it%").not() },
+            filter.startsWith?.takeIf { it.isNotEmpty() }?.let { path arrayLike "$it%" },
+            filter.endsWith?.takeIf { it.isNotEmpty() }?.let { path arrayLike "%$it" }
         )
 
         return super.invoke(filter, path) + secondary

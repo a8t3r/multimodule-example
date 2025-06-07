@@ -8,7 +8,7 @@ import org.babyfish.jimmer.sql.kt.ast.expression.KNonNullExpression
 import org.babyfish.jimmer.sql.kt.ast.expression.KPropExpression
 import org.babyfish.jimmer.sql.kt.ast.expression.sql
 
-fun <T : SpatialReference> KPropExpression<out T>.contains(point: TPoint): KNonNullExpression<Boolean> {
+infix fun <T : SpatialReference> KPropExpression<out T>.contains(point: TPoint): KNonNullExpression<Boolean> {
     val expression = this
     return sql(Boolean::class, "ST_Contains(%e, ${point.jts().asPostgis()})") {
         expression(expression)

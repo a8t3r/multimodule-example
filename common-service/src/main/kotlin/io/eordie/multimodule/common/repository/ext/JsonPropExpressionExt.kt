@@ -5,7 +5,7 @@ import org.babyfish.jimmer.sql.kt.ast.expression.KPropExpression
 import org.babyfish.jimmer.sql.kt.ast.expression.sqlNullable
 import kotlin.reflect.KClass
 
-fun KPropExpression<out Any>.jsonStr(path: String): KNullableExpression<String> = this.json(path, String::class)
+infix fun KPropExpression<out Any>.jsonStr(path: String): KNullableExpression<String> = this.json(path, String::class)
 
 fun <T : Any> KPropExpression<out Any>.json(path: String, chainType: KClass<T>): KNullableExpression<T> {
     val expression = this

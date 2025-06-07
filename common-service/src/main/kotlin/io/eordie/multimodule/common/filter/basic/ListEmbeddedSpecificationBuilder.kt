@@ -15,10 +15,10 @@ interface ListEmbeddedSpecificationBuilder<F : LiteralFilter<T>, T : Any> : Spec
 
     override fun invoke(filter: F, path: KExpression<List<T>>): List<KNonNullExpression<Boolean>> {
         return listOfNotNull(
-            filter.eq?.let { path.contains(it) },
-            filter.ne?.let { path.notContains(it) },
-            filter.of?.let { path.overlap(it.asTypedArray()) },
-            filter.nof?.let { path.overlap(it.asTypedArray()).not() },
+            filter.eq?.let { path contains it },
+            filter.ne?.let { path notContains it },
+            filter.of?.let { path overlap it.asTypedArray() },
+            filter.nof?.let { (path overlap it.asTypedArray()).not() },
         ) + super.invoke(filter, path)
     }
 }

@@ -13,10 +13,10 @@ open class ComparableLiteralSpecificationBuilder<F : ComparableFilter<T>, T : Co
 
     override fun invoke(filter: F, path: KExpression<T>): List<KNonNullExpression<Boolean>> {
         val secondary = listOfNotNull(
-            filter.gt?.let { path.gt(it) },
-            filter.gte?.let { path.ge(it) },
-            filter.lt?.let { path.lt(it) },
-            filter.lte?.let { path.le(it) }
+            filter.gt?.let { path gt it },
+            filter.gte?.let { path ge it },
+            filter.lt?.let { path lt it },
+            filter.lte?.let { path le it }
         )
 
         return super.invoke(filter, path) + secondary
