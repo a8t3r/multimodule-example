@@ -3,6 +3,7 @@ package io.eordie.multimodule.common.rsocket.client
 import io.eordie.multimodule.common.rsocket.client.route.RouteFactory
 import io.eordie.multimodule.contracts.Mutation
 import io.eordie.multimodule.contracts.Query
+import io.eordie.multimodule.contracts.Subscription
 import io.eordie.multimodule.contracts.utils.safeCast
 import io.micronaut.context.ApplicationContextProvider
 import io.micronaut.context.RuntimeBeanDefinition
@@ -25,7 +26,9 @@ class DefinedServicesProvider {
     private lateinit var routeFactory: RouteFactory
 
     fun initialize(context: ApplicationContextProvider): Sequence<RuntimeBeanDefinition<*>> {
-        return registerClients(context, Query::class.java) + registerClients(context, Mutation::class.java)
+        return registerClients(context, Query::class.java) +
+                registerClients(context, Mutation::class.java) +
+                registerClients(context, Subscription::class.java)
     }
 
     private fun <T : Any> registerClients(

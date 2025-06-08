@@ -12,12 +12,12 @@ class SecurityGraphQLExecutionInputCustomizer : GraphQLExecutionInputCustomizer 
     override fun customize(
         executionInput: ExecutionInput,
         httpRequest: HttpRequest<*>,
-        httpResponse: MutableHttpResponse<String>
+        httpResponse: MutableHttpResponse<String>? // null response on ws sessions
     ): Publisher<ExecutionInput> {
         return Publishers.just(
             executionInput.transform { builder ->
                 builder.graphQLContext { context ->
-                    context.put(ContextKeys.RESPONSE_HEADERS, httpResponse.headers)
+                    httpResponse?.let { context.put(ContextKeys.RESPONSE_HEADERS, it.headers) }
 
                     GraphqlContextBuilder().apply {
                         setRequest(httpRequest)

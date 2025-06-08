@@ -6,6 +6,7 @@ import com.expediagroup.graphql.dataloader.KotlinDataLoader
 import com.expediagroup.graphql.dataloader.KotlinDataLoaderRegistryFactory
 import com.expediagroup.graphql.generator.SchemaGeneratorConfig
 import com.expediagroup.graphql.generator.TopLevelObject
+import com.expediagroup.graphql.generator.execution.FlowSubscriptionExecutionStrategy
 import com.expediagroup.graphql.generator.execution.SimpleKotlinDataFetcherFactoryProvider
 import com.expediagroup.graphql.generator.toSchema
 import graphql.GraphQL
@@ -19,6 +20,7 @@ import io.eordie.multimodule.common.rsocket.client.getServiceInterface
 import io.eordie.multimodule.common.rsocket.client.route.Synthesized
 import io.eordie.multimodule.contracts.Mutation
 import io.eordie.multimodule.contracts.Query
+import io.eordie.multimodule.contracts.Subscription
 import io.eordie.multimodule.graphql.gateway.converters.OutputTypeConverter
 import io.eordie.multimodule.graphql.gateway.graphql.CacheProvider
 import io.eordie.multimodule.graphql.gateway.graphql.CustomGeneratorHooks
@@ -28,6 +30,7 @@ import io.eordie.multimodule.graphql.gateway.graphql.GraphqlContextBuilder
 import io.eordie.multimodule.graphql.gateway.graphql.ParametersTransformer
 import io.eordie.multimodule.graphql.gateway.graphql.SecurityGraphQLExecutionInputCustomizer
 import io.eordie.multimodule.graphql.gateway.graphql.TracingFunctionDataFetcher
+import io.eordie.multimodule.graphql.gateway.graphql.instrumentation.FlowAsPublisherInstrumentation
 import io.eordie.multimodule.graphql.gateway.graphql.instrumentation.OpenTelemetryTracingInstrumentation
 import io.micronaut.context.annotation.Bean
 import io.micronaut.context.annotation.Factory
@@ -82,6 +85,7 @@ class GraphQLConfig {
     fun instrumentation(openTelemetry: OpenTelemetry, properties: GraphqlProperties): ChainedInstrumentation {
         val tracer = openTelemetry.tracerBuilder("graphql").build()
         return ChainedInstrumentation(
+            FlowAsPublisherInstrumentation(),
             OpenTelemetryTracingInstrumentation(tracer),
             MaxQueryDepthInstrumentation(properties.maxDepth),
             MaxQueryComplexityInstrumentation(properties.maxComplexity)
@@ -134,7 +138,8 @@ class GraphQLConfig {
         instrumentation: ChainedInstrumentation,
         config: SchemaGeneratorConfig,
         queries: List<Query>,
-        mutations: List<Mutation>
+        mutations: List<Mutation>,
+        subscriptions: List<Subscription>
     ): GraphQL {
         fun <T : Any> topObjects(operations: List<T>, type: KClass<T>) = filterOperations(operations, type)
             .map { (type, instance) -> TopLevelObject(instance, type) }
@@ -143,8 +148,10 @@ class GraphQLConfig {
             config,
             topObjects(queries, Query::class),
             topObjects(mutations, Mutation::class),
+            topObjects(subscriptions, Subscription::class),
         )
         return GraphQL.newGraphQL(graphQLSchema)
+            .subscriptionExecutionStrategy(FlowSubscriptionExecutionStrategy())
             .preparsedDocumentProvider(preparsedDocumentProvider())
             .defaultDataFetcherExceptionHandler(DataFetcherExceptionHandler())
             .instrumentation(instrumentation)

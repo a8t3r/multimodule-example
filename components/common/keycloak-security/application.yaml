@@ -13,6 +13,9 @@ micronaut:
       - pattern: /graphql
         access:
           - isAnonymous()
+      - pattern: /graphql-ws
+        access:
+          - isAnonymous()
       - pattern: /oauth/login/keycloak
         access:
           - isAnonymous()

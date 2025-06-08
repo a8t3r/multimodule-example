@@ -11,11 +11,18 @@ micronaut:
     enabled: true
 
 graphql:
-  graphiql:
+  graphql-ws:
     enabled: true
+    path: /graphql-ws
+    keep-alive-interval: 15s
+    connection-init-wait-timeout: 5s
   instrumentation:
     maxComplexity: 500
     maxDepth: 15
+  graphiql:
+    enabled: true
+    version: 4.1.2
+    explorer-plugin-version: 4.0.6
 
 flyway:
   datasources:

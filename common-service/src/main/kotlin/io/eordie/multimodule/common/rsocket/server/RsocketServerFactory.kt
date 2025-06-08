@@ -6,9 +6,9 @@ import io.eordie.multimodule.common.utils.GenericTypes
 import io.eordie.multimodule.common.utils.like
 import io.eordie.multimodule.contracts.Mutation
 import io.eordie.multimodule.contracts.Query
+import io.eordie.multimodule.contracts.Subscription
 import io.eordie.multimodule.contracts.basic.loader.EntityLoader
-import io.ktor.network.sockets.*
-import io.ktor.utils.io.core.*
+import io.ktor.network.sockets.InetSocketAddress
 import io.micronaut.context.BeanLocator
 import io.micronaut.context.annotation.Factory
 import io.micronaut.context.annotation.Requires
@@ -55,6 +55,7 @@ class RsocketServerFactory {
         beanLocator: BeanLocator,
         queries: List<Query>,
         mutations: List<Mutation>,
+        subscriptions: List<Subscription>,
         baseFactories: List<KBaseFactory<*, *, *, *, *>>
     ): ConnectionAcceptor {
         val loadSuspend: KSuspendFunction2<*, *, *> = EntityLoader<*, *>::load
@@ -75,7 +76,8 @@ class RsocketServerFactory {
             beanLocator,
             tracer,
             queries.filter { it !is Synthesized },
-            mutations.filter { it !is Synthesized }
+            mutations.filter { it !is Synthesized },
+            subscriptions.filter { it !is Synthesized }
         )
             .addDescriptors(entityLoaders)
             .createAcceptor()

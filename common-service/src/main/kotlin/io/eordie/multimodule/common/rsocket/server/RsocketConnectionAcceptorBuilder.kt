@@ -4,6 +4,7 @@ import io.eordie.multimodule.common.rsocket.client.getServiceInterface
 import io.eordie.multimodule.common.utils.like
 import io.eordie.multimodule.contracts.Mutation
 import io.eordie.multimodule.contracts.Query
+import io.eordie.multimodule.contracts.Subscription
 import io.micronaut.context.BeanLocator
 import io.opentelemetry.api.trace.Tracer
 import io.rsocket.kotlin.ConnectionAcceptor
@@ -24,10 +25,11 @@ class RsocketConnectionAcceptorBuilder(
     beanLocator: BeanLocator,
     tracer: Tracer,
     queries: Collection<Query>,
-    mutations: Collection<Mutation>
+    mutations: Collection<Mutation>,
+    subscriptions: List<Subscription>,
 ) {
 
-    private val index = buildControllerMethods(queries, mutations).associateBy { it.name }.toMutableMap()
+    private val index = buildControllerMethods(queries, mutations, subscriptions).associateBy { it.name }.toMutableMap()
     private val invocationHelper = InvocationHelper(beanLocator, tracer)
 
     fun createAcceptor(): ConnectionAcceptor {
@@ -70,9 +72,12 @@ class RsocketConnectionAcceptorBuilder(
 
     private fun buildControllerMethods(
         queries: Collection<Query>,
-        mutations: Collection<Mutation>
+        mutations: Collection<Mutation>,
+        subscriptions: List<Subscription>
     ): List<ControllerDescriptor> {
-        return buildControllerMethods(queries, Query::class) + buildControllerMethods(mutations, Mutation::class)
+        return buildControllerMethods(queries, Query::class) +
+                buildControllerMethods(mutations, Mutation::class) +
+                buildControllerMethods(subscriptions, Subscription::class)
     }
 
     private fun buildControllerMethods(controllers: Collection<Any>, type: KClass<*>): List<ControllerDescriptor> {

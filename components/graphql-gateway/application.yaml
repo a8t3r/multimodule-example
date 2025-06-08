@@ -1,6 +1,6 @@
 #include logback-template, bootstrap, keycloak-security, redis
 
-# strictly required for graphql introspection
+# strictly required for graphql introspection,
 # otherwise empty lists wouldn't be serialized
 jackson:
   serializationInclusion: ALWAYS
@@ -17,11 +17,17 @@ application:
     enabled: false
 
 graphql:
+  graphql-ws:
+    enabled: true
+    path: /graphql-ws
+    keep-alive-interval: 15s
+    connection-init-wait-timeout: 5s
   instrumentation:
     maxDepth: 15
     maxComplexity: 500
   graphiql:
     enabled: true
+    explorer-plugin-version: 4.0.6
 
 netty:
   default:
