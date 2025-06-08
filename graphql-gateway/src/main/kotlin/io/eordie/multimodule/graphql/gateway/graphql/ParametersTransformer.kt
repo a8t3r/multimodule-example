@@ -1,6 +1,7 @@
 package io.eordie.multimodule.graphql.gateway.graphql
 
 import graphql.schema.DataFetchingEnvironment
+import io.eordie.multimodule.contracts.basic.RequestHeaders
 import io.eordie.multimodule.contracts.basic.paging.SelectionSet
 import io.eordie.multimodule.contracts.identitymanagement.models.AuthenticationDetails
 import io.eordie.multimodule.contracts.identitymanagement.models.CurrentOrganization
@@ -8,6 +9,7 @@ import io.eordie.multimodule.contracts.identitymanagement.models.OAuthToken
 import io.eordie.multimodule.graphql.gateway.security.KeycloakRefreshAuthenticator
 import io.micronaut.core.type.Headers
 import io.micronaut.core.type.MutableHeaders
+import io.micronaut.http.HttpHeaders
 import jakarta.inject.Singleton
 import kotlin.coroutines.Continuation
 import kotlin.coroutines.CoroutineContext
@@ -21,7 +23,10 @@ class ParametersTransformer(
     fun mapParameterToValue(param: KParameter, environment: DataFetchingEnvironment): Pair<KParameter, Any?>? {
         val classifier = param.type.classifier
         return when (classifier) {
-            Headers::class -> { param to environment.graphQlContext.get(ContextKeys.HEADERS) }
+            Headers::class, RequestHeaders::class -> {
+                val headers = environment.graphQlContext.get<Any>(ContextKeys.HEADERS) as HttpHeaders
+                param to RequestHeaders(headers.asMap())
+            }
             MutableHeaders::class -> { param to environment.graphQlContext.get(ContextKeys.RESPONSE_HEADERS) }
             DataFetchingEnvironment::class -> param to environment
             SelectionSet::class -> param to SelectionSetExtractor.from(environment)
