@@ -8,7 +8,6 @@ import io.opentelemetry.api.trace.Tracer
 import kotlinx.coroutines.runBlocking
 import java.lang.reflect.Method
 import java.lang.reflect.Proxy
-import java.util.*
 import kotlin.coroutines.Continuation
 import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.startCoroutine
@@ -33,7 +32,7 @@ abstract class SuspendInvoker(val kotlinIFace: KClass<*>, val beanLocator: BeanL
                 else -> {
                     val continuation = arguments.last() as? Continuation<*>
                     if (continuation != null) {
-                        val updatedArguments = if (isRemote) Arrays.copyOf(arguments, arguments.size - 1) else arguments
+                        val updatedArguments = if (isRemote) arguments.copyOf(arguments.size - 1) else arguments
                         val call: suspend () -> Any? = {
                             invoke(method, continuation.context, updatedArguments)
                         }
