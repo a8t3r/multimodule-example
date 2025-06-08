@@ -7,18 +7,14 @@ import io.eordie.multimodule.contracts.library.models.BookInput
 import io.eordie.multimodule.contracts.library.services.LibraryMutations
 import io.eordie.multimodule.library.repository.AuthorsFactory
 import io.eordie.multimodule.library.repository.BooksFactory
-import io.lettuce.core.pubsub.StatefulRedisPubSubConnection
 import jakarta.inject.Singleton
 import java.util.*
 
 @Singleton
 class LibraryMutationController(
     private val books: BooksFactory,
-    private val authors: AuthorsFactory,
-    connection: StatefulRedisPubSubConnection<String, Book>
+    private val authors: AuthorsFactory
 ) : LibraryMutations {
-
-    private val commands = connection.sync()
 
     override suspend fun book(input: BookInput): Book {
         return books.transaction {
@@ -39,9 +35,7 @@ class LibraryMutationController(
                     instance.authorIds = authorIds.distinct()
                 }
             }
-        }.convert {
-            commands.publish("books", it)
-        }
+        }.convert()
     }
 
     override suspend fun deleteBook(bookId: UUID): Boolean {
