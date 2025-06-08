@@ -8,7 +8,6 @@ import io.micronaut.configuration.kafka.serde.SerdeRegistry
 import io.micronaut.context.annotation.Bean
 import io.micronaut.context.annotation.Factory
 import io.micronaut.context.annotation.Replaces
-import io.micronaut.context.annotation.Requires
 import io.micronaut.core.type.Argument
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.json.decodeFromStream
@@ -22,8 +21,7 @@ import kotlin.reflect.KTypeProjection
 import kotlin.reflect.full.createType
 
 @Factory
-@Requires(property = "kafka.enabled", value = "true")
-class KafkaConfig {
+class SerdeRegistryConfig {
 
     companion object {
         private val proto = JsonModule.getInstance()
