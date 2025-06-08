@@ -1,5 +1,6 @@
 package io.eordie.multimodule.library.service
 
+import io.eordie.multimodule.common.repository.event.EventListener
 import io.eordie.multimodule.contracts.basic.event.MutationEvent
 import io.eordie.multimodule.contracts.library.models.Book
 import io.eordie.multimodule.contracts.library.models.BooksFilter
@@ -14,14 +15,14 @@ import kotlinx.coroutines.flow.asSharedFlow
 
 @Singleton
 @KafkaListener
-class LibrarySubscriptionController : LibrarySubscriptions {
+class LibrarySubscriptionController : LibrarySubscriptions, EventListener<Book> {
 
     private val booksFlow = MutableSharedFlow<Book>(
         extraBufferCapacity = 3, onBufferOverflow = BufferOverflow.DROP_OLDEST
     )
 
     @Topic("book")
-    suspend fun subscribeBooks(event: MutationEvent<Book>) {
+    override suspend fun onEvent(event: MutationEvent<Book>) {
         if (event.isCreated()) {
             booksFlow.emit(event.getActual())
         }
