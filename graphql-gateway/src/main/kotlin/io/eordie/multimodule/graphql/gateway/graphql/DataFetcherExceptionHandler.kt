@@ -19,13 +19,15 @@ class DataFetcherExceptionHandler : SimpleDataFetcherExceptionHandler() {
 
     private fun handleExceptionImpl(handlerParameters: DataFetcherExceptionHandlerParameters): DataFetcherExceptionHandlerResult {
         val exception = unwrap(handlerParameters.exception)
-        val sourceLocation = handlerParameters.sourceLocation
-        val path = handlerParameters.path
-
         val traceId = Span.current().spanContext.traceId
+
         val graphQLError = GraphqlErrorBuilder.newError()
-            .location(sourceLocation)
-            .path(path)
+            .apply {
+                if (handlerParameters.dataFetchingEnvironment != null) {
+                    location(handlerParameters.sourceLocation)
+                    path(handlerParameters.path)
+                }
+            }
             .errorType(ErrorClassification.errorClassification(exception::class.simpleName))
             .message(exception.message.orEmpty())
             .apply {

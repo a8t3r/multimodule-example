@@ -85,7 +85,7 @@ class GraphQLConfig {
     fun instrumentation(openTelemetry: OpenTelemetry, properties: GraphqlProperties): ChainedInstrumentation {
         val tracer = openTelemetry.tracerBuilder("graphql").build()
         return ChainedInstrumentation(
-            FlowAsPublisherInstrumentation(),
+            FlowAsPublisherInstrumentation(exceptionHandler()),
             OpenTelemetryTracingInstrumentation(tracer),
             MaxQueryDepthInstrumentation(properties.maxDepth),
             MaxQueryComplexityInstrumentation(properties.maxComplexity)
@@ -133,6 +133,9 @@ class GraphQLConfig {
     }
 
     @Bean
+    fun exceptionHandler() = DataFetcherExceptionHandler()
+
+    @Bean
     @Requires(classes = [OutputTypeConverter::class])
     fun graphqlSchema(
         instrumentation: ChainedInstrumentation,
@@ -150,10 +153,11 @@ class GraphQLConfig {
             topObjects(mutations, Mutation::class),
             topObjects(subscriptions, Subscription::class),
         )
+
         return GraphQL.newGraphQL(graphQLSchema)
-            .subscriptionExecutionStrategy(FlowSubscriptionExecutionStrategy())
+            .subscriptionExecutionStrategy(FlowSubscriptionExecutionStrategy(exceptionHandler()))
             .preparsedDocumentProvider(preparsedDocumentProvider())
-            .defaultDataFetcherExceptionHandler(DataFetcherExceptionHandler())
+            .defaultDataFetcherExceptionHandler(exceptionHandler())
             .instrumentation(instrumentation)
             .build()
     }
