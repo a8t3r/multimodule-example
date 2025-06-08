@@ -10,7 +10,7 @@ import graphql.schema.GraphQLTypeReference
 import io.eordie.multimodule.contracts.basic.geometry.TMultiPolygon
 import io.eordie.multimodule.contracts.basic.geometry.TPoint
 import io.eordie.multimodule.contracts.basic.geometry.TPolygon
-import io.eordie.multimodule.graphql.gateway.converters.TypeConverter
+import io.eordie.multimodule.graphql.gateway.converters.OutputTypeConverter
 import io.eordie.multimodule.graphql.gateway.graphql.scalars.TMultiPolygonScalarCoercing
 import io.eordie.multimodule.graphql.gateway.graphql.scalars.TPointScalarCoercing
 import io.eordie.multimodule.graphql.gateway.graphql.scalars.TPolygonScalarCoercing
@@ -34,9 +34,9 @@ inline fun <reified T : Annotation> KFunction<*>.findAnnotations(kClass: KClass<
     return contract.findAnnotations(T::class)
 }
 
-internal class CustomGeneratorHooks(customConverters: List<TypeConverter>) : FlowSubscriptionSchemaGeneratorHooks() {
+internal class CustomGeneratorHooks(outputConverters: List<OutputTypeConverter>) : FlowSubscriptionSchemaGeneratorHooks() {
 
-    private val converters = customConverters
+    private val converters = outputConverters
         .flatMap { converter -> converter.supports().map { it to converter } }
         .toMap()
 

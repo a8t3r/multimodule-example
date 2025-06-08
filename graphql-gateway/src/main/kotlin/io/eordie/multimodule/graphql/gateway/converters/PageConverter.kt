@@ -11,7 +11,7 @@ import jakarta.inject.Singleton
 import kotlin.reflect.KType
 
 @Singleton
-class PageConverter : TypeConverter {
+class PageConverter : OutputTypeConverter {
     override fun supports() = listOf(Page::class)
     override fun typeName(projectionName: String?) = "${projectionName}Page"
 

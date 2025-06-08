@@ -8,7 +8,7 @@ import jakarta.inject.Singleton
 import kotlin.reflect.KType
 
 @Singleton
-class RolesArrayConverter : TypeConverter {
+class RolesArrayConverter : OutputTypeConverter {
     override fun supports() = listOf(Array<Roles>::class)
     override fun typeName(projectionName: String?) = null
     override fun convert(type: KType, projectionName: String?): GraphQLType {

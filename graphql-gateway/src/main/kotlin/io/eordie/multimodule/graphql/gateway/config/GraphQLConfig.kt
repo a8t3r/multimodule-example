@@ -19,7 +19,7 @@ import io.eordie.multimodule.common.rsocket.client.getServiceInterface
 import io.eordie.multimodule.common.rsocket.client.route.Synthesized
 import io.eordie.multimodule.contracts.Mutation
 import io.eordie.multimodule.contracts.Query
-import io.eordie.multimodule.graphql.gateway.converters.TypeConverter
+import io.eordie.multimodule.graphql.gateway.converters.OutputTypeConverter
 import io.eordie.multimodule.graphql.gateway.graphql.CacheProvider
 import io.eordie.multimodule.graphql.gateway.graphql.CustomGeneratorHooks
 import io.eordie.multimodule.graphql.gateway.graphql.DataFetcherExceptionHandler
@@ -90,7 +90,7 @@ class GraphQLConfig {
 
     @Bean
     fun schemaGeneratorConfig(
-        customConverters: List<TypeConverter>,
+        customConverters: List<OutputTypeConverter>,
         parametersTransformer: ParametersTransformer
     ): SchemaGeneratorConfig {
         return SchemaGeneratorConfig(
@@ -129,7 +129,7 @@ class GraphQLConfig {
     }
 
     @Bean
-    @Requires(classes = [TypeConverter::class])
+    @Requires(classes = [OutputTypeConverter::class])
     fun graphqlSchema(
         instrumentation: ChainedInstrumentation,
         config: SchemaGeneratorConfig,
