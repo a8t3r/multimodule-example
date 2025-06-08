@@ -24,7 +24,7 @@ class ParametersTransformer(
         val classifier = param.type.classifier
         return when (classifier) {
             Headers::class, RequestHeaders::class -> {
-                val headers = environment.graphQlContext.get<Any>(ContextKeys.HEADERS) as HttpHeaders
+                val headers = environment.graphQlContext.get<HttpHeaders>(ContextKeys.HEADERS)
                 param to RequestHeaders(headers.asMap())
             }
             MutableHeaders::class -> { param to environment.graphQlContext.get(ContextKeys.RESPONSE_HEADERS) }
