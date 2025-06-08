@@ -42,9 +42,9 @@ graphql-scalars = { module = "com.graphql-java:graphql-java-extended-scalars", v
 jimmer-sql-kotlin = { module = "org.babyfish.jimmer:jimmer-sql-kotlin", version.ref = "jimmer" }
 junit-bom = { module = "org.junit:junit-bom", version.ref = "junit" }
 kotlin-bom = { module = "org.jetbrains.kotlin:kotlin-bom", version.ref = "kotlin" }
-kotlin-graphql = { module = "com.expediagroup:graphql-kotlin-server", version.ref = "graphqlKotlin" }
+kotlin-graphql-dataloader = { module = "com.expediagroup:graphql-kotlin-dataloader", version.ref = "graphqlKotlin" }
+kotlin-graphql-generator = { module = "com.expediagroup:graphql-kotlin-schema-generator", version.ref = "graphqlKotlin" }
 kotlin-graphql-persisted-queries = { module = "com.expediagroup:graphql-kotlin-automatic-persisted-queries", version.ref = "graphqlKotlin" }
-kotlin-graphql-schema-generator = { module = "com.expediagroup:graphql-kotlin-schema-generator", version.ref = "graphqlKotlin" }
 kotlin-logging-jvm = { module = "io.github.oshai:kotlin-logging-jvm", version.ref = "logging-jvm" }
 kotlin-rsocket-ktor-server = { module = "io.rsocket.kotlin:rsocket-ktor-server", version.ref = "rsocket" }
 kotlin-rsocket-transport-ktor-tcp = { module = "io.rsocket.kotlin:rsocket-transport-ktor-tcp", version.ref = "rsocket" }

@@ -10,7 +10,9 @@ dependencies {
     implementation(mn.micronaut.security.jwt)
     implementation(mn.micronaut.security.oauth2)
 
-    implementation(libs.kotlin.graphql)
+    implementation(ktn.kotlinReflect)
+    implementation(libs.kotlin.graphql.dataloader)
+    implementation(libs.kotlin.graphql.generator)
     implementation(libs.graphql.scalars)
     implementation(ktx.kotlinxSerializationJson)
     implementation(libs.kotlin.graphql.persisted.queries)

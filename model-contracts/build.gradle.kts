@@ -10,8 +10,9 @@ dependencies {
     ksp(libs.ksp.auto.service)
 
     implementation(libs.auto.service)
+
     compileOnly(mn.micronaut.core)
-    compileOnly(libs.kotlin.graphql.schema.generator)
+    compileOnly(libs.kotlin.graphql.generator)
 
     implementation(ktx.kotlinxSerializationJson)
     implementation(ktx.kotlinxSerializationProtobuf)
