@@ -141,6 +141,7 @@ class InvocationHelper(private val beanLocator: BeanLocator, private val tracer:
                 is BaseRuntimeException -> reason
                 is ConstraintViolationException -> ValidationException(reason.toErrors(context))
                 else -> {
+                    logger.warn(reason) { "uncaught exception while performing invocation" }
                     UnexpectedInvocationException(
                         reason.message,
                         reason::class.simpleName

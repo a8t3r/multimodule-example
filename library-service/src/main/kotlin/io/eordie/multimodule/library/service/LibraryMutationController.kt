@@ -7,34 +7,42 @@ import io.eordie.multimodule.contracts.library.models.BookInput
 import io.eordie.multimodule.contracts.library.services.LibraryMutations
 import io.eordie.multimodule.library.repository.AuthorsFactory
 import io.eordie.multimodule.library.repository.BooksFactory
+import io.lettuce.core.pubsub.StatefulRedisPubSubConnection
 import jakarta.inject.Singleton
 import java.util.*
 
 @Singleton
 class LibraryMutationController(
     private val books: BooksFactory,
-    private val authors: AuthorsFactory
+    private val authors: AuthorsFactory,
+    connection: StatefulRedisPubSubConnection<String, Book>
 ) : LibraryMutations {
 
-    override suspend fun book(input: BookInput): Book = books.transaction {
-        val authorIds = input.authors.map { author ->
-            authors.save(author.id) { _, instance ->
-                instance.firstName = requireNotNull(author.firstName ?: instance.firstName)
-                instance.lastName = author.lastName ?: instance.lastName
-            }
-        }.map { author -> author.id }
+    private val commands = connection.sync()
 
-        books.save(input.id) { state, instance ->
-            state.ifNotExists {
-                instance.authorIds = emptyList()
-            }
+    override suspend fun book(input: BookInput): Book {
+        return books.transaction {
+            val authorIds = input.authors.map { author ->
+                authors.save(author.id) { _, instance ->
+                    instance.firstName = requireNotNull(author.firstName ?: instance.firstName)
+                    instance.lastName = author.lastName ?: instance.lastName
+                }
+            }.map { author -> author.id }
 
-            instance.name = input.name
-            if (authorIds.isNotEmpty()) {
-                instance.authorIds = authorIds.distinct()
+            books.save(input.id) { state, instance ->
+                state.ifNotExists {
+                    instance.authorIds = emptyList()
+                }
+
+                instance.name = input.name
+                if (authorIds.isNotEmpty()) {
+                    instance.authorIds = authorIds.distinct()
+                }
             }
+        }.convert {
+            commands.publish("books", it)
         }
-    }.convert()
+    }
 
     override suspend fun deleteBook(bookId: UUID): Boolean {
         return books.deleteById(bookId)

@@ -1,5 +1,6 @@
 package io.eordie.multimodule.common.repository.loader
 
+import io.eordie.multimodule.common.utils.typeArguments
 import io.eordie.multimodule.contracts.basic.loader.EntityLoader
 import io.micronaut.context.annotation.Bean
 import io.micronaut.context.annotation.Factory
@@ -13,8 +14,7 @@ class EntityLoaderFactory {
         genericEntityLoader: GenericEntityLoader,
         injection: ArgumentInjectionPoint<*, *>
     ): EntityLoader<*, *> {
-        val idType = injection.asArgument().getTypeVariable("ID").get().type
-        val entityType = injection.asArgument().getTypeVariable("T").get().type
+        val (idType, entityType) = injection.typeArguments<Any, Any>("ID", "T")
         return genericEntityLoader.createLoader(idType, entityType)
     }
 }

@@ -1,8 +1,17 @@
 package io.eordie.multimodule.common.utils
 
+import io.eordie.multimodule.contracts.utils.uncheckedCast
+import io.micronaut.inject.ArgumentInjectionPoint
 import kotlin.reflect.KClass
 import kotlin.reflect.full.allSupertypes
 import kotlin.reflect.jvm.jvmErasure
+
+fun <K, V> ArgumentInjectionPoint<*, *>.typeArguments(keyTag: String, valueTag: String): Pair<Class<K>, Class<V>> {
+    val argument = this.asArgument()
+    val keyType: Class<K> = argument.getTypeVariable(keyTag).orElseThrow().type.uncheckedCast()
+    val valueType: Class<V> = argument.getTypeVariable(valueTag).orElseThrow().type.uncheckedCast()
+    return keyType to valueType
+}
 
 object GenericTypes {
 

@@ -11,4 +11,5 @@ dependencies {
     implementation(mn.micronaut.data.jdbc)
     implementation(mn.micronaut.data.model)
     implementation(libs.kotlin.valiktor.core)
+    implementation(mn.micronaut.redis.lettuce)
 }
