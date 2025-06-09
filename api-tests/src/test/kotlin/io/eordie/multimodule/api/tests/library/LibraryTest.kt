@@ -32,11 +32,9 @@ import io.eordie.multimodule.contracts.library.services.LibraryMutations
 import io.eordie.multimodule.contracts.library.services.LibrarySubscriptions
 import io.micronaut.test.annotation.Sql
 import jakarta.inject.Inject
-import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.SharingStarted.Companion.Eagerly
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.shareIn
 import kotlinx.coroutines.future.await
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.BeforeAll
@@ -263,12 +261,14 @@ class LibraryTest : AbstractApplicationTest() {
 
     @Test
     fun `should retrieve flow after new book creation`() = test {
-        val booksFlow = subscriptionLibrary.books().shareIn(GlobalScope, Eagerly, 1)
+        val deferred = async {
+            subscriptionLibrary.books().first()
+        }
 
         val bookInput = BookInput(firstBook.id, "flow book", listOf(AuthorInput(firstName = "Jane", lastName = "Doe")))
         val expected = mutateLibrary.book(bookInput)
 
-        val actual = booksFlow.first()
+        val actual = deferred.await()
         assertThat(actual).isNotNull()
         assertThat(actual).isEqualTo(expected)
     }

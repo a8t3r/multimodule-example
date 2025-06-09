@@ -14,4 +14,9 @@
     <root level="info">
         <appender-ref ref="STDOUT"/>
     </root>
+
+    <logger name="io.micronaut.configuration.graphql.ws" level="TRACE"/>
+    <logger name="org.babyfish.jimmer.sql.runtime.ExecutorForLog" level="WARN"/>
+    <logger name="org.babyfish.jimmer.sql.cache.spi.AbstractBinder" level="WARN"/>
+
 </configuration>
