@@ -1,16 +1,21 @@
 package io.eordie.multimodule.api.tests
 
+import com.fasterxml.jackson.core.type.TypeReference
+import com.fasterxml.jackson.databind.ObjectMapper
 import graphql.GraphQLContext
 import graphql.execution.ExecutionId
 import graphql.schema.DataFetchingEnvironment
 import graphql.schema.DataFetchingEnvironmentImpl
 import io.eordie.multimodule.common.SyntheticSupport
+import io.eordie.multimodule.common.security.AuthenticationDetailsBuilder
+import io.eordie.multimodule.common.security.AuthenticationDetailsBuilder.ActiveOrganization
 import io.eordie.multimodule.common.security.context.AuthenticationContextElement
 import io.eordie.multimodule.common.security.context.getAuthenticationContext
 import io.eordie.multimodule.contracts.identitymanagement.models.AuthenticationDetails
 import io.eordie.multimodule.contracts.identitymanagement.models.CurrentOrganization
 import io.eordie.multimodule.contracts.utils.JsonModule
 import io.eordie.multimodule.contracts.utils.Roles
+import io.eordie.multimodule.contracts.utils.asRoleSet
 import io.eordie.multimodule.graphql.gateway.graphql.ContextKeys
 import io.micronaut.context.ApplicationContext
 import io.micronaut.context.DefaultApplicationContextBuilder
@@ -65,10 +70,10 @@ abstract class AbstractApplicationTest {
     ) = runTest(auth, defaultTestDuration, block)
 
     operator fun AuthenticationContextElement.minus(role: Roles): AuthenticationContextElement =
-        AuthenticationContextElement(details.copy(roleSet = details.roleSet.apply { remove(role) }))
+        AuthenticationContextElement(details.copy(roleSet = (details.roles - role).asRoleSet()))
 
     operator fun AuthenticationContextElement.plus(role: Roles): AuthenticationContextElement =
-        AuthenticationContextElement(details.copy(roleSet = details.roleSet.apply { add(role) }))
+        AuthenticationContextElement(details.copy(roleSet = (details.roles + role).asRoleSet()))
 
     @Inject
     lateinit var schema: SchemaContextProvider
@@ -93,6 +98,9 @@ abstract class AbstractApplicationTest {
     @Factory
     class CustomContextBuilder : DefaultApplicationContextBuilder() {
 
+        @Inject
+        private lateinit var objectMapper: ObjectMapper
+
         @Singleton
         fun headerTokenReader(): TokenReader<HttpRequest<*>> {
             return object : HttpHeaderTokenReader() {
@@ -104,14 +112,37 @@ abstract class AbstractApplicationTest {
         @Singleton
         fun tokenValidator(): TokenValidator<HttpRequest<*>> = TokenValidator<HttpRequest<*>> { token, request ->
             val auth = JsonModule.getInstance().decodeFromString<AuthenticationDetails>(token)
+            val rolesHolder = AuthenticationDetailsBuilder.RolesHolder().apply {
+                this.activeOrganization = auth.currentOrganizationId?.let { currentOrganizationId ->
+                    ActiveOrganization(
+                        auth.roles.map { it.name },
+                        currentOrganizationId.toString()
+                    )
+                }
+                this.organizationRoles = auth.organizationRoles?.associateBy(
+                    { it.organizationId.toString() },
+                    { binding ->
+                        AuthenticationDetailsBuilder.OrganizationRole(
+                            binding.organizationName,
+                            binding.roles.map { it.name }
+                        )
+                    }
+                )
+            }
+
+            val attributes = objectMapper.convertValue(
+                rolesHolder,
+                object : TypeReference<MutableMap<String, Any>>() {}
+            ).apply {
+                put("email", auth.email)
+                put("email_verified", auth.emailVerified)
+            }
+
             Publishers.just(
                 Authentication.build(
                     auth.userId.toString(),
-                    auth.roles.map { it.name.lowercase() },
-                    mapOf(
-                        "email" to auth.email,
-                        "email_verified" to auth.emailVerified
-                    )
+                    emptyList(),
+                    attributes
                 )
             )
         }
