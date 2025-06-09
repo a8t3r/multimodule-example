@@ -9,7 +9,6 @@ import io.eordie.multimodule.common.security.context.AuthenticationContextElemen
 import io.eordie.multimodule.common.security.context.getAuthenticationContext
 import io.eordie.multimodule.contracts.identitymanagement.models.CurrentOrganization
 import io.eordie.multimodule.contracts.utils.Roles
-import io.eordie.multimodule.contracts.utils.asRoleSet
 import io.eordie.multimodule.graphql.gateway.graphql.ContextKeys
 import io.micronaut.context.ApplicationContext
 import io.micronaut.context.DefaultApplicationContextBuilder
@@ -47,10 +46,10 @@ abstract class AbstractApplicationTest {
     ) = runTest(auth, Duration.parse("30s"), block)
 
     operator fun AuthenticationContextElement.minus(role: Roles): AuthenticationContextElement =
-        AuthenticationContextElement(details.copy(roleSet = (details.roles - role).asRoleSet()))
+        AuthenticationContextElement(details.copy(roleSet = details.roleSet.apply { remove(role) }))
 
     operator fun AuthenticationContextElement.plus(role: Roles): AuthenticationContextElement =
-        AuthenticationContextElement(details.copy(roleSet = (details.roles + role).asRoleSet()))
+        AuthenticationContextElement(details.copy(roleSet = details.roleSet.apply { add(role) }))
 
     @Inject
     lateinit var schema: SchemaContextProvider
