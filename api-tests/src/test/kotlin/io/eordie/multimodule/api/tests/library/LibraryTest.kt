@@ -29,8 +29,13 @@ import io.eordie.multimodule.contracts.library.models.BookInput
 import io.eordie.multimodule.contracts.library.models.BooksFilter
 import io.eordie.multimodule.contracts.library.services.Library
 import io.eordie.multimodule.contracts.library.services.LibraryMutations
+import io.eordie.multimodule.contracts.library.services.LibrarySubscriptions
 import io.micronaut.test.annotation.Sql
 import jakarta.inject.Inject
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.flow.SharingStarted.Companion.Eagerly
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.shareIn
 import kotlinx.coroutines.future.await
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.BeforeAll
@@ -46,6 +51,9 @@ class LibraryTest : AbstractApplicationTest() {
 
     @Inject
     lateinit var mutateLibrary: LibraryMutations
+
+    @Inject
+    lateinit var subscriptionLibrary: LibrarySubscriptions
 
     private lateinit var firstBook: Book
     private lateinit var secondBook: Book
@@ -250,6 +258,18 @@ class LibraryTest : AbstractApplicationTest() {
         assertThat(firstBook.id).isNotEqualTo(bookInput.id)
         assertThat(firstBook.name).isEqualTo("Third book")
         assertThat(firstBook.authorIds).hasSize(1)
+    }
+
+    @Test
+    fun `should retrieve flow after new book creation`() = test {
+        val booksFlow = subscriptionLibrary.books().shareIn(GlobalScope, Eagerly, 1)
+
+        val bookInput = BookInput(firstBook.id, "flow book", listOf(AuthorInput(firstName = "Jane", lastName = "Doe")))
+        val expected = mutateLibrary.book(bookInput)
+
+        val actual = booksFlow.first()
+        assertThat(actual).isNotNull()
+        assertThat(actual).isEqualTo(expected)
     }
 
     @Test

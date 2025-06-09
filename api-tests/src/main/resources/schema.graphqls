@@ -536,6 +536,10 @@ input PageableInput {
   supportedOrders: [String]
 }
 
+type Subscription {
+  books(filter: BooksFilterInput): Book
+}
+
 type Query {
   suggestions(filter: OrganizationPublicInformationInput!): [OrganizationPublicInformation!]!
   pageable(pageable: PageableInput!): Pageable!

@@ -5,13 +5,14 @@ import io.eordie.multimodule.contracts.utils.JsonModule
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.cio.CIO
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.client.plugins.websocket.WebSockets
 import io.ktor.serialization.kotlinx.json.json
 import io.micronaut.http.HttpHeaders
 import io.micronaut.runtime.server.EmbeddedServer
 import jakarta.inject.Singleton
 import kobby.kotlin.SchemaContext
 import kobby.kotlin.SchemaSubscriber
-import kobby.kotlin.adapter.ktor.SchemaSimpleKtorAdapter
+import kobby.kotlin.adapter.ktor.SchemaCompositeKtorAdapter
 import kobby.kotlin.entity.Mutation
 import kobby.kotlin.entity.MutationProjection
 import kobby.kotlin.entity.Query
@@ -20,13 +21,13 @@ import kobby.kotlin.entity.Subscription
 import kobby.kotlin.entity.SubscriptionProjection
 import kobby.kotlin.schemaContextOf
 import kobby.kotlin.schemaJson
-import kotlinx.serialization.encodeToString
 import kotlin.coroutines.coroutineContext
 
 @Singleton
 class SchemaContextProvider(private val server: EmbeddedServer) : SchemaContext {
 
     private val client = HttpClient(CIO) {
+        install(WebSockets)
         install(ContentNegotiation) {
             json(schemaJson)
         }
@@ -39,7 +40,12 @@ class SchemaContextProvider(private val server: EmbeddedServer) : SchemaContext 
 
     private val context by lazy {
         schemaContextOf(
-            SchemaSimpleKtorAdapter(client, "http://localhost:${server.port}/graphql", headers)
+            SchemaCompositeKtorAdapter(
+                client = client,
+                httpUrl = "http://localhost:${server.port}/graphql",
+                webSocketUrl = "ws://localhost:${server.port}/graphql-ws",
+                requestHeaders = headers
+            )
         )
     }
 

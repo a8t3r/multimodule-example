@@ -27,7 +27,7 @@ class LibrarySubscriptionController : LibrarySubscriptions, EventListener<Book> 
         causedBy: AuthenticationDetails?,
         event: MutationEvent<Book>
     ) {
-        if (event.isCreated()) {
+        if (!event.isDeleted()) {
             booksFlow.emit(event.getActual())
         }
     }

@@ -24,8 +24,8 @@ kobby {
         adapter {
             extendedApi = true
             ktor {
-                simpleEnabled = true
-                compositeEnabled = false
+                simpleEnabled = false
+                compositeEnabled = true
             }
         }
         scalars = mapOf(

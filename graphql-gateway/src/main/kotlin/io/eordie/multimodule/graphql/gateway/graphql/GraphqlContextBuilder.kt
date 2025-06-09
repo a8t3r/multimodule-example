@@ -1,12 +1,13 @@
 package io.eordie.multimodule.graphql.gateway.graphql
 
 import graphql.GraphQLContext
+import io.eordie.multimodule.common.security.AuthenticationDetailsBuilder
 import io.eordie.multimodule.common.security.context.AclContextElement
 import io.micronaut.http.HttpRequest
 import io.micronaut.runtime.http.scope.RequestAware
 import io.micronaut.runtime.http.scope.RequestScope
+import io.micronaut.security.authentication.Authentication
 import io.opentelemetry.context.Context
-import jakarta.inject.Inject
 
 @RequestScope
 open class GraphqlContextBuilder : RequestAware {
@@ -17,9 +18,6 @@ open class GraphqlContextBuilder : RequestAware {
 
     private lateinit var request: HttpRequest<*>
 
-    @Inject
-    private lateinit var providers: List<AuthenticationProvider>
-
     open fun prepareContext(builder: GraphQLContext.Builder): GraphQLContext.Builder {
         return request.attributes.get(INVOCATION_CONTEXT, GraphQLContext::class.java)
             .map { builder.of(it) }
@@ -27,13 +25,14 @@ open class GraphqlContextBuilder : RequestAware {
     }
 
     private fun processContext(builder: GraphQLContext.Builder): GraphQLContext.Builder {
-        val auth = providers.firstNotNullOfOrNull { it.authenticate(request) }
+        val auth = request.getUserPrincipal(Authentication::class.java)
+            .map { AuthenticationDetailsBuilder.of(it) }
 
         builder.put(ContextKeys.TELEMETRY, Context.current())
         builder.put(ContextKeys.HEADERS, request.headers)
         builder.put(ContextKeys.ACL, AclContextElement())
-        if (auth != null) {
-            builder.put(ContextKeys.AUTHENTICATION_DETAILS, auth)
+        if (auth.isPresent) {
+            builder.put(ContextKeys.AUTHENTICATION_DETAILS, auth.get())
         }
         return builder
     }
