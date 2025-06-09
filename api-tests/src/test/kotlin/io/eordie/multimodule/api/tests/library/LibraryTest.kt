@@ -33,6 +33,7 @@ import io.eordie.multimodule.contracts.library.services.LibrarySubscriptions
 import io.micronaut.test.annotation.Sql
 import jakarta.inject.Inject
 import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.SharingStarted.Companion.Eagerly
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.shareIn
@@ -270,6 +271,33 @@ class LibraryTest : AbstractApplicationTest() {
         val actual = booksFlow.first()
         assertThat(actual).isNotNull()
         assertThat(actual).isEqualTo(expected)
+    }
+
+    @Test
+    fun `should retrieve subscription after new book creation`() = blockingTest {
+        val bookInput = BookInput(null, "subscription book", listOf(AuthorInput(firstName = "Foo", lastName = "Bar")))
+
+        schema.subscription {
+            books {
+                id
+                name
+                authorIds
+            }
+        }.subscribe {
+            delay(500)
+
+            val expected = mutateLibrary.book(bookInput)
+            assertThat(expected.name).isEqualTo("subscription book")
+            assertThat(expected.authorIds).hasSize(1)
+
+            val actual = receive().books
+            assertNotNull(actual)
+            assertThat(actual.id).isEqualTo(expected.id)
+            assertThat(actual.name).isEqualTo(expected.name)
+            assertThat(actual.authorIds).isEqualTo(expected.authorIds)
+
+            mutateLibrary.deleteBook(expected.id)
+        }
     }
 
     @Test
