@@ -18,6 +18,7 @@ object JsonModule {
             serializersModule = SerializersModule {
                 contextual(UUID::class, UUIDSerializer)
                 contextual(OffsetDateTime::class, OffsetDateTimeSerializer)
+                contextual(RoleSet::class, ProtobufModule.RoleSetSerializer)
             }
         }
     }

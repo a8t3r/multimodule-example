@@ -5,7 +5,9 @@ import io.eordie.multimodule.contracts.identitymanagement.models.AuthenticationD
 import io.eordie.multimodule.contracts.identitymanagement.models.CurrentOrganization
 import io.eordie.multimodule.contracts.identitymanagement.models.LocaleBinding
 import io.eordie.multimodule.contracts.identitymanagement.models.OrganizationRoleBinding
+import io.eordie.multimodule.contracts.utils.RoleSet
 import io.eordie.multimodule.contracts.utils.Roles
+import io.eordie.multimodule.contracts.utils.asRoleSet
 import java.util.*
 
 object AuthUtils {
@@ -13,7 +15,7 @@ object AuthUtils {
     fun authWith(builder: AuthenticationDetails.() -> AuthenticationDetails): AuthenticationContextElement {
         val initial = AuthenticationDetails(
             UUID.randomUUID(),
-            roles = emptyList(),
+            roleSet = RoleSet.noneOf(Roles::class.java),
             email = "test",
             emailVerified = true,
             currentOrganizationId = null,
@@ -33,7 +35,7 @@ object AuthUtils {
                 OrganizationRoleBinding(
                     currentOrganization.id,
                     "default",
-                    roles.toList()
+                    roles.toList().asRoleSet()
                 )
             )
         )
@@ -43,5 +45,5 @@ object AuthUtils {
         authWith(currentOrganization, UUID.randomUUID(), *roles)
 
     fun authWith(currentOrganization: CurrentOrganization, userId: UUID, vararg roles: Roles) =
-        authWith(currentOrganization) { this.copy(roles = roles.toList(), userId = userId) }
+        authWith(currentOrganization) { this.copy(roleSet = roles.asList().asRoleSet(), userId = userId) }
 }

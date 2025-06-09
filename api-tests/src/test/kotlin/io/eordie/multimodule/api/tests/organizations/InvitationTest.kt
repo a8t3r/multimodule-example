@@ -15,6 +15,7 @@ import io.eordie.multimodule.contracts.utils.Roles.MANAGE_INVITATIONS
 import io.eordie.multimodule.contracts.utils.Roles.MANAGE_ORGANIZATION
 import io.eordie.multimodule.contracts.utils.Roles.VIEW_INVITATIONS
 import io.eordie.multimodule.contracts.utils.Roles.VIEW_ORGANIZATION
+import io.eordie.multimodule.contracts.utils.asRoleSet
 import org.junit.jupiter.api.MethodOrderer
 import org.junit.jupiter.api.Order
 import org.junit.jupiter.api.Test
@@ -28,12 +29,12 @@ class InvitationTest : AbstractOrganizationTest() {
         private val inviter = authWith(firstOrg) {
             copy(
                 userId = developer1,
-                roles = listOf(
+                roleSet = listOf(
                     VIEW_INVITATIONS,
                     MANAGE_INVITATIONS,
                     VIEW_ORGANIZATION,
                     MANAGE_ORGANIZATION
-                )
+                ).asRoleSet()
             )
         }
         private val invited = authWith(secondOrg) {

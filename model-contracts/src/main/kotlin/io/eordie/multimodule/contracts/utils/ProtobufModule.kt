@@ -41,6 +41,7 @@ object ProtobufModule {
         serializersModule = SerializersModule {
             contextual(UUID::class, UUIDSerializer)
             contextual(OffsetDateTime::class, OffsetDateTimeSerializer)
+            contextual(RoleSet::class, RoleSetSerializer)
 
             polymorphic(BaseRuntimeException::class) {
                 subclass(ValidationException::class)
@@ -104,6 +105,27 @@ object ProtobufModule {
 
         override fun deserialize(decoder: Decoder): OffsetDateTime {
             return OffsetDateTime.ofInstant(Instant.ofEpochMilli(decoder.decodeLong()), ZoneOffset.UTC)
+        }
+    }
+
+    object RoleSetSerializer : KSerializer<RoleSet> {
+        override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("RoleSet", PrimitiveKind.LONG)
+
+        override fun serialize(encoder: Encoder, value: RoleSet) {
+            val encodedValue = value.fold(0L) { acc, value ->
+                acc.or(1L shl value.ordinal)
+            }
+            encoder.encodeLong(encodedValue)
+        }
+
+        override fun deserialize(decoder: Decoder): RoleSet {
+            val decodedValue = decoder.decodeLong()
+            return Roles.entries.fold(mutableListOf<Roles>()) { acc, value ->
+                if ((decodedValue and (1L shl value.ordinal)) != 0L) {
+                    acc.add(value)
+                }
+                acc
+            }.asRoleSet()
         }
     }
 }

@@ -1,12 +1,15 @@
 package io.eordie.multimodule.contracts.identitymanagement.models
 
+import com.expediagroup.graphql.generator.annotations.GraphQLIgnore
 import graphql.schema.DataFetchingEnvironment
 import io.eordie.multimodule.contracts.basic.Named
 import io.eordie.multimodule.contracts.organization.models.Organization
 import io.eordie.multimodule.contracts.organization.models.User
 import io.eordie.multimodule.contracts.organization.services.UserQueries
+import io.eordie.multimodule.contracts.utils.RoleSet
 import io.eordie.multimodule.contracts.utils.Roles
 import io.eordie.multimodule.contracts.utils.UuidStr
+import io.eordie.multimodule.contracts.utils.asList
 import io.eordie.multimodule.contracts.utils.byId
 import io.eordie.multimodule.contracts.utils.byIds
 import io.eordie.multimodule.contracts.utils.getValueBy
@@ -19,20 +22,23 @@ import java.util.concurrent.CompletableFuture
 data class OrganizationRoleBinding(
     val organizationId: UuidStr,
     val organizationName: String,
-    val roles: List<Roles>
-)
+    @GraphQLIgnore val roleSet: RoleSet
+) {
+    val roles: List<Roles> get() = roleSet.asList()
+}
 
 @Introspected
 @Serializable
 data class AuthenticationDetails(
     val userId: UuidStr,
-    val roles: List<Roles>,
+    @GraphQLIgnore val roleSet: RoleSet,
     val email: String,
     val emailVerified: Boolean,
     val locale: LocaleBinding,
     val currentOrganizationId: UuidStr? = null,
     val organizationRoles: List<OrganizationRoleBinding>? = null
 ) {
+    val roles: List<Roles> get() = roleSet.asList()
 
     fun organizationIds(): Set<UuidStr> = organizationRoles.orEmpty().map { it.organizationId }.toSet()
 

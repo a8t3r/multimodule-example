@@ -9,6 +9,7 @@ import io.eordie.multimodule.contracts.organization.models.acl.DepartmentBinding
 import io.eordie.multimodule.contracts.organization.models.acl.EmployeeAcl
 import io.eordie.multimodule.contracts.organization.models.acl.ResourceAcl
 import io.eordie.multimodule.contracts.organization.services.EmployeeAclQueries
+import io.eordie.multimodule.contracts.utils.asRoleSet
 import io.eordie.multimodule.organization.management.models.OrganizationEmployeeModel
 import io.eordie.multimodule.organization.management.repository.OrganizationDepartmentFactory
 import io.eordie.multimodule.organization.management.repository.OrganizationEmployeeFactory
@@ -76,7 +77,7 @@ class EmployeeAclQueriesController(
 
         return AuthenticationDetails(
             userId,
-            roles,
+            roles.asRoleSet(),
             user.email,
             user.emailVerified,
             LocaleBinding.default(),
@@ -85,7 +86,7 @@ class EmployeeAclQueriesController(
                 OrganizationRoleBinding(
                     organization.id,
                     organization.name,
-                    roles
+                    roles.asRoleSet()
                 )
             )
         )

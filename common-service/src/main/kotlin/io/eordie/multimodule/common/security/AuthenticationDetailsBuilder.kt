@@ -8,6 +8,7 @@ import io.eordie.multimodule.contracts.identitymanagement.models.AuthenticationD
 import io.eordie.multimodule.contracts.identitymanagement.models.LocaleBinding
 import io.eordie.multimodule.contracts.identitymanagement.models.OrganizationRoleBinding
 import io.eordie.multimodule.contracts.utils.Roles
+import io.eordie.multimodule.contracts.utils.asRoleSet
 import io.micronaut.security.authentication.Authentication
 import org.apache.commons.lang3.EnumUtils
 import java.util.*
@@ -80,7 +81,7 @@ class AuthenticationDetailsBuilder {
 
             return AuthenticationDetails(
                 userId = userId,
-                roles = holder.roles(),
+                roleSet = holder.roles().asRoleSet(),
                 email = attributes.getValue("email") as String,
                 emailVerified = attributes["email_verified"] as? Boolean ?: false,
                 locale = LocaleBinding("RU", attributes["locale"] as? String ?: "en"),
@@ -90,7 +91,7 @@ class AuthenticationDetailsBuilder {
                         OrganizationRoleBinding(
                             UUID.fromString(it.key),
                             it.value.name,
-                            supportedRoles(it.value.roles)
+                            supportedRoles(it.value.roles).asRoleSet()
                         )
                     }
             )

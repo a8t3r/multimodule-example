@@ -4,6 +4,7 @@ import io.eordie.multimodule.contracts.basic.exception.UnauthenticatedException
 import io.eordie.multimodule.contracts.identitymanagement.models.AuthenticationDetails
 import io.eordie.multimodule.contracts.identitymanagement.models.LocaleBinding
 import io.eordie.multimodule.contracts.utils.Roles
+import io.eordie.multimodule.contracts.utils.asRoleSet
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.withContext
 import java.util.*
@@ -28,7 +29,7 @@ suspend fun getAuthentication() = coroutineContext.getAuthenticationContext()
 val systemContext = AuthenticationContextElement(
     AuthenticationDetails(
         UUID(0L, 0L),
-        Roles.entries.filter { it.isSystemRole() },
+        Roles.entries.filter { it.isSystemRole() }.asRoleSet(),
         email = "system-admin",
         emailVerified = false,
         locale = LocaleBinding.default()

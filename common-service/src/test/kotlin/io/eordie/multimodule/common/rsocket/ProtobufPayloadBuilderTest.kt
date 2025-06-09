@@ -14,6 +14,7 @@ import io.eordie.multimodule.contracts.identitymanagement.models.LocaleBinding
 import io.eordie.multimodule.contracts.library.models.BooksFilter
 import io.eordie.multimodule.contracts.utils.Roles
 import io.eordie.multimodule.contracts.utils.UuidStr
+import io.eordie.multimodule.contracts.utils.asRoleSet
 import io.micronaut.core.annotation.Introspected
 import io.rsocket.kotlin.payload.buildPayload
 import io.rsocket.kotlin.payload.data
@@ -112,7 +113,7 @@ class ProtobufPayloadBuilderTest {
     fun `should serialize and deserialize auth details`() {
         val expected = AuthenticationDetails(
             UUID.randomUUID(),
-            listOf(Roles.MANAGE_ORGANIZATIONS, Roles.VIEW_MEMBERS),
+            listOf(Roles.MANAGE_ORGANIZATIONS, Roles.VIEW_MEMBERS).asRoleSet(),
             email = "foobar@nowhere",
             emailVerified = true,
             currentOrganizationId = UUID.randomUUID(),
