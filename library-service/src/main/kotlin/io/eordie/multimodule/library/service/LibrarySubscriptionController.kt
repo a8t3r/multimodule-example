@@ -2,6 +2,7 @@ package io.eordie.multimodule.library.service
 
 import io.eordie.multimodule.common.repository.event.EventListener
 import io.eordie.multimodule.contracts.basic.event.MutationEvent
+import io.eordie.multimodule.contracts.identitymanagement.models.AuthenticationDetails
 import io.eordie.multimodule.contracts.library.models.Book
 import io.eordie.multimodule.contracts.library.models.BooksFilter
 import io.eordie.multimodule.contracts.library.services.LibrarySubscriptions
@@ -22,7 +23,10 @@ class LibrarySubscriptionController : LibrarySubscriptions, EventListener<Book> 
     )
 
     @Topic("book")
-    override suspend fun onEvent(event: MutationEvent<Book>) {
+    override suspend fun onEvent(
+        causedBy: AuthenticationDetails?,
+        event: MutationEvent<Book>
+    ) {
         if (event.isCreated()) {
             booksFlow.emit(event.getActual())
         }
