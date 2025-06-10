@@ -46,6 +46,19 @@ data class LongNumericFilter(
 ) : NumericFilter<Long>
 
 @Serializable
+data class DoubleNumericFilter(
+    override val eq: Double? = null,
+    override val ne: Double? = null,
+    override val of: List<Double>? = null,
+    override val nof: List<Double>? = null,
+    override val nil: Boolean? = null,
+    override val gt: Double? = null,
+    override val gte: Double? = null,
+    override val lt: Double? = null,
+    override val lte: Double? = null
+) : NumericFilter<Double>
+
+@Serializable
 data class BooleanLiteralFilter(
     override val eq: Boolean? = null,
     override val ne: Boolean? = null,
