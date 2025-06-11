@@ -12,7 +12,7 @@ data class StackTraceElement(
 )
 
 @Serializable
-sealed class BaseRuntimeException() : RuntimeException() {
+sealed class BaseRuntimeException : RuntimeException() {
     open fun extensions(): Map<String, Any> = emptyMap()
 
     var originStackTrace: List<StackTraceElement> = stackTrace.transform()
