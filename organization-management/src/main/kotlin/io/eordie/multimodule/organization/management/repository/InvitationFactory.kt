@@ -5,7 +5,7 @@ import io.eordie.multimodule.common.repository.KBaseFactory
 import io.eordie.multimodule.common.repository.entity.PermissionAwareIF
 import io.eordie.multimodule.contracts.basic.BasePermission
 import io.eordie.multimodule.contracts.basic.Permission
-import io.eordie.multimodule.contracts.basic.filters.Direction
+import io.eordie.multimodule.contracts.organization.models.Direction
 import io.eordie.multimodule.contracts.organization.models.acl.ResourceAcl
 import io.eordie.multimodule.contracts.organization.models.invitation.Invitation
 import io.eordie.multimodule.contracts.organization.models.invitation.InvitationFilter

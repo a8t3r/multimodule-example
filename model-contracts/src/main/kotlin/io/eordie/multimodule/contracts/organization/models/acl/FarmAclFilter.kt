@@ -1,8 +1,8 @@
 package io.eordie.multimodule.contracts.organization.models.acl
 
-import io.eordie.multimodule.contracts.basic.filters.Direction
 import io.eordie.multimodule.contracts.basic.filters.LongNumericFilter
 import io.eordie.multimodule.contracts.basic.filters.UUIDLiteralFilter
+import io.eordie.multimodule.contracts.organization.models.Direction
 import io.eordie.multimodule.contracts.organization.models.OrganizationsFilter
 import io.micronaut.core.annotation.Introspected
 import kotlinx.serialization.Serializable

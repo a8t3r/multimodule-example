@@ -5,7 +5,7 @@ import io.eordie.multimodule.common.filter.acceptMany
 import io.eordie.multimodule.common.repository.entity.PermissionAwareIF.Companion.ALL
 import io.eordie.multimodule.contracts.basic.BasePermission.VIEW
 import io.eordie.multimodule.contracts.basic.Permission
-import io.eordie.multimodule.contracts.basic.filters.Direction
+import io.eordie.multimodule.contracts.organization.models.Direction
 import io.eordie.multimodule.contracts.organization.models.acl.FarmAcl
 import io.eordie.multimodule.contracts.organization.models.acl.FarmAclFilter
 import io.eordie.multimodule.contracts.organization.models.acl.ResourceAcl

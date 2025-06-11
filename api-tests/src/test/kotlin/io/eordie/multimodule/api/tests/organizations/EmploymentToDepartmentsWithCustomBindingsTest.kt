@@ -13,9 +13,9 @@ import assertk.assertions.isNotEmpty
 import assertk.assertions.isNotNull
 import assertk.assertions.isNull
 import io.eordie.multimodule.api.tests.AuthUtils.authWith
-import io.eordie.multimodule.contracts.basic.filters.Direction
 import io.eordie.multimodule.contracts.basic.filters.StringLiteralFilter
 import io.eordie.multimodule.contracts.basic.filters.UUIDLiteralFilter
+import io.eordie.multimodule.contracts.organization.models.Direction
 import io.eordie.multimodule.contracts.organization.models.OrganizationsFilter
 import io.eordie.multimodule.contracts.organization.models.User
 import io.eordie.multimodule.contracts.organization.models.UsersFilter
