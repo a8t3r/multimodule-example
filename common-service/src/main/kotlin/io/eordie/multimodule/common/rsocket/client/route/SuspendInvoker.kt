@@ -10,6 +10,7 @@ import java.lang.reflect.Method
 import java.lang.reflect.Proxy
 import kotlin.coroutines.Continuation
 import kotlin.coroutines.CoroutineContext
+import kotlin.coroutines.EmptyCoroutineContext
 import kotlin.coroutines.startCoroutine
 import kotlin.reflect.KClass
 
@@ -43,12 +44,15 @@ abstract class SuspendInvoker(val kotlinIFace: KClass<*>, val beanLocator: BeanL
                         kotlin.coroutines.intrinsics.COROUTINE_SUSPENDED
                     } else {
                         val index = arguments
-                            .indexOfFirst { CoroutineContext::class.java.isAssignableFrom(it.javaClass) }
-                            .takeUnless { it < 0 } ?: error("arguments has no coroutine context")
+                            .indexOfFirst { it != null && CoroutineContext::class.java.isAssignableFrom(it.javaClass) }
+                            .takeUnless { it < 0 }
 
-                        val context = requireNotNull(arguments[index]) as CoroutineContext
-                        if (isRemote) {
-                            arguments[index] = null
+                        val context = if (index == null) EmptyCoroutineContext else {
+                            val context = requireNotNull(arguments[index]) as CoroutineContext
+                            if (isRemote) {
+                                arguments[index] = null
+                            }
+                            context
                         }
 
                         runBlocking {
