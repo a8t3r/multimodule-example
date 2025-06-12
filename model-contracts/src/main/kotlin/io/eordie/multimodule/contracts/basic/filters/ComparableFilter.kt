@@ -9,15 +9,19 @@ import java.time.temporal.Temporal
 /**
  * https://www.gatsbyjs.com/docs/graphql-reference/#complete-list-of-possible-operators
  */
-interface ComparableFilter<T : Comparable<T>> : LiteralFilter<T> {
+@Serializable
+sealed interface ComparableFilter<T : Comparable<T>> : LiteralFilter<T> {
     val gt: T?
     val gte: T?
     val lt: T?
     val lte: T?
 }
 
-interface NumericFilter<T> : ComparableFilter<T> where T : Number, T : Comparable<T>
-interface TemporalFilter<T> : ComparableFilter<T> where T : Temporal, T : Comparable<T>
+@Serializable
+sealed interface NumericFilter<T> : ComparableFilter<T> where T : Number, T : Comparable<T>
+
+@Serializable
+sealed interface TemporalFilter<T> : ComparableFilter<T> where T : Temporal, T : Comparable<T>
 
 @Introspected
 @Serializable
