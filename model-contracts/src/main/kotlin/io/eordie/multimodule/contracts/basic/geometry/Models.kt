@@ -5,7 +5,8 @@ package io.eordie.multimodule.contracts.basic.geometry
 import io.micronaut.core.annotation.Introspected
 import kotlinx.serialization.Serializable
 
-interface SpatialReference {
+@Serializable
+sealed interface SpatialReference {
     val srid: Int
 }
 

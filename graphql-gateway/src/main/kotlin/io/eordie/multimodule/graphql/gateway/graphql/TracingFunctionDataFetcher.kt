@@ -64,9 +64,10 @@ class TracingFunctionDataFetcher(
         return parametersTransformer.mapParameterToValue(param, environment) ?: run {
             if (environment.containsArgument(param.name)) {
                 val interfaceParam = requireNotNull(interfaceParameterIndex[param.index])
-                super.mapParameterToValue(interfaceParam, environment)?.let { (_, value) ->
-                    param to value
-                }
+                param to parametersTransformer.convert(
+                    requireNotNull(environment.arguments[param.name]),
+                    interfaceParam.type
+                )
             } else if (param.isOptional || param.type.isMarkedNullable) {
                 param to null
             } else {

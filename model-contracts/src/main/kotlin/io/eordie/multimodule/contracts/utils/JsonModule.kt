@@ -15,6 +15,7 @@ import java.util.*
 object JsonModule {
     fun getInstance(): Json {
         return Json {
+            ignoreUnknownKeys = true
             serializersModule = SerializersModule {
                 contextual(UUID::class, UUIDSerializer)
                 contextual(OffsetDateTime::class, OffsetDateTimeSerializer)

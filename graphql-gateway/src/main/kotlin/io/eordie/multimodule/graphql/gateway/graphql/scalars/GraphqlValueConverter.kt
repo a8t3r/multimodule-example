@@ -9,11 +9,14 @@ import graphql.language.NullValue
 import graphql.language.ObjectValue
 import graphql.language.StringValue
 import graphql.language.Value
+import io.eordie.multimodule.contracts.basic.geometry.SpatialReference
+import io.eordie.multimodule.contracts.utils.JsonModule
 import kotlinx.serialization.json.JsonArray
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonNull
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.JsonPrimitive
+import kotlinx.serialization.json.encodeToJsonElement
 
 object GraphqlValueConverter {
 
@@ -26,6 +29,7 @@ object GraphqlValueConverter {
         is Array<*> -> JsonArray(value.map { toJsonElement(it) })
         is List<*> -> JsonArray(value.map { toJsonElement(it) })
         is Map<*, *> -> JsonObject(value.map { it.key.toString() to toJsonElement(it.value) }.toMap())
+        is SpatialReference -> JsonModule.getInstance().encodeToJsonElement<SpatialReference>(value)
         else -> error("too complex type")
     }
 

@@ -1,6 +1,7 @@
 package io.eordie.multimodule.contracts.basic.filters
 
 import io.eordie.multimodule.contracts.utils.OffsetDateTimeStr
+import io.micronaut.core.annotation.Introspected
 import kotlinx.serialization.Serializable
 import java.time.OffsetDateTime
 import java.time.temporal.Temporal
@@ -17,8 +18,18 @@ interface ComparableFilter<T : Comparable<T>> : LiteralFilter<T> {
 
 interface NumericFilter<T> : ComparableFilter<T> where T : Number, T : Comparable<T>
 interface TemporalFilter<T> : ComparableFilter<T> where T : Temporal, T : Comparable<T>
-interface EnumLiteralFilter<T> : LiteralFilter<T> where T : Enum<T>
 
+@Introspected
+@Serializable
+data class EnumLiteralFilter<T>(
+    override val eq: T? = null,
+    override val ne: T? = null,
+    override val of: List<T>? = null,
+    override val nof: List<T>? = null,
+    override val nil: Boolean? = null
+) : LiteralFilter<T> where T : Enum<T>
+
+@Introspected
 @Serializable
 data class IntNumericFilter(
     override val eq: Int? = null,
@@ -32,6 +43,7 @@ data class IntNumericFilter(
     override val lte: Int? = null
 ) : NumericFilter<Int>
 
+@Introspected
 @Serializable
 data class LongNumericFilter(
     override val eq: Long? = null,
@@ -45,6 +57,7 @@ data class LongNumericFilter(
     override val lte: Long? = null
 ) : NumericFilter<Long>
 
+@Introspected
 @Serializable
 data class DoubleNumericFilter(
     override val eq: Double? = null,
@@ -58,6 +71,7 @@ data class DoubleNumericFilter(
     override val lte: Double? = null
 ) : NumericFilter<Double>
 
+@Introspected
 @Serializable
 data class BooleanLiteralFilter(
     override val eq: Boolean? = null,
@@ -71,6 +85,7 @@ data class BooleanLiteralFilter(
     override val lte: Boolean? = null
 ) : StringRepresentationAware<Boolean>
 
+@Introspected
 @Serializable
 data class OffsetDateTimeLiteralFilter(
     override val eq: OffsetDateTimeStr? = null,
