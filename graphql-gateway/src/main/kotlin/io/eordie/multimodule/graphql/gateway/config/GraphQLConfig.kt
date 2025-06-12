@@ -21,7 +21,6 @@ import io.eordie.multimodule.common.rsocket.client.route.Synthesized
 import io.eordie.multimodule.contracts.Mutation
 import io.eordie.multimodule.contracts.Query
 import io.eordie.multimodule.contracts.Subscription
-import io.eordie.multimodule.graphql.gateway.converters.OutputTypeConverter
 import io.eordie.multimodule.graphql.gateway.graphql.CacheProvider
 import io.eordie.multimodule.graphql.gateway.graphql.CustomGeneratorHooks
 import io.eordie.multimodule.graphql.gateway.graphql.DataFetcherExceptionHandler
@@ -35,7 +34,6 @@ import io.eordie.multimodule.graphql.gateway.graphql.instrumentation.OpenTelemet
 import io.micronaut.context.annotation.Bean
 import io.micronaut.context.annotation.Factory
 import io.micronaut.context.annotation.Prototype
-import io.micronaut.context.annotation.Requires
 import io.opentelemetry.api.OpenTelemetry
 import jakarta.inject.Singleton
 import org.dataloader.DataLoaderRegistry
@@ -94,12 +92,11 @@ class GraphQLConfig {
 
     @Bean
     fun schemaGeneratorConfig(
-        customConverters: List<OutputTypeConverter>,
         parametersTransformer: ParametersTransformer
     ): SchemaGeneratorConfig {
         return SchemaGeneratorConfig(
             supportedPackages = listOf(Query::class.java.packageName),
-            hooks = CustomGeneratorHooks(customConverters),
+            hooks = CustomGeneratorHooks(),
             dataFetcherFactoryProvider = object : SimpleKotlinDataFetcherFactoryProvider() {
                 override fun functionDataFetcherFactory(
                     target: Any?,
@@ -136,7 +133,6 @@ class GraphQLConfig {
     fun exceptionHandler() = DataFetcherExceptionHandler()
 
     @Bean
-    @Requires(classes = [OutputTypeConverter::class])
     fun graphqlSchema(
         instrumentation: ChainedInstrumentation,
         config: SchemaGeneratorConfig,

@@ -7,10 +7,12 @@ import graphql.scalars.ExtendedScalars
 import graphql.schema.GraphQLList
 import graphql.schema.GraphQLType
 import graphql.schema.GraphQLTypeReference
+import io.eordie.multimodule.contracts.basic.filters.EnumLiteralFilter
 import io.eordie.multimodule.contracts.basic.geometry.TMultiPolygon
 import io.eordie.multimodule.contracts.basic.geometry.TPoint
 import io.eordie.multimodule.contracts.basic.geometry.TPolygon
-import io.eordie.multimodule.graphql.gateway.converters.OutputTypeConverter
+import io.eordie.multimodule.contracts.basic.paging.Page
+import io.eordie.multimodule.graphql.gateway.converters.GenericTypeConverter
 import io.eordie.multimodule.graphql.gateway.graphql.scalars.TMultiPolygonScalarCoercing
 import io.eordie.multimodule.graphql.gateway.graphql.scalars.TPointScalarCoercing
 import io.eordie.multimodule.graphql.gateway.graphql.scalars.TPolygonScalarCoercing
@@ -34,52 +36,40 @@ inline fun <reified T : Annotation> KFunction<*>.findAnnotations(kClass: KClass<
     return contract.findAnnotations(T::class)
 }
 
-internal class CustomGeneratorHooks(outputConverters: List<OutputTypeConverter>) : FlowSubscriptionSchemaGeneratorHooks() {
-
-    private val converters = outputConverters
-        .flatMap { converter -> converter.supports().map { it to converter } }
-        .toMap()
-
-    private val previouslyCreated = mutableSetOf<String>()
+internal class CustomGeneratorHooks : FlowSubscriptionSchemaGeneratorHooks() {
     private val skip = setOf("internal", "load", "broadcast")
 
     override fun isValidFunction(kClass: KClass<*>, function: KFunction<*>) =
         function.findAnnotations<GraphQLIgnore>(kClass).isEmpty() && skip.none { function.name.startsWith(it) }
 
     @Suppress("CyclomaticComplexMethod")
-    override fun willGenerateGraphQLType(type: KType): GraphQLType? = when (type.classifier as? KClass<*>) {
-        Unit::class -> Scalars.GraphQLBoolean
-        URL::class -> ExtendedScalars.Url
-        UUID::class -> ExtendedScalars.UUID
-        BigDecimal::class -> ExtendedScalars.GraphQLBigDecimal
-        Byte::class -> ExtendedScalars.GraphQLByte
-        Char::class -> ExtendedScalars.GraphQLChar
-        Short::class -> ExtendedScalars.GraphQLShort
-        Long::class -> ExtendedScalars.GraphQLLong
-        Currency::class -> Scalars.GraphQLString
-        LocalDate::class -> ExtendedScalars.Date
-        LocalTime::class -> ExtendedScalars.LocalTime
-        OffsetDateTime::class -> ExtendedScalars.DateTime
-        TPoint::class -> TPointScalarCoercing.Scalar
-        TPolygon::class -> TPolygonScalarCoercing.Scalar
-        TMultiPolygon::class -> TMultiPolygonScalarCoercing.Scalar
-        Set::class -> {
-            val projection = getProjection(type)
-            GraphQLList.list(GraphQLTypeReference(projection))
-        }
-
-        else -> {
-            val converter = converters[type.classifier]
-            if (converter == null) null else {
+    override fun willGenerateGraphQLType(type: KType): GraphQLType? =
+        when (val targetClass = type.classifier as? KClass<*>) {
+            Unit::class -> Scalars.GraphQLBoolean
+            URL::class -> ExtendedScalars.Url
+            UUID::class -> ExtendedScalars.UUID
+            BigDecimal::class -> ExtendedScalars.GraphQLBigDecimal
+            Byte::class -> ExtendedScalars.GraphQLByte
+            Char::class -> ExtendedScalars.GraphQLChar
+            Short::class -> ExtendedScalars.GraphQLShort
+            Long::class -> ExtendedScalars.GraphQLLong
+            Currency::class -> Scalars.GraphQLString
+            LocalDate::class -> ExtendedScalars.Date
+            LocalTime::class -> ExtendedScalars.LocalTime
+            OffsetDateTime::class -> ExtendedScalars.DateTime
+            TPoint::class -> TPointScalarCoercing.Scalar
+            TPolygon::class -> TPolygonScalarCoercing.Scalar
+            TMultiPolygon::class -> TMultiPolygonScalarCoercing.Scalar
+            Page::class -> GenericTypeConverter(targetClass).convertToOutput(getProjection(type))
+            EnumLiteralFilter::class -> GenericTypeConverter(targetClass).convertToInput(getProjection(type))
+            Set::class -> {
                 val projection = getProjection(type)
-                val typeName = converter.typeName(projection)
-                if (typeName != null && !previouslyCreated.add(typeName)) GraphQLTypeReference(typeName) else {
-                    converter.convert(type, projection)
-                }
+                GraphQLList.list(GraphQLTypeReference(projection))
             }
-        }
-    }
 
-    private fun getProjection(type: KType, index: Int = 0): String? =
-        (type.arguments[index].type?.classifier as? KClass<*>)?.simpleName
+            else -> null
+        }
+
+    private fun getProjection(type: KType, index: Int = 0): String =
+        requireNotNull((type.arguments[index].type?.classifier as? KClass<*>)?.simpleName)
 }
