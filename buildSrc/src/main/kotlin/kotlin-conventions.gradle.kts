@@ -38,6 +38,7 @@ kotlin {
     compilerOptions {
         @Suppress("SpellCheckingInspection")
         freeCompilerArgs = listOf(
+            "-Xwhen-guards",
             "-Xjsr305=strict",
             "-Xcontext-parameters"
         )

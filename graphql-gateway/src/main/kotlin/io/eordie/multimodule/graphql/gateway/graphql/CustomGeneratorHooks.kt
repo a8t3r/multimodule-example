@@ -11,6 +11,7 @@ import io.eordie.multimodule.contracts.basic.filters.EnumLiteralFilter
 import io.eordie.multimodule.contracts.basic.geometry.TMultiPolygon
 import io.eordie.multimodule.contracts.basic.geometry.TPoint
 import io.eordie.multimodule.contracts.basic.geometry.TPolygon
+import io.eordie.multimodule.contracts.basic.map.MapEntry
 import io.eordie.multimodule.contracts.basic.paging.Page
 import io.eordie.multimodule.graphql.gateway.converters.GenericTypeConverter
 import io.eordie.multimodule.graphql.gateway.graphql.scalars.TMultiPolygonScalarCoercing
@@ -28,6 +29,7 @@ import kotlin.reflect.KType
 import kotlin.reflect.full.declaredFunctions
 import kotlin.reflect.full.findAnnotations
 import kotlin.reflect.full.superclasses
+import kotlin.reflect.jvm.jvmErasure
 
 inline fun <reified T : Annotation> KFunction<*>.findAnnotations(kClass: KClass<*>): List<T> {
     val contract = kClass.superclasses.first().declaredFunctions
@@ -41,6 +43,16 @@ internal class CustomGeneratorHooks : FlowSubscriptionSchemaGeneratorHooks() {
 
     override fun isValidFunction(kClass: KClass<*>, function: KFunction<*>) =
         function.findAnnotations<GraphQLIgnore>(kClass).isEmpty() && skip.none { function.name.startsWith(it) }
+
+    override fun willResolveMonad(type: KType): KType = when (type.classifier) {
+        List::class if (type.arguments[0].type?.jvmErasure == MapEntry::class) -> newTypeKV(type, OutputMapEntry::class)
+        else -> super.willResolveMonad(type)
+    }
+
+    override fun willResolveInputMonad(type: KType): KType = when (type.classifier) {
+        List::class if (type.arguments[0].type?.jvmErasure == MapEntry::class) -> newTypeKV(type, InputMapEntry::class)
+        else -> super.willResolveInputMonad(type)
+    }
 
     @Suppress("CyclomaticComplexMethod")
     override fun willGenerateGraphQLType(type: KType): GraphQLType? =
@@ -62,10 +74,9 @@ internal class CustomGeneratorHooks : FlowSubscriptionSchemaGeneratorHooks() {
             TMultiPolygon::class -> TMultiPolygonScalarCoercing.Scalar
             Page::class -> GenericTypeConverter(targetClass).convertToOutput(getProjection(type))
             EnumLiteralFilter::class -> GenericTypeConverter(targetClass).convertToInput(getProjection(type))
-            Set::class -> {
-                val projection = getProjection(type)
-                GraphQLList.list(GraphQLTypeReference(projection))
-            }
+            InputMapEntry::class -> mapInputType(getProjection(type, 0), getProjection(type, 1))
+            OutputMapEntry::class -> mapOutputType(getProjection(type, 0), getProjection(type, 1))
+            Set::class -> GraphQLList.list(GraphQLTypeReference(getProjection(type)))
 
             else -> null
         }
