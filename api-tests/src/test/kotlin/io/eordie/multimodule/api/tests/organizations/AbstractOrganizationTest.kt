@@ -82,8 +82,9 @@ abstract class AbstractOrganizationTest : AbstractApplicationTest() {
     lateinit var invitationMutations: InvitationMutations
 
     protected suspend fun truncateInvitations(currentOrganization: CurrentOrganization) =
-        invitationQueries.invitations(InvitationFilter(organizationId = UUIDLiteralFilter(eq = currentOrganization.id)))
-            .data.forEach { invitationMutations.deleteInvitation(it.id) }
+        invitationQueries.invitations(
+            InvitationFilter(organizationId = UUIDLiteralFilter { eq = currentOrganization.id })
+        ).data.forEach { invitationMutations.deleteInvitation(it.id) }
 
     protected suspend fun truncateDepartments(currentOrganization: CurrentOrganization) =
         structureQueries.departments(currentOrganization)

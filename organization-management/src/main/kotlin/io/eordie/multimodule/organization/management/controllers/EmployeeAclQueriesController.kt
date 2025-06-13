@@ -37,8 +37,8 @@ class EmployeeAclQueriesController(
         val employees = employees.getEmployeesByOrganization(listOf(userId), organizationId)
         return if (employees.isEmpty()) emptyList() else departments.findBindingsByFilter(
             DepartmentBindingFilter(
-                organizationId = UUIDLiteralFilter(eq = organizationId),
-                departmentId = UUIDLiteralFilter(of = employees.mapNotNull { it.departmentId })
+                organizationId = UUIDLiteralFilter { eq = organizationId },
+                departmentId = UUIDLiteralFilter { of = employees.mapNotNull { it.departmentId } }
             )
         ).map { binding ->
             EmployeeAcl(binding.farmId, binding.farmOwnerOrganizationId, binding.fieldIds, binding.roleIds)
@@ -51,8 +51,8 @@ class EmployeeAclQueriesController(
         val bindingIndex = if (employees.isEmpty()) emptyMap() else {
             departments.findBindingsByFilter(
                 DepartmentBindingFilter(
-                    organizationId = UUIDLiteralFilter(eq = organizationId),
-                    departmentId = UUIDLiteralFilter(of = employees.mapNotNull { it.departmentId })
+                    organizationId = UUIDLiteralFilter { eq = organizationId },
+                    departmentId = UUIDLiteralFilter { of = employees.mapNotNull { it.departmentId } }
                 )
             ).groupBy { it.departmentId }
         }

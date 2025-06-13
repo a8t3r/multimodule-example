@@ -31,7 +31,7 @@ class OrganizationQueriesController(
     }
 
     override suspend fun loadOrganizationDigest(organizationIds: List<UUID>): Map<UUID, OrganizationDigest> {
-        val filter = OrganizationsFilter(id = UUIDLiteralFilter(of = organizationIds))
+        val filter = OrganizationsFilter(id = UUIDLiteralFilter { of = organizationIds })
         return organizations.getOrganizationsDigest(filter)
             .associateBy(OrganizationDigest::organizationId) { it }
     }

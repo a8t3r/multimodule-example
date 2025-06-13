@@ -26,6 +26,7 @@ import java.util.*
 import kotlin.reflect.KTypeProjection
 import kotlin.reflect.KVariance
 import kotlin.reflect.full.createType
+import kotlin.test.assertIs
 
 class ProtobufPayloadBuilderTest {
     private val proto = ProtobufPayloadBuilder()
@@ -73,7 +74,12 @@ class ProtobufPayloadBuilderTest {
 
     @Test
     fun `should serde argument list`() {
-        val expectedFilter = BooksFilter(id = UUIDLiteralFilter(eq = UUID.randomUUID()))
+        val expectedFilter = BooksFilter(
+            id = UUIDLiteralFilter {
+                eq = UUID.randomUUID()
+                gt = UUID.randomUUID()
+            }
+        )
         val expectedBook = BookDemo(UUID.randomUUID(), "foobar", listOf(UUID.randomUUID()))
         val payload = proto.encodeToPayload(
             listOf(expectedFilter, expectedBook),
@@ -81,7 +87,9 @@ class ProtobufPayloadBuilderTest {
         )
 
         val (actualFilter, actualBook) = proto.decodeFromPayload(payload, listOf(filter, book))
-        assertThat(expectedFilter).isEqualTo(actualFilter)
+        assertIs<BooksFilter>(actualFilter)
+        assertThat(expectedFilter.id?.eq).isEqualTo(actualFilter.id?.eq)
+        assertThat(expectedFilter.id?.gt).isEqualTo(actualFilter.id?.gt)
         assertThat(expectedBook).isEqualTo(actualBook)
     }
 

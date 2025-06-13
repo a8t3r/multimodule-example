@@ -24,7 +24,7 @@ class SelectionSetTest : AbstractApplicationTest() {
 
     @Test
     fun `should select only projection fields`() = test(of(Region::id)) {
-        val page = regions.regions(RegionsFilter(id = LongNumericFilter(eq = 2804758)))
+        val page = regions.regions(RegionsFilter(id = LongNumericFilter { eq = 2804758 }))
         val region = page.data.single()
         assertThat(region.id).isEqualTo(2804758)
         assertThat(region.depth).isEqualTo(0)
@@ -34,7 +34,7 @@ class SelectionSetTest : AbstractApplicationTest() {
 
     @Test
     fun `should select field by entity reference`() = test(of(Region::id, Region::parent)) {
-        val page = regions.regions(RegionsFilter(id = LongNumericFilter(eq = 2804758)))
+        val page = regions.regions(RegionsFilter(id = LongNumericFilter { eq = 2804758 }))
         val region = page.data.single()
         assertThat(region.id).isEqualTo(2804758)
         assertThat(region.depth).isEqualTo(0)

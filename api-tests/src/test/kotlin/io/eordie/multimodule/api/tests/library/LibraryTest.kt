@@ -132,7 +132,9 @@ class LibraryTest : AbstractApplicationTest() {
 
     @Test
     fun `should get summary of single book`() = test {
-        val summary = queryLibrary.bookSummary(BooksFilter(id = UUIDLiteralFilter(eq = firstBook.id)))
+        val summary = queryLibrary.bookSummary(
+            BooksFilter(id = UUIDLiteralFilter { eq = firstBook.id })
+        )
         assertThat(summary.totalCount).isEqualTo(1)
         assertThat(summary.ids).containsExactly(firstBook.id)
         assertThat(summary.names).containsExactly(firstBook.name)
@@ -143,8 +145,8 @@ class LibraryTest : AbstractApplicationTest() {
     fun `should get summary by complex filter`() = test {
         val initial = BooksFilter(
             authors = AuthorsFilter(
-                firstName = StringLiteralFilter(like = "John"),
-                lastName = StringLiteralFilter(eq = "Doe")
+                firstName = StringLiteralFilter { like = "John" },
+                lastName = StringLiteralFilter { eq = "Doe" }
             )
         )
         val filter = initial.copy(authors = initial.authors?.copy(books = initial))
@@ -158,7 +160,7 @@ class LibraryTest : AbstractApplicationTest() {
 
     @Test
     fun `should query book by id filter`() = test {
-        val books = queryLibrary.books(BooksFilter(id = UUIDLiteralFilter(eq = firstBook.id)))
+        val books = queryLibrary.books(BooksFilter(id = UUIDLiteralFilter { eq = firstBook.id }))
         assertThat(books).isNotNull()
         assertThat(books.pageable.cursor).isNull()
         assertThat(books.data).hasSize(1)
@@ -168,7 +170,7 @@ class LibraryTest : AbstractApplicationTest() {
     @Test
     fun `should return empty page on false condition`() = test {
         val books = queryLibrary.books(
-            BooksFilter(createdAt = OffsetDateTimeLiteralFilter(lt = OffsetDateTime.now().minusDays(1)))
+            BooksFilter(createdAt = OffsetDateTimeLiteralFilter { lt = OffsetDateTime.now().minusDays(1) })
         )
         assertThat(books).isNotNull()
         assertThat(books.pageable.cursor).isNull()
@@ -179,12 +181,12 @@ class LibraryTest : AbstractApplicationTest() {
     fun `should query book by name`() = test {
         val books = queryLibrary.books(
             BooksFilter(
-                name = StringLiteralFilter(
-                    eq = firstBook.name,
-                    startsWith = firstBook.name,
-                    endsWith = firstBook.name,
+                name = StringLiteralFilter {
+                    eq = firstBook.name
+                    startsWith = firstBook.name
+                    endsWith = firstBook.name
                     like = firstBook.name
-                )
+                }
             )
         )
         assertThat(books).isNotNull()
@@ -197,23 +199,23 @@ class LibraryTest : AbstractApplicationTest() {
     fun `should query books by complex filter`() = test {
         val books = queryLibrary.books(
             BooksFilter(
-                name = StringLiteralFilter(
-                    eq = firstBook.name,
-                    startsWith = firstBook.name,
-                    endsWith = firstBook.name,
+                name = StringLiteralFilter {
+                    eq = firstBook.name
+                    startsWith = firstBook.name
+                    endsWith = firstBook.name
                     like = firstBook.name
-                ),
-                authorIdsSize = IntNumericFilter(gt = 0),
+                },
+                authorIdsSize = IntNumericFilter { gt = 0 },
                 authors = AuthorsFilter(
-                    id = UUIDLiteralFilter(
+                    id = UUIDLiteralFilter {
                         of = firstBook.authorIds + secondBook.authorIds
-                    ),
-                    firstName = StringLiteralFilter(
-                        of = listOf("John", "Foo", "Bar"),
-                        nil = false,
-                        startsWith = "Jo",
+                    },
+                    firstName = StringLiteralFilter {
+                        of = listOf("John", "Foo", "Bar")
+                        nil = false
+                        startsWith = "Jo"
                         endsWith = "hn"
-                    ),
+                    },
                 )
             )
         )
@@ -248,7 +250,7 @@ class LibraryTest : AbstractApplicationTest() {
 
         assertThat(queryLibrary.bookById(bookId)).isNull()
 
-        val books = queryLibrary.books(BooksFilter(id = UUIDLiteralFilter(eq = bookId)))
+        val books = queryLibrary.books(BooksFilter(id = UUIDLiteralFilter { eq = bookId }))
         assertThat(books.pageable.cursor).isNull()
         assertThat(books.data).isEmpty()
 

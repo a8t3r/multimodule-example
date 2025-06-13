@@ -36,7 +36,7 @@ class OrganizationStructureQueriesController(
         filter: OrganizationPositionFilter?
     ): List<OrganizationPosition> {
         val filterBy = filter.orDefault()
-            .copy(organizationId = UUIDLiteralFilter(eq = currentOrganization.id))
+            .copy(organizationId = UUIDLiteralFilter { eq = currentOrganization.id })
 
         return positions.queryAll(filterBy).toList()
     }
@@ -65,7 +65,7 @@ class OrganizationStructureQueriesController(
         pageable: Pageable?
     ): Page<OrganizationDepartment> {
         val filterBy = filter.orDefault()
-            .copy(organizationId = UUIDLiteralFilter(eq = currentOrganization.id))
+            .copy(organizationId = UUIDLiteralFilter { eq = currentOrganization.id })
 
         return departments.query(filterBy, pageable)
     }
@@ -76,7 +76,7 @@ class OrganizationStructureQueriesController(
         pageable: Pageable?
     ): Page<OrganizationEmployee> {
         val filterBy = filter.orDefault()
-            .copy(organizationId = UUIDLiteralFilter(eq = currentOrganization.id))
+            .copy(organizationId = UUIDLiteralFilter { eq = currentOrganization.id })
 
         return employees.query(filterBy, pageable)
     }

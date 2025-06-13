@@ -79,7 +79,7 @@ class AccessionRequestsController(
         val organization = withSystemContext {
             organizations.findByFilter(
                 OrganizationsFilter(
-                    information = OrganizationPublicInformationFilter(vat = StringLiteralFilter(eq = input.vat))
+                    information = OrganizationPublicInformationFilter(vat = StringLiteralFilter { eq = input.vat })
                 )
             ).data.singleOrError()
         }

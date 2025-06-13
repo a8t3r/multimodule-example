@@ -72,7 +72,7 @@ class OrganizationTest : AbstractOrganizationTest() {
         assertThat(organization.permissions).hasSize(3)
         assertThat(organization.name).isEqualTo("My new Organization")
 
-        val filter = OrganizationsFilter(name = StringLiteralFilter(eq = organization.name))
+        val filter = OrganizationsFilter(name = StringLiteralFilter { eq = organization.name })
         val page = organizationQueries.organizations(
             filter
         )
@@ -105,7 +105,7 @@ class OrganizationTest : AbstractOrganizationTest() {
         )
 
         val filterSummary = organizationQueries.organizationSummary(
-            OrganizationsFilter(name = StringLiteralFilter(eq = organization.name))
+            OrganizationsFilter(name = StringLiteralFilter { eq = organization.name })
         )
 
         assertThat(filterSummary.totalCount).isEqualTo(1)

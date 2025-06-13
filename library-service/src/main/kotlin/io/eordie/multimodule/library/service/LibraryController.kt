@@ -46,7 +46,7 @@ class LibraryController(
     }
 
     override suspend fun loadBooksByAuthors(authorIds: List<UUID>, filter: BooksFilter?): Map<UUID, List<Book>> {
-        val filterBy = filter.orDefault().copy(authorIds = UUIDLiteralFilter(of = authorIds))
+        val filterBy = filter.orDefault().copy(authorIds = UUIDLiteralFilter { of = authorIds })
         return books.findAllByFilter(filterBy).associateByIds(authorIds, BookModel::authorIds) { it.convert() }
     }
 }

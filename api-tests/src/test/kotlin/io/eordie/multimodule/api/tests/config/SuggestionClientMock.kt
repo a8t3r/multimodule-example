@@ -52,7 +52,7 @@ class SuggestionClientMock {
             override suspend fun suggest(query: String): ResultEnvelope {
                 return find(
                     OrganizationsFilter(
-                        name = StringLiteralFilter(eq = query)
+                        name = StringLiteralFilter { eq = query }
                     )
                 )
             }
@@ -62,7 +62,9 @@ class SuggestionClientMock {
                 return if (id.isEmpty) ResultEnvelope(emptyList()) else {
                     find(
                         OrganizationsFilter(
-                            id = UUIDLiteralFilter(eq = conversion.convert(query, UUID::class.java).orElse(null))
+                            id = UUIDLiteralFilter {
+                                eq = conversion.convert(query, UUID::class.java).orElse(null)
+                            }
                         )
                     )
                 }

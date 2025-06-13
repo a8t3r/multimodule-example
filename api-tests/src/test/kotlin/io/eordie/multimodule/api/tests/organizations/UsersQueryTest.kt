@@ -21,7 +21,7 @@ class UsersQueryTest : AbstractOrganizationTest() {
     fun `should query users by membership`() = test(organizationManager) {
         val page = userQueries.users(
             UsersFilter(
-                organization = OrganizationsFilter(name = StringLiteralFilter(eq = "Developers org"))
+                organization = OrganizationsFilter(name = StringLiteralFilter { eq = "Developers org" })
             )
         )
 
@@ -35,7 +35,7 @@ class UsersQueryTest : AbstractOrganizationTest() {
         val page = userQueries.users(
             UsersFilter(
                 hasEmployee = false,
-                organization = OrganizationsFilter(name = StringLiteralFilter(eq = "Developers org"))
+                organization = OrganizationsFilter(name = StringLiteralFilter { eq = "Developers org" })
             )
         )
 
@@ -49,7 +49,7 @@ class UsersQueryTest : AbstractOrganizationTest() {
         val page = userQueries.users(
             UsersFilter(
                 hasEmployee = true,
-                organization = OrganizationsFilter(name = StringLiteralFilter(eq = "Developers org"))
+                organization = OrganizationsFilter(name = StringLiteralFilter { eq = "Developers org" })
             )
         )
 

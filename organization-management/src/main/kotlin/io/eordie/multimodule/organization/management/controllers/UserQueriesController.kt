@@ -36,9 +36,10 @@ class UserQueriesController(
     }
 
     override suspend fun loadRolesByUserIds(userIds: List<UUID>, role: Roles?): Map<UUID, List<Roles>> {
+        val currentOrganizationId = getAuthentication().currentOrganizationId
         val filterBy = OrganizationEmployeeFilter(
-            userId = UUIDLiteralFilter(of = userIds),
-            organizationId = UUIDLiteralFilter(eq = getAuthentication().currentOrganizationId)
+            userId = UUIDLiteralFilter { of = userIds },
+            organizationId = UUIDLiteralFilter { eq = currentOrganizationId }
         )
 
         val fetcher = newFetcher(OrganizationEmployeeModel::class).by {

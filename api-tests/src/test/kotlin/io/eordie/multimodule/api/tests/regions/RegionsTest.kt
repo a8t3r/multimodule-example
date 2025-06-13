@@ -50,7 +50,7 @@ class RegionsTest : AbstractApplicationTest() {
 
     @Test
     fun `should query regions from andorra`() = test {
-        val page = regions.regions(RegionsFilter(country = StringLiteralFilter(eq = "AD")))
+        val page = regions.regions(RegionsFilter(country = StringLiteralFilter { eq = "AD" }))
         assertThat(page.data).hasSize(8)
 
         val groups = page.data.groupBy { it.depth }.withDefault { emptyList() }
@@ -62,7 +62,14 @@ class RegionsTest : AbstractApplicationTest() {
 
     @Test
     fun `should find region by name`() = test {
-        val page = regions.regions(RegionsFilter(name = StringLiteralFilter(startsWith = "Ord", endsWith = "ino")))
+        val page = regions.regions(
+            RegionsFilter(
+                name = StringLiteralFilter {
+                    startsWith = "Ord"
+                    endsWith = "ino"
+                }
+            )
+        )
         assertThat(page.data).hasSize(1)
 
         val region = page.data.first()
@@ -76,9 +83,9 @@ class RegionsTest : AbstractApplicationTest() {
     @Test
     fun `should query region by complex filter`() = test {
         val filter = RegionsFilter(
-            country = StringLiteralFilter(eq = "AD"),
-            depth = IntNumericFilter(of = listOf(0, 1, 2, 3)),
-            parentId = LongNumericFilter(nil = true)
+            country = StringLiteralFilter { eq = "AD" },
+            depth = IntNumericFilter { of = listOf(0, 1, 2, 3) },
+            parentId = LongNumericFilter { nil = true }
         )
         val page = regions.regions(filter)
         assertThat(page.data).hasSize(1)

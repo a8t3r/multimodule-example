@@ -128,7 +128,7 @@ class EmploymentToDepartmentsWithCustomBindingsTest : AbstractOrganizationTest()
     fun `should apply members to departments`() = test(organizationManager) {
         val filter = UsersFilter(
             hasEmployee = false,
-            organization = OrganizationsFilter(id = UUIDLiteralFilter(eq = developersOrg.id))
+            organization = OrganizationsFilter(id = UUIDLiteralFilter { eq = developersOrg.id })
         )
         val users = userQueries.users(filter).data
         assertThat(users.size).isGreaterThanOrEqualTo(2)
@@ -145,7 +145,7 @@ class EmploymentToDepartmentsWithCustomBindingsTest : AbstractOrganizationTest()
     fun `query users by employee filter`() = test(organizationManager) {
         val filter = UsersFilter(
             hasEmployee = true,
-            organization = OrganizationsFilter(id = UUIDLiteralFilter(eq = developersOrg.id))
+            organization = OrganizationsFilter(id = UUIDLiteralFilter { eq = developersOrg.id })
         )
 
         val users = userQueries.users(filter).data
@@ -158,9 +158,9 @@ class EmploymentToDepartmentsWithCustomBindingsTest : AbstractOrganizationTest()
     fun `query users by department filter - full access department`() = test(organizationManager) {
         val filter = UsersFilter(
             employee = OrganizationEmployeeFilter(
-                department = OrganizationDepartmentFilter(id = UUIDLiteralFilter(eq = fullAccess.id))
+                department = OrganizationDepartmentFilter(id = UUIDLiteralFilter { eq = fullAccess.id })
             ),
-            organization = OrganizationsFilter(id = UUIDLiteralFilter(eq = developersOrg.id))
+            organization = OrganizationsFilter(id = UUIDLiteralFilter { eq = developersOrg.id })
         )
 
         val users = userQueries.users(filter).data
@@ -173,9 +173,9 @@ class EmploymentToDepartmentsWithCustomBindingsTest : AbstractOrganizationTest()
     fun `query users by department filter - specific access department`() = test(organizationManager) {
         val filter = UsersFilter(
             employee = OrganizationEmployeeFilter(
-                department = OrganizationDepartmentFilter(id = UUIDLiteralFilter(eq = specific.id))
+                department = OrganizationDepartmentFilter(id = UUIDLiteralFilter { eq = specific.id })
             ),
-            organization = OrganizationsFilter(id = UUIDLiteralFilter(eq = developersOrg.id))
+            organization = OrganizationsFilter(id = UUIDLiteralFilter { eq = developersOrg.id })
         )
 
         val users = userQueries.users(filter).data
@@ -188,9 +188,9 @@ class EmploymentToDepartmentsWithCustomBindingsTest : AbstractOrganizationTest()
     fun `query users by position filter`() = test(organizationManager) {
         val filter = UsersFilter(
             employee = OrganizationEmployeeFilter(
-                position = OrganizationPositionFilter(name = StringLiteralFilter(like = "Junior"))
+                position = OrganizationPositionFilter(name = StringLiteralFilter { like = "Junior" })
             ),
-            organization = OrganizationsFilter(id = UUIDLiteralFilter(eq = developersOrg.id))
+            organization = OrganizationsFilter(id = UUIDLiteralFilter { eq = developersOrg.id })
         )
 
         val users = userQueries.users(filter).data
@@ -204,7 +204,7 @@ class EmploymentToDepartmentsWithCustomBindingsTest : AbstractOrganizationTest()
         val filter = UsersFilter(
             employee = OrganizationEmployeeFilter(
                 department = OrganizationDepartmentFilter(
-                    farmId = UUIDLiteralFilter(of = farmAcl.map { it.farmId })
+                    farmId = UUIDLiteralFilter { of = farmAcl.map { it.farmId } }
                 )
             )
         )
@@ -220,7 +220,7 @@ class EmploymentToDepartmentsWithCustomBindingsTest : AbstractOrganizationTest()
         val filter = UsersFilter(
             employee = OrganizationEmployeeFilter(
                 department = OrganizationDepartmentFilter(
-                    fieldId = UUIDLiteralFilter(of = farmAcl.mapNotNull { it.fieldIds }.flatten())
+                    fieldId = UUIDLiteralFilter { of = farmAcl.mapNotNull { it.fieldIds }.flatten() }
                 )
             )
         )
@@ -312,7 +312,7 @@ class EmploymentToDepartmentsWithCustomBindingsTest : AbstractOrganizationTest()
     @Test
     @Order(70)
     fun `verify access after position remove`() = test(organizationManager) {
-        val filter = OrganizationPositionFilter(name = StringLiteralFilter(eq = "Junior Developer"))
+        val filter = OrganizationPositionFilter(name = StringLiteralFilter { eq = "Junior Developer" })
         val positions = structureQueries.positions(developersOrg, filter)
         assertThat(positions).hasSize(1)
         structureMutations.deletePosition(positions[0].id)
