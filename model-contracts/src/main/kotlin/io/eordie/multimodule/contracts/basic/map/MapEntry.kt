@@ -1,7 +1,7 @@
 package io.eordie.multimodule.contracts.basic.map
 
-import graphql.com.google.common.collect.LinkedHashMultimap
-import graphql.com.google.common.collect.Multimap
+import com.google.common.collect.LinkedHashMultimap
+import com.google.common.collect.Multimap
 import io.micronaut.core.annotation.Introspected
 import kotlinx.serialization.Serializable
 

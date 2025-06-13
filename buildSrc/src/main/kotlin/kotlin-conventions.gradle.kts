@@ -70,6 +70,7 @@ dependencies {
     implementation(ktx.kotlinxCoroutinesJdk8)
     implementation(ktx.kotlinxCoroutinesReactive)
 
+    implementation(mn.guava)
     implementation(libs.commons.lang)
     implementation(libs.kotlin.logging.jvm)
     detektPlugins(libs.detekt.formatting)
