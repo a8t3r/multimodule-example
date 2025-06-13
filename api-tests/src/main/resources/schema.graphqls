@@ -1,4 +1,5 @@
 directive @selection on FIELD_DEFINITION
+"""Indicates an Input Object is a OneOf Input Object."""
 directive @oneOf on INPUT_OBJECT
 
 type AccessionRequest implements AuditLog {
@@ -15,7 +16,7 @@ type AccessionRequest implements AuditLog {
 input AccessionRequestFilterInput {
   id: UUIDLiteralFilterInput
   organizationId: UUIDLiteralFilterInput
-  status: AccessionRequestStatusFilterInput
+  status: AccessionRequestStatusEnumLiteralFilter
 }
 
 input AccessionRequestInput {
@@ -34,12 +35,12 @@ enum AccessionRequestStatus {
   REJECTED
 }
 
-input AccessionRequestStatusFilterInput {
+input AccessionRequestStatusEnumLiteralFilter {
   eq: AccessionRequestStatus
   ne: AccessionRequestStatus
+  of: [AccessionRequestStatus]
+  nof: [AccessionRequestStatus]
   nil: Boolean
-  nof: [AccessionRequestStatus!]
-  of: [AccessionRequestStatus!]
 }
 
 interface AuditLog {
@@ -258,7 +259,7 @@ input InvitationFilterInput {
   direction: Direction
   email: StringLiteralFilterInput
   organizationId: UUIDLiteralFilterInput
-  status: InvitationStatusFilterInput
+  status: InvitationStatusEnumLiteralFilter
 }
 
 input InvitationInput {
@@ -279,12 +280,12 @@ enum InvitationStatus {
   ACCEPTED
 }
 
-input InvitationStatusFilterInput {
+input InvitationStatusEnumLiteralFilter {
   eq: InvitationStatus
   ne: InvitationStatus
+  of: [InvitationStatus]
+  nof: [InvitationStatus]
   nil: Boolean
-  nof: [InvitationStatus!]
-  of: [InvitationStatus!]
 }
 
 type LocaleBinding {
@@ -310,21 +311,9 @@ input LongNumericFilterInput {
 type Mutation {
   deleteFarmAcl(farmAclId: UUID!): Boolean!
   farmAcl(farmAcl: FarmAclInput!): FarmAcl!
-  modifyByFarmCriterion(departmentId: UUID!, binding: ByFarmCriterionInput!, plus: Boolean!): [BindingCriterion!]!
-  modifyByRegionCriterion(departmentId: UUID!, binding: ByRegionCriterionInput!, plus: Boolean!): [BindingCriterion!]!
-  modifyGlobalBinding(departmentId: UUID!, includeAll: Boolean!): [BindingCriterion!]!
-  deleteOrganization(organizationId: UUID!): Boolean!
-  organization(input: OrganizationInput!): Organization!
-  organizationByVat(vat: String!): Organization!
   acceptInvitation(invitationId: UUID!): Boolean!
   deleteInvitation(invitationId: UUID!): Boolean!
   invitation(input: InvitationInput!): Invitation!
-  acceptAccessionRequest(requestId: UUID!): AccessionRequest!
-  accessionRequest(input: AccessionRequestInput!): AccessionRequest!
-  deleteJoinRequest(requestId: UUID!): Boolean!
-  rejectAccessionRequest(requestId: UUID!, rejectionMessage: String): AccessionRequest!
-  switchOrganization(organizationId: UUID!): Boolean!
-  updateToken: Boolean!
   author(input: AuthorInput!): Author!
   book(input: BookInput!): Book!
   deleteBook(bookId: UUID!): Boolean!
@@ -335,6 +324,18 @@ type Mutation {
   department(input: OrganizationDepartmentInput!): OrganizationDepartment!
   employee(employeeInput: OrganizationEmployeeInput!): OrganizationEmployee!
   position(position: OrganizationPositionInput!): OrganizationPosition!
+  acceptAccessionRequest(requestId: UUID!): AccessionRequest!
+  accessionRequest(input: AccessionRequestInput!): AccessionRequest!
+  deleteJoinRequest(requestId: UUID!): Boolean!
+  rejectAccessionRequest(requestId: UUID!, rejectionMessage: String): AccessionRequest!
+  deleteOrganization(organizationId: UUID!): Boolean!
+  organization(input: OrganizationInput!): Organization!
+  organizationByVat(vat: String!): Organization!
+  switchOrganization(organizationId: UUID!): Boolean!
+  updateToken: Boolean!
+  modifyByFarmCriterion(departmentId: UUID!, binding: ByFarmCriterionInput!, plus: Boolean!): [BindingCriterion!]!
+  modifyByRegionCriterion(departmentId: UUID!, binding: ByRegionCriterionInput!, plus: Boolean!): [BindingCriterion!]!
+  modifyGlobalBinding(departmentId: UUID!, includeAll: Boolean!): [BindingCriterion!]!
 }
 
 interface Named {
@@ -536,38 +537,34 @@ input PageableInput {
   supportedOrders: [String]
 }
 
-type Subscription {
-  books(filter: BooksFilterInput): Book
-}
-
 type Query {
-  suggestions(filter: OrganizationPublicInformationInput!): [OrganizationPublicInformation!]!
+  region(regionId: Long!): Region
+  regionPath(regionId: Long!): [Region!]!
+  regions(filter: RegionsFilterInput, pageable: PageableInput): RegionPage!
   pageable(pageable: PageableInput!): Pageable!
-  accessionRequests(filter: AccessionRequestFilterInput, pageable: PageableInput): AccessionRequestPage!
-  departments(filter: OrganizationDepartmentFilterInput, pageable: PageableInput): OrganizationDepartmentPage!
-  employeeSummary(filter: OrganizationEmployeeFilterInput!): OrganizationEmployeeFilterSummary!
-  employees(filter: OrganizationEmployeeFilterInput, pageable: PageableInput): OrganizationEmployeePage!
-  positions(filter: OrganizationPositionFilterInput): [OrganizationPosition!]!
   farmAcl(farmAclId: UUID!): FarmAcl
   queryFarmAcl(filter: FarmAclFilterInput, pageable: PageableInput): FarmAclPage!
-  activeEmployeeAcl: [EmployeeAcl!]!
-  users(filter: UsersFilterInput, pageable: PageableInput): UserPage!
+  suggestions(filter: OrganizationPublicInformationInput!): [OrganizationPublicInformation!]!
+  accessionRequests(filter: AccessionRequestFilterInput, pageable: PageableInput): AccessionRequestPage!
   authorById(id: UUID!): Author
   authors(filter: AuthorsFilterInput, pageable: PageableInput): AuthorPage!
   bookById(id: UUID!): Book
   bookSummary(filter: BooksFilterInput): BookSummary!
   books(filter: BooksFilterInput, pageable: PageableInput): BookPage!
+  users(filter: UsersFilterInput, pageable: PageableInput): UserPage!
+  findRegionsByPoint(point: TPoint!, country: String): [Region!]!
   me: AuthenticationDetails
   supportedRoles: [Roles!]!
+  activeEmployeeAcl: [EmployeeAcl!]!
+  invitation(invitationId: UUID!): Invitation
+  invitations(filter: InvitationFilterInput, pageable: PageableInput): InvitationPage!
   organization(id: UUID!): Organization
   organizationSummary(filter: OrganizationsFilterInput): OrganizationFilterSummary!
   organizations(filter: OrganizationsFilterInput, pageable: PageableInput): OrganizationPage!
-  region(regionId: Long!): Region
-  regionPath(regionId: Long!): [Region!]!
-  regions(filter: RegionsFilterInput, pageable: PageableInput): RegionPage!
-  invitation(invitationId: UUID!): Invitation
-  invitations(filter: InvitationFilterInput, pageable: PageableInput): InvitationPage!
-  findRegionsByPoint(point: TPoint!, country: String): [Region!]! @selection
+  departments(filter: OrganizationDepartmentFilterInput, pageable: PageableInput): OrganizationDepartmentPage!
+  employeeSummary(filter: OrganizationEmployeeFilterInput!): OrganizationEmployeeFilterSummary!
+  employees(filter: OrganizationEmployeeFilterInput, pageable: PageableInput): OrganizationEmployeePage!
+  positions(filter: OrganizationPositionFilterInput): [OrganizationPosition!]!
 }
 
 type Region {
@@ -630,18 +627,22 @@ input SortOrderInput {
 
 input StringLiteralFilterInput {
   endsWith: String
+  like: String
+  nlike: String
+  startsWith: String
   eq: String
   gt: String
   gte: String
-  like: String
   lt: String
   lte: String
   ne: String
   nil: Boolean
-  nlike: String
   nof: [String!]
   of: [String!]
-  startsWith: String
+}
+
+type Subscription {
+  books(filter: BooksFilterInput): Book!
 }
 
 """Geo json multi polygon"""
