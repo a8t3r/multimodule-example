@@ -552,7 +552,7 @@ type Query {
   bookSummary(filter: BooksFilterInput): BookSummary!
   books(filter: BooksFilterInput, pageable: PageableInput): BookPage!
   users(filter: UsersFilterInput, pageable: PageableInput): UserPage!
-  findRegionsByPoint(point: TPoint!, country: String): [Region!]!
+  findRegionsByPoint(point: TPoint!, country: String): [Region!]! @selection
   me: AuthenticationDetails
   supportedRoles: [Roles!]!
   activeEmployeeAcl: [EmployeeAcl!]!

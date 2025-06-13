@@ -33,7 +33,6 @@ import io.eordie.multimodule.contracts.library.services.LibrarySubscriptions
 import io.micronaut.test.annotation.Sql
 import jakarta.inject.Inject
 import kotlinx.coroutines.async
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.future.await
 import org.junit.jupiter.api.AfterAll
@@ -286,8 +285,6 @@ class LibraryTest : AbstractApplicationTest() {
                 authorIds
             }
         }.subscribe {
-            delay(500)
-
             val expected = mutateLibrary.book(bookInput)
             assertThat(expected.name).isEqualTo("subscription book")
             assertThat(expected.authorIds).hasSize(1)
