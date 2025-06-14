@@ -37,5 +37,7 @@ dependencies {
     implementation(otel.opentelemetryExtensionKotlin)
 
     runtimeOnly(mn.snakeyaml)
-    testImplementation("io.micronaut.testresources:micronaut-test-resources-jdbc-postgresql")
+    testImplementation(mn.micronaut.test.resources.jdbc.postgresql) {
+        exclude(group = "junit", module = "junit") // legacy version
+    }
 }
