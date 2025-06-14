@@ -7,6 +7,7 @@ import org.babyfish.jimmer.sql.kt.ast.expression.KNonNullExpression
 import org.babyfish.jimmer.sql.kt.ast.expression.`ilike?`
 import org.babyfish.jimmer.sql.kt.ast.expression.like
 import org.babyfish.jimmer.sql.kt.ast.expression.not
+import java.util.function.Predicate
 
 class StringLiteralSpecificationBuilder : ComparableLiteralSpecificationBuilder<StringLiteralFilter, String>() {
 
@@ -23,4 +24,11 @@ class StringLiteralSpecificationBuilder : ComparableLiteralSpecificationBuilder<
 
         return super.invoke(filter, path) + secondary
     }
+
+    override fun predicates(filter: StringLiteralFilter): List<Predicate<String?>> = super.predicates(filter) + listOfNotNull(
+        filter.like?.let { f -> Predicate { it != null && it.contains(f) } },
+        filter.nlike?.let { f -> Predicate { it != null && !it.contains(f) } },
+        filter.startsWith?.let { f -> Predicate { it != null && it.startsWith(f) } },
+        filter.endsWith?.let { f -> Predicate { it != null && it.endsWith(f) } }
+    )
 }

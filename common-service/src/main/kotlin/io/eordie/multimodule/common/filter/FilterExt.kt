@@ -30,6 +30,22 @@ infix fun <F : LiteralFilter<T>, T : Any> KExpression<T>.accept(filter: F?): KNo
     }
 }
 
+infix fun <F : LiteralFilter<T>, T : Any> F?.matches(value: T?): Boolean {
+    val filter = this
+    return if (filter == null) true else {
+        dispatchSingle(filter).predicates(filter).all { it.test(value) }
+    }
+}
+
+infix fun <F : LiteralFilter<T>, T : Any> F?.anyMatches(values: List<T>?): Boolean {
+    val filter = this
+    return if (filter == null) true else {
+        dispatchSingle(filter).predicates(filter).all { predicate ->
+            values?.any { predicate.test(it) } ?: predicate.test(null)
+        }
+    }
+}
+
 private fun <F : LiteralFilter<T>, T : Any> dispatchSingle(filter: F): SpecificationBuilder<F, T> {
     return safeCast(
         when (filter) {

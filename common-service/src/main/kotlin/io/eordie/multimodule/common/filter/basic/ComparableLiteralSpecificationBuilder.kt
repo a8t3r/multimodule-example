@@ -7,6 +7,7 @@ import org.babyfish.jimmer.sql.kt.ast.expression.ge
 import org.babyfish.jimmer.sql.kt.ast.expression.gt
 import org.babyfish.jimmer.sql.kt.ast.expression.le
 import org.babyfish.jimmer.sql.kt.ast.expression.lt
+import java.util.function.Predicate
 
 open class ComparableLiteralSpecificationBuilder<F : ComparableFilter<T>, T : Comparable<T>> :
     EmbeddedSpecificationBuilder<F, T>() {
@@ -21,4 +22,11 @@ open class ComparableLiteralSpecificationBuilder<F : ComparableFilter<T>, T : Co
 
         return super.invoke(filter, path) + secondary
     }
+
+    override fun predicates(filter: F): List<Predicate<T?>> = super.predicates(filter) + listOfNotNull(
+        filter.gt?.let { f -> Predicate { it != null && it > f } },
+        filter.gte?.let { f -> Predicate { it != null && it >= f } },
+        filter.lt?.let { f -> Predicate { it != null && it < f } },
+        filter.lte?.let { f -> Predicate { it != null && it <= f } }
+    )
 }

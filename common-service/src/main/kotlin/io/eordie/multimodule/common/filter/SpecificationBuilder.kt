@@ -7,6 +7,7 @@ import org.babyfish.jimmer.sql.kt.ast.expression.KNonNullPropExpression
 import org.babyfish.jimmer.sql.kt.ast.expression.asNullable
 import org.babyfish.jimmer.sql.kt.ast.expression.isNotNull
 import org.babyfish.jimmer.sql.kt.ast.expression.isNull
+import java.util.function.Predicate
 
 interface SpecificationBuilder<F : LiteralFilter<*>, T : Any> {
     fun invoke(filter: F, path: KExpression<T>): List<KNonNullExpression<Boolean>> {
@@ -19,4 +20,8 @@ interface SpecificationBuilder<F : LiteralFilter<*>, T : Any> {
             }
         )
     }
+
+    fun predicates(filter: F): List<Predicate<T?>> = listOfNotNull(
+        filter.nil?.let { f -> Predicate { if (f) it == null else it != null } }
+    )
 }

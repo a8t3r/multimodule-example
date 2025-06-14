@@ -8,6 +8,7 @@ import org.babyfish.jimmer.sql.kt.ast.expression.eq
 import org.babyfish.jimmer.sql.kt.ast.expression.ne
 import org.babyfish.jimmer.sql.kt.ast.expression.valueIn
 import org.babyfish.jimmer.sql.kt.ast.expression.valueNotIn
+import java.util.function.Predicate
 
 open class EmbeddedSpecificationBuilder<F : LiteralFilter<T>, T : Any> : SpecificationBuilder<F, T> {
 
@@ -19,4 +20,11 @@ open class EmbeddedSpecificationBuilder<F : LiteralFilter<T>, T : Any> : Specifi
             filter.nof?.let { path valueNotIn it }
         ) + super.invoke(filter, path)
     }
+
+    override fun predicates(filter: F): List<Predicate<T?>> = super.predicates(filter) + listOfNotNull(
+        filter.eq?.let { f -> Predicate { it == f } },
+        filter.ne?.let { f -> Predicate { it != f } },
+        filter.of?.let { f -> Predicate { it in f } },
+        filter.nof?.let { f -> Predicate { it !in f } }
+    )
 }
