@@ -13,7 +13,7 @@ graphqlKotlin = "8.8.0"
 jasync = "2.2.4"
 # @keep unused
 jdk = "21"
-jimmer = "0.9.90"
+jimmer = "0.9.91"
 junit = "5.13.1"
 kobby = "5.2.3"
 kotlin = "2.1.21"
