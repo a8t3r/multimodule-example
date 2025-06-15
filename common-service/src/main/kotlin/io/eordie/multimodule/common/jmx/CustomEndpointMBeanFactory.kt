@@ -68,7 +68,7 @@ class CustomEndpointMBeanFactory(
             mbeanService.findByName(beanAlias).forEach { bean ->
                 val isValidProperty = updateLocalState(beanAlias, bean.id.property, bean.value)
                 if (isValidProperty != null && bean.actual != isValidProperty) {
-                    mbeanService.save(MBeanModel(bean) { this.actual = isValidProperty })
+                    mbeanService.actualize(bean.id, isValidProperty)
                 }
             }
         }

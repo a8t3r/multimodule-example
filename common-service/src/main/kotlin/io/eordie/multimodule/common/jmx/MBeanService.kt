@@ -68,6 +68,11 @@ class MBeanService(
         pool.disconnect()
     }
 
+    fun actualize(key: MBeanKey, actual: Boolean) = client.createUpdate(MBeanModel::class) {
+        set(table.actual, actual)
+        where(table.id eq key)
+    }
+
     fun save(bean: MBeanModel) {
         client.save(bean, SaveMode.UPSERT)
     }
