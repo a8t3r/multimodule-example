@@ -2,7 +2,7 @@ DO
 $func$
     BEGIN
         -- change hash if function body changes
-        if (SELECT md5(routine_definition) != '8806093ad6bc8d6a0dae40dbe67b1d25!!' FROM information_schema.routines WHERE routine_name = 'notify_mbeans') then
+        if (SELECT md5(routine_definition) != '6e1171fb9ae87f21de3b7116dc7012b8' FROM information_schema.routines WHERE routine_name = 'notify_mbeans') then
             CREATE OR REPLACE FUNCTION notify_mbeans() RETURNS TRIGGER AS $$
             DECLARE
                 old_value text := case when old is null then 'null' else old.value end;
