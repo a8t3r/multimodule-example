@@ -39,18 +39,18 @@ class CustomEndpointMBeanFactory(
         }
     }
 
+    private fun BeanDefinition<*>.shortenName() = declaringType.map {
+        val packageAlias = it.`package`.name.split(".")
+            .fold("") { acc, s -> acc + s[0] + "." }
+        packageAlias + it.simpleName
+    }.orElseThrow()
+
     override fun createMBean(
         beanDefinition: BeanDefinition<*>,
         methods: MutableCollection<ExecutableMethod<Any, Any>>,
         instanceSupplier: Supplier<Any>
     ): Any {
-        val beanAlias = beanDefinition.declaringType
-            .map {
-                val packageAlias = it.`package`.name.split(".")
-                    .fold("") { acc, s -> acc + s[0] + "." }
-                packageAlias + it.simpleName
-            }.orElseThrow()
-
+        val beanAlias = beanDefinition.shortenName()
         val setters = methods.filter {
             it.hasAnnotation(Write::class.java) && it.arguments.size == 1
         }
