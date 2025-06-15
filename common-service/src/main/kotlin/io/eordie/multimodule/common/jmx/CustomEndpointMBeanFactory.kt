@@ -29,15 +29,23 @@ class CustomEndpointMBeanFactory(
         fun findSetter(methodName: String): ExecutableMethod<Any, Any>? =
             methods.singleOrNull { it.name == methodName && it.arguments.size == 1 }
 
-        fun invoke(conversion: ConversionService, methodName: String, value: String?): Boolean {
+        fun invoke(converter: (String?, Class<*>) -> Any?, methodName: String, value: String?): Boolean {
             val method = findSetter(methodName)
             return if (method == null) false else {
-                val transformed = conversion.convert(value, method.argumentTypes.single()).orElseThrow()
-                method.invoke(instanceSupplier.get(), transformed)
+                method.invoke(
+                    instanceSupplier.get(),
+                    converter(value, method.argumentTypes.single())
+                )
                 true
             }
         }
     }
+
+    private fun convertToString(value: Any?): String =
+        conversion.convert(value, String::class.java).orElseThrow()
+
+    private fun convertFromString(value: String?, targetClass: Class<*>): Any? =
+        conversion.convert(value, targetClass).orElseThrow()
 
     private fun BeanDefinition<*>.shortenName() = declaringType.map {
         val packageAlias = it.`package`.name.split(".")
@@ -85,13 +93,13 @@ class CustomEndpointMBeanFactory(
                         this.name = beanName
                         this.property = methodName
                     }
-                    this.value = conversion.convert(value, String::class.java).orElseThrow()
+                    this.value = convertToString(value)
                 }
             )
         }
     }
 
     internal fun updateLocalState(beanName: String, methodName: String, value: String?): Boolean? {
-        return (index[beanName] ?: return null).invoke(conversion, methodName, value)
+        return (index[beanName] ?: return null).invoke(::convertFromString, methodName, value)
     }
 }
