@@ -36,7 +36,7 @@ test-resources:
         - datasources.keycloak.port: 5432
       hostnames:
         - datasources.keycloak.host
-      image-name: postgres:14
+      image-name: postgres:17
       command: ["postgres", "-c", "max_connections=20000"]
       network: custom
       network-aliases: postgres-keycloak

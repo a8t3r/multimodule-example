@@ -8,7 +8,7 @@ datasources:
 test-resources:
   containers:
     postgresql:
-      image-name: postgres:14
+      image-name: postgres:17
       command: ["postgres", "-c", "max_connections=20000"]
       startup-timeout: 60
       hostnames:
