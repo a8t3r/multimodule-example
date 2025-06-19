@@ -150,7 +150,7 @@ test-resources:
         - datasources.osm.port: 5432
       hostnames:
         - datasources.osm.host
-      image-name: mediagis/nominatim:4.4
+      image-name: mediagis/nominatim:5.1
       rw-fs-bind:
         - src/test/resources/pbf/andorra-latest.osm.pbf: /nominatim/data/andorra-latest.osm.pbf
       wait-strategy:
