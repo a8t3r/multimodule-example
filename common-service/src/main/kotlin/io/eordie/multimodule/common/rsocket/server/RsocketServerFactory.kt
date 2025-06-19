@@ -50,12 +50,17 @@ class RsocketServerFactory {
     }
 
     @Singleton
-    fun connectionAcceptorBuilder(
-        openTelemetry: OpenTelemetry,
-        beanLocator: BeanLocator,
+    fun bundle(
         queries: List<Query>,
         mutations: List<Mutation>,
-        subscriptions: List<Subscription>,
+        subscriptions: List<Subscription>
+    ): Triple<List<Query>, List<Mutation>, List<Subscription>> = Triple(queries, mutations, subscriptions)
+
+    @Singleton
+    fun connectionAcceptorBuilder(
+        openTelemetry: OpenTelemetry,
+        resources: Triple<List<Query>, List<Mutation>, List<Subscription>>,
+        beanLocator: BeanLocator,
         baseFactories: List<KBaseFactory<*, *, *, *, *>>
     ): ConnectionAcceptor {
         val loadSuspend: KSuspendFunction2<*, *, *> = EntityLoader<*, *>::load
@@ -75,9 +80,9 @@ class RsocketServerFactory {
         return RsocketConnectionAcceptorBuilder(
             beanLocator,
             tracer,
-            queries.filter { it !is Synthesized },
-            mutations.filter { it !is Synthesized },
-            subscriptions.filter { it !is Synthesized }
+            resources.first.filter { it !is Synthesized },
+            resources.second.filter { it !is Synthesized },
+            resources.third.filter { it !is Synthesized }
         )
             .addDescriptors(entityLoaders)
             .createAcceptor()

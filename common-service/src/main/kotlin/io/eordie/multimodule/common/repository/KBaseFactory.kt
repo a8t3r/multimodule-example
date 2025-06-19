@@ -56,7 +56,7 @@ abstract class KBaseFactory<T : Convertable<C>, S : T, C : Any, ID, F : Any>(
         val values = internalFindByIds(ids, null)
         return values.associateBy(
             { it.getId() },
-            { (it as? PermissionAwareIF)?.loadedPermissions() ?: emptyList() }
+            { (it as? PermissionAwareIF)?.loadedPermissions().orEmpty() }
         )
     }
 

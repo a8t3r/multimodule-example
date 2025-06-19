@@ -52,7 +52,9 @@ class SerdeRegistryConfig {
                     val generic = argument.typeVariables.getValue("T").type
                     val serializer: KSerializer<T> = safeCast(
                         proto.serializersModule.serializer(
-                            MutationEvent::class.createType(listOf(KTypeProjection.invariant(generic.kotlin.createType())))
+                            MutationEvent::class.createType(
+                                listOf(KTypeProjection.invariant(generic.kotlin.createType()))
+                            )
                         )
                     )
                     ProtoSerde(serializer).deserializer()

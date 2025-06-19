@@ -76,8 +76,8 @@ class RsocketConnectionAcceptorBuilder(
         subscriptions: List<Subscription>
     ): List<ControllerDescriptor> {
         return buildControllerMethods(queries, Query::class) +
-                buildControllerMethods(mutations, Mutation::class) +
-                buildControllerMethods(subscriptions, Subscription::class)
+            buildControllerMethods(mutations, Mutation::class) +
+            buildControllerMethods(subscriptions, Subscription::class)
     }
 
     private fun buildControllerMethods(controllers: Collection<Any>, type: KClass<*>): List<ControllerDescriptor> {

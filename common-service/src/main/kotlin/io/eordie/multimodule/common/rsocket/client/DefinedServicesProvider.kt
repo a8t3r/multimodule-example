@@ -27,8 +27,8 @@ class DefinedServicesProvider {
 
     fun initialize(context: ApplicationContextProvider): Sequence<RuntimeBeanDefinition<*>> {
         return registerClients(context, Query::class.java) +
-                registerClients(context, Mutation::class.java) +
-                registerClients(context, Subscription::class.java)
+            registerClients(context, Mutation::class.java) +
+            registerClients(context, Subscription::class.java)
     }
 
     private fun <T : Any> registerClients(
