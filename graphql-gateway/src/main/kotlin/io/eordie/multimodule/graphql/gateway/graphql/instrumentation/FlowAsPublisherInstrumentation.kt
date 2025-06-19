@@ -18,7 +18,8 @@ import java.util.concurrent.CompletableFuture.completedFuture
  * The current micronaut-graphql implementation doesn't work properly with kotlin flow, but it does accept reactive Publisher.
  * This instrumentation is a workaround to bypass the current restrictions.
  */
-class FlowAsPublisherInstrumentation(private val exceptionHandler: DataFetcherExceptionHandler) : SimplePerformantInstrumentation() {
+class FlowAsPublisherInstrumentation(private val exceptionHandler: DataFetcherExceptionHandler) :
+    SimplePerformantInstrumentation() {
     override fun instrumentExecutionResult(
         result: ExecutionResult,
         parameters: InstrumentationExecutionParameters,
@@ -29,14 +30,16 @@ class FlowAsPublisherInstrumentation(private val exceptionHandler: DataFetcherEx
                 if (result.getData<Any>() is Flow<*>) {
                     builder.data(
                         result.getData<Flow<Any>>()
-                            .catch {exception ->
+                            .catch { exception ->
                                 val handlerParameters = DataFetcherExceptionHandlerParameters.newExceptionParameters()
                                     .exception(exception)
                                     .build()
 
-                                emit(ExecutionResultImpl(
-                                    null,
-                                    exceptionHandler.handleException(handlerParameters).await().errors)
+                                emit(
+                                    ExecutionResultImpl(
+                                        null,
+                                        exceptionHandler.handleException(handlerParameters).await().errors
+                                    )
                                 )
                             }
                             .asPublisher()

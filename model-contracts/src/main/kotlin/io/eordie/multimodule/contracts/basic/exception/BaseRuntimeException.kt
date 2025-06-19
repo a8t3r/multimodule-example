@@ -19,7 +19,10 @@ sealed class BaseRuntimeException : RuntimeException() {
 
     private fun Array<NativeStackTraceElement>.transform() = this.map {
         StackTraceElement(
-            it.className, it.methodName, it.fileName, it.lineNumber
+            it.className,
+            it.methodName,
+            it.fileName,
+            it.lineNumber
         )
     }
 
@@ -30,7 +33,10 @@ sealed class BaseRuntimeException : RuntimeException() {
     fun unwrapStackTrace(): BaseRuntimeException = this.apply {
         this.stackTrace = originStackTrace.map {
             NativeStackTraceElement(
-                it.className, it.methodName, it.fileName, it.lineNumber
+                it.className,
+                it.methodName,
+                it.fileName,
+                it.lineNumber
             )
         }.toTypedArray()
     }

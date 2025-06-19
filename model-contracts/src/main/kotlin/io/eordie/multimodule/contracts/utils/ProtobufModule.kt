@@ -112,8 +112,8 @@ object ProtobufModule {
         override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("RoleSet", PrimitiveKind.LONG)
 
         override fun serialize(encoder: Encoder, value: RoleSet) {
-            val encodedValue = value.fold(0L) { acc, value ->
-                acc.or(1L shl value.ordinal)
+            val encodedValue = value.fold(0L) { acc, role ->
+                acc.or(1L shl role.ordinal)
             }
             encoder.encodeLong(encodedValue)
         }

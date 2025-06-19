@@ -17,4 +17,3 @@ fun List<Roles>.asRoleSet(): RoleSet {
 }
 
 fun RoleSet.asList(): List<Roles> = iterator().asSequence().toList()
-

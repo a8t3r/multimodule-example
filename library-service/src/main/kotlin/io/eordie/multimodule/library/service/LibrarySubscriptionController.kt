@@ -19,7 +19,8 @@ import kotlinx.coroutines.flow.asSharedFlow
 class LibrarySubscriptionController : LibrarySubscriptions, EventListener<Book> {
 
     private val booksFlow = MutableSharedFlow<Book>(
-        extraBufferCapacity = 3, onBufferOverflow = BufferOverflow.DROP_OLDEST
+        extraBufferCapacity = 3,
+        onBufferOverflow = BufferOverflow.DROP_OLDEST
     )
 
     @Topic("book")

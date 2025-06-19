@@ -17,8 +17,8 @@ internal fun newTypeKV(type: KType, target: KClass<*>): KType {
             KTypeProjection.invariant(
                 target.createType(
                     listOf(
-                        KTypeProjection.invariant(mapEntryArguments[0].type!!),
-                        KTypeProjection.invariant(mapEntryArguments[1].type!!)
+                        KTypeProjection.invariant(requireNotNull(mapEntryArguments[0].type)),
+                        KTypeProjection.invariant(requireNotNull(mapEntryArguments[1].type))
                     )
                 )
             )
