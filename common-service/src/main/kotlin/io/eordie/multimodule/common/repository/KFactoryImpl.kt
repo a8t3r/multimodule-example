@@ -1,3 +1,6 @@
+// Remove unneeded suppressions once https://github.com/detekt/detekt/issues/8140 is fixed.
+@file:Suppress("SpacingAroundColon", "Wrapping")
+
 package io.eordie.multimodule.common.repository
 
 import io.eordie.multimodule.common.filter.FiltersRegistry
