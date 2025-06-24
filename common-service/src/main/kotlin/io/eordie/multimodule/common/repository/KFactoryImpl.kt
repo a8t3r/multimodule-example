@@ -61,11 +61,11 @@ import org.babyfish.jimmer.sql.kt.ast.expression.KPropExpression
 import org.babyfish.jimmer.sql.kt.ast.expression.constant
 import org.babyfish.jimmer.sql.kt.ast.expression.eq
 import org.babyfish.jimmer.sql.kt.ast.expression.isNull
-import org.babyfish.jimmer.sql.kt.ast.expression.valueIn
 import org.babyfish.jimmer.sql.kt.ast.mutation.KSimpleSaveResult
 import org.babyfish.jimmer.sql.kt.ast.query.KConfigurableRootQuery
 import org.babyfish.jimmer.sql.kt.ast.query.KMutableRootQuery
 import org.babyfish.jimmer.sql.kt.ast.table.KNonNullTable
+import org.babyfish.jimmer.sql.kt.ast.table.KNonNullTableEx
 import org.valiktor.ConstraintViolationException
 import java.sql.Connection
 import java.util.concurrent.atomic.AtomicBoolean
@@ -266,6 +266,14 @@ open class KFactoryImpl<T : Any, S : T, ID : Comparable<ID>>(
         return findById(id, fetcher) ?: throw EntityNotFoundException(id, entityType)
     }
 
+    override suspend fun deleteBySpecification(block: (KNonNullTableEx<T>) -> List<KNonNullExpression<Boolean>>) {
+        wrapped {
+            sql.executeDelete(entityType, it) {
+                where(*block.invoke(this.table).toTypedArray())
+            }
+        }
+    }
+
     override suspend fun deleteById(id: ID): Boolean {
         return deleteByIds(listOf(id)) > 0
     }
@@ -280,18 +288,6 @@ open class KFactoryImpl<T : Any, S : T, ID : Comparable<ID>>(
                 sql.entities.deleteAll(entityType, ids, it) {
                     setMode(DeleteMode.AUTO)
                 }.totalAffectedRowCount
-            }
-        }
-    }
-
-    override suspend fun truncateByIds(ids: Collection<ID>): Int {
-        return if (ids.isEmpty()) 0 else {
-            wrapped {
-                sql.createDelete(entityType) {
-                    where(
-                        table.getId<ID>().valueIn(ids)
-                    )
-                }.execute(it)
             }
         }
     }
