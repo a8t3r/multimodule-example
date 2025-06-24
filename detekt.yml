@@ -12,6 +12,10 @@ coroutines:
     dispatcherNames: [ Default ]
   SuspendFunWithFlowReturnType:
     active: false
+  SleepInsteadOfDelay:
+    active: true
+  SuspendFunWithCoroutineScopeReceiver:
+    active: true
 
 complexity:
   LongParameterList:
