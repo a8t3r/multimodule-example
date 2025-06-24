@@ -12,6 +12,7 @@ import io.eordie.multimodule.regions.models.OsmPlace
 import io.eordie.multimodule.regions.models.OsmRegionTreeModel
 import io.eordie.multimodule.regions.models.OsmRegionTreeModelDraft
 import io.eordie.multimodule.regions.models.OsmRelationModel
+import io.eordie.multimodule.regions.models.OsmType.R
 import io.eordie.multimodule.regions.models.country
 import io.eordie.multimodule.regions.models.depth
 import io.eordie.multimodule.regions.models.fetchBy
@@ -89,7 +90,7 @@ class RegionsFactory : KBaseFactory<OsmRegionTreeModel, OsmRegionTreeModelDraft,
     fun <T> queryPlaceBySelection(regionIds: List<Long>, selection: (KNonNullTable<OsmPlace>) -> Selection<T>) =
         sql.createQuery(OsmPlace::class) {
             where(
-                table.id.osmType eq 'R',
+                table.id.osmType eq R,
                 table.id.osmId valueIn regionIds
             )
             select(table.id.osmId, selection(table))
@@ -98,7 +99,7 @@ class RegionsFactory : KBaseFactory<OsmRegionTreeModel, OsmRegionTreeModelDraft,
     suspend fun findRegionsByPoint(point: TPoint): List<OsmRegionTreeModel> {
         val ids = sql.createQuery(OsmPlace::class) {
             where(
-                table.id.osmType eq 'R',
+                table.id.osmType eq R,
                 table.geometry contains point
             )
             select(table.id.osmId)

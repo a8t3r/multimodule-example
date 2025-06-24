@@ -6,5 +6,5 @@ import org.babyfish.jimmer.sql.Embeddable
 interface OsmPlaceId {
     val osmId: Long
 
-    val osmType: Char
+    val osmType: OsmType
 }
