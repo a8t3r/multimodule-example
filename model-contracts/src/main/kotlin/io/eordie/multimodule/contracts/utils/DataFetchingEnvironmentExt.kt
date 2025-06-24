@@ -77,7 +77,7 @@ inline fun <reified V : Any?> DataFetchingEnvironment.byIds(ids: List<Any>): Com
 
 fun <V> DataFetchingEnvironment.entityDataLoader(): Pair<DataLoader<Any, V>, Boolean> {
     val loader = this.getDataLoader<Any, V>("EntityDataLoader")
-    val dispatch = executionId.toString() == "synthetic"
+    val dispatch = executionId == syntheticExecutionId
     return requireNotNull(loader) to dispatch
 }
 
