@@ -80,10 +80,20 @@ inline fun <reified T : Any> KExpression<T>.arrayAgg(
 ): KNonNullExpression<out Array<T>> {
     val property = this
     val type = arrayOf<T>()::class
-    val withDistinct = if (distinct) "distinct" else ""
-    val withFilter = if (filterNulls) "filter (where %e is not null)" else ""
-    return sql(type, "array_agg($withDistinct %e) $withFilter") {
-        if (filterNulls) expression(property)
+
+    val sql = buildString {
+        append("array_agg(")
+        if (distinct) {
+            append("distinct ")
+        }
+        append("%e)")
+        if (filterNulls) {
+            append("filter (where %e is not null)")
+        }
+    }
+
+    return sql(type, sql) {
         expression(property)
+        if (filterNulls) expression(property)
     }
 }
