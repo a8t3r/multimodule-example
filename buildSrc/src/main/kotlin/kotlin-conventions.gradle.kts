@@ -52,6 +52,7 @@ kotlin {
 }
 
 detekt {
+    autoCorrect = true
     ignoreFailures = false
     buildUponDefaultConfig = true
     config.setFrom("$rootDir/detekt.yml")

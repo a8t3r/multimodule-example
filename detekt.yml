@@ -37,7 +37,7 @@ performance:
 formatting:
   active: true
   NoWildcardImports:
-    active: false
+    active: true
   MaximumLineLength:
     active: false
   MultiLineIfElse:
