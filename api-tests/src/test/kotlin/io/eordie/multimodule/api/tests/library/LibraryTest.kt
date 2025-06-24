@@ -289,13 +289,16 @@ class LibraryTest : AbstractApplicationTest() {
             assertThat(expected.name).isEqualTo("subscription book")
             assertThat(expected.authorIds).hasSize(1)
 
-            val actual = receive().books
+            val actual = try {
+                receive().books
+            } finally {
+                mutateLibrary.deleteBook(expected.id)
+            }
+
             assertNotNull(actual)
             assertThat(actual.id).isEqualTo(expected.id)
             assertThat(actual.name).isEqualTo(expected.name)
             assertThat(actual.authorIds).isEqualTo(expected.authorIds)
-
-            mutateLibrary.deleteBook(expected.id)
         }
     }
 
