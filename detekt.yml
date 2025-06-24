@@ -40,6 +40,11 @@ performance:
 
 formatting:
   active: true
+  ImportOrdering:
+    autoCorrect: true
+  NoUnusedImports:
+    active: true
+    autoCorrect: true
   NoWildcardImports:
     active: true
   MaximumLineLength:

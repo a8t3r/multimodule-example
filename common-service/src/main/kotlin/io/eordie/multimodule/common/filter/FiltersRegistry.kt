@@ -4,6 +4,8 @@ import io.eordie.multimodule.common.repository.FilterSupportTrait
 import io.eordie.multimodule.common.repository.KBaseFactory
 import io.eordie.multimodule.common.repository.entity.CreatedAtIF
 import io.eordie.multimodule.common.repository.entity.CreatedAtIFProps
+import io.eordie.multimodule.common.repository.entity.DeletedIF
+import io.eordie.multimodule.common.repository.entity.DeletedIFProps
 import io.eordie.multimodule.common.repository.entity.UpdatedAtIF
 import io.eordie.multimodule.common.repository.entity.UpdatedAtIFProps
 import io.eordie.multimodule.common.repository.entity.VersionedEntityIF
@@ -11,6 +13,7 @@ import io.eordie.multimodule.common.repository.entity.VersionedEntityIFProps
 import io.eordie.multimodule.common.repository.ext.and
 import io.eordie.multimodule.common.repository.ext.name
 import io.eordie.multimodule.common.utils.GenericTypes
+import io.eordie.multimodule.contracts.basic.filters.BooleanLiteralFilter
 import io.eordie.multimodule.contracts.basic.filters.LiteralFilter
 import io.eordie.multimodule.contracts.basic.filters.NumericFilter
 import io.eordie.multimodule.contracts.basic.filters.OffsetDateTimeLiteralFilter
@@ -22,6 +25,7 @@ import io.micronaut.core.beans.BeanProperty
 import jakarta.inject.Singleton
 import org.babyfish.jimmer.sql.kt.ast.expression.KNonNullExpression
 import org.babyfish.jimmer.sql.kt.ast.expression.KPropExpression
+import org.babyfish.jimmer.sql.kt.ast.expression.eq
 import org.babyfish.jimmer.sql.kt.ast.table.KNonNullTable
 import java.time.OffsetDateTime
 import kotlin.jvm.optionals.toList
@@ -72,6 +76,10 @@ class FiltersRegistry(
             if (UpdatedAtIF::class.isSuperclassOf(targetClass)) {
                 val prop = table.get<OffsetDateTime>(UpdatedAtIFProps.UPDATED_AT.unwrap())
                 add(derived<F, OffsetDateTimeLiteralFilter, OffsetDateTime>(i, filter, prop))
+            }
+            if (DeletedIF::class.isSuperclassOf(targetClass)) {
+                val prop = table.get<Boolean>(DeletedIFProps.DELETED.unwrap())
+                add(derived<F, BooleanLiteralFilter, Boolean>(i, filter, prop) ?: (prop eq false))
             }
         }.filterNotNull()
 

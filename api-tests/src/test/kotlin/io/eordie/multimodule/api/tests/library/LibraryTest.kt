@@ -35,8 +35,8 @@ import jakarta.inject.Inject
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.future.await
-import org.junit.jupiter.api.AfterAll
-import org.junit.jupiter.api.BeforeAll
+import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.time.OffsetDateTime
 import kotlin.test.assertNotNull
@@ -56,7 +56,7 @@ class LibraryTest : AbstractApplicationTest() {
     private lateinit var firstBook: Book
     private lateinit var secondBook: Book
 
-    @BeforeAll
+    @BeforeEach
     fun init() = test {
         firstBook = mutateLibrary.book(
             BookInput(null, "First book", listOf(AuthorInput(firstName = "John", lastName = "Doe")))
@@ -66,7 +66,7 @@ class LibraryTest : AbstractApplicationTest() {
         )
     }
 
-    @AfterAll
+    @AfterEach
     fun destroy() = test {
         if (::firstBook.isInitialized) {
             mutateLibrary.deleteBook(firstBook.id)
