@@ -16,6 +16,7 @@ object JsonModule {
     fun getInstance(): Json {
         return Json {
             ignoreUnknownKeys = true
+            explicitNulls = false
             serializersModule = SerializersModule {
                 contextual(UUID::class, UUIDSerializer)
                 contextual(OffsetDateTime::class, OffsetDateTimeSerializer)
