@@ -5,6 +5,7 @@ import io.eordie.multimodule.common.utils.like
 import io.eordie.multimodule.contracts.Mutation
 import io.eordie.multimodule.contracts.Query
 import io.eordie.multimodule.contracts.Subscription
+import io.micronaut.aop.Intercepted
 import io.micronaut.context.BeanLocator
 import io.opentelemetry.api.trace.Tracer
 import io.rsocket.kotlin.ConnectionAcceptor
@@ -19,6 +20,7 @@ import kotlin.coroutines.EmptyCoroutineContext
 import kotlin.reflect.KClass
 import kotlin.reflect.KVisibility
 import kotlin.reflect.full.declaredFunctions
+import kotlin.reflect.full.superclasses
 
 @OptIn(ExperimentalMetadataApi::class)
 class RsocketConnectionAcceptorBuilder(
@@ -86,7 +88,11 @@ class RsocketConnectionAcceptorBuilder(
                 controller::class.getServiceInterface(type)?.let { controller to it }
             }
             .flatMap { (controller, serviceInterface) ->
-                val implFunctions = controller::class.declaredFunctions
+                val controllerClass = if (controller !is Intercepted) controller::class else {
+                    controller::class.superclasses[0]
+                }
+
+                val implFunctions = controllerClass.declaredFunctions
                 serviceInterface.declaredFunctions
                     .filter { it.visibility == KVisibility.PUBLIC }
                     .map { interfaceFunction ->
