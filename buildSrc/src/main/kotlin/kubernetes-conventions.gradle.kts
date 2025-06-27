@@ -2,6 +2,8 @@ import com.bmuschko.gradle.docker.shaded.org.apache.commons.lang3.RandomStringUt
 import com.bmuschko.gradle.docker.tasks.image.DockerBuildImage
 import io.micronaut.gradle.docker.MicronautDockerfile
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import java.io.FileInputStream
+import java.util.*
 
 plugins {
     id("kotlin-conventions")
@@ -28,7 +30,9 @@ dependencies {
 val generatedTag: String get() =
     project.findProperty("generated-tag")?.toString() ?: RandomStringUtils.randomNumeric(4)
 
-val activeProfile = project.gradle.startParameter.projectProperties["active.profile"] ?: "dev"
+val localProperties = Properties().apply { load(FileInputStream(".run/local.properties")) }
+
+val activeProfile: String = project.gradle.startParameter.projectProperties["active.profile"] ?: localProperties.getProperty("active.profile")
 val gitCommitHash: String get() = providers.of(GitCommitValueSource::class) {}.get()
 val version = "$gitCommitHash-$generatedTag"
 
