@@ -105,6 +105,8 @@ micronaut:
         enabled: true
 
 otel:
+  traces:
+    exporter: none
   exporter:
     enabled: false
 
