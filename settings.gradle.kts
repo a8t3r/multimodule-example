@@ -3,8 +3,8 @@ import dev.aga.gradle.versioncatalogs.GeneratorConfig
 
 plugins {
     id("com.gradle.enterprise") version "3.19.2"
-    id("io.micronaut.platform.catalog") version "4.4.4"
-    id("dev.aga.gradle.version-catalog-generator") version "3.2.1"
+    id("io.micronaut.platform.catalog") version "4.5.4"
+    id("dev.aga.gradle.version-catalog-generator") version "3.2.2"
 }
 
 dependencyResolutionManagement {

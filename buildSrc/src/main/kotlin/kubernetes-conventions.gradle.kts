@@ -9,12 +9,14 @@ plugins {
     id("micronaut-conventions")
     io.micronaut.docker
     alias(libs.plugins.ksp)
-    org.jetbrains.kotlin.kapt
+    // disabled by https://github.com/JetBrains/kotlin/commit/e6cb3bee90e8b6eb255baf7c814f213a65537291
+    // NoSuchMethodError: 'void org.jetbrains.kotlin.gradle.dsl.KaptArguments.arg(java.lang.Object, java.lang.Object[])
+    // org.jetbrains.kotlin.kapt
 }
 
 dependencies {
-    kapt(libs.dekorate.kubernetes.annotations)
-    kapt(libs.dekorate.prometheus.annotations)
+    // kapt(libs.dekorate.kubernetes.annotations)
+    // kapt(libs.dekorate.prometheus.annotations)
 
     implementation(project(":model-contracts"))
     implementation(project(":common-service"))

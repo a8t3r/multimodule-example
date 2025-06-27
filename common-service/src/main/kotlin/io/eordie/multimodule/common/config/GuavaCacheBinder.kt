@@ -7,7 +7,7 @@ import org.babyfish.jimmer.meta.ImmutableType
 import org.babyfish.jimmer.sql.kt.cache.KSimpleBinder
 import java.time.Duration
 
-internal class GuavaCacheBinder<K, V> : KSimpleBinder<K, V> {
+internal class GuavaCacheBinder<K : Any, V : Any> : KSimpleBinder<K, V> {
 
     private val cache: Cache<K, V> = CacheBuilder.newBuilder()
         .expireAfterWrite(Duration.ofHours(1))
@@ -23,8 +23,8 @@ internal class GuavaCacheBinder<K, V> : KSimpleBinder<K, V> {
     }
 
     override fun setAll(map: Map<K, V>) {
-        cache.invalidateAll(map.filterValues { it == null }.keys)
-        cache.putAll(map.filterValues { it != null })
+        cache.invalidateAll(map.keys)
+        cache.putAll(map)
     }
 
     override fun prop(): ImmutableProp? = null

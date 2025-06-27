@@ -1,6 +1,6 @@
+import com.google.devtools.ksp.gradle.KspAATask
 import io.github.ermadmi78.kobby.kobby
 import io.github.ermadmi78.kobby.task.KobbyKotlin
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     `kotlinx-serialization`
@@ -61,6 +61,6 @@ dependencies {
     testImplementation(libs.jimmer.sql.kotlin)
 }
 
-tasks.withType(KotlinCompile::class.java).configureEach {
+tasks.withType(KspAATask::class.java).configureEach {
     dependsOn(tasks.withType(KobbyKotlin::class.java))
 }
