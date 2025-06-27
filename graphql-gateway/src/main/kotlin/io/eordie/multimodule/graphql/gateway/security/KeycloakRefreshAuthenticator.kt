@@ -29,7 +29,7 @@ class KeycloakRefreshAuthenticator(
     private val mapper: OpenIdAuthenticationMapper,
     private val persistence: OAuthResponsePersistence,
     private val httpClient: HttpClient,
-    @Named("keycloak") private val properties: OauthClientConfigurationProperties
+    @param:Named("keycloak") private val properties: OauthClientConfigurationProperties
 ) {
 
     fun getTokenOrRefresh(userId: UUID): OAuthToken {

@@ -33,7 +33,7 @@ class AuthenticationDetailsBuilder {
     )
 
     data class ResourceAccess(
-        @JsonProperty("master-realm")
+        @param:JsonProperty("master-realm")
         val masterRealm: ResourceRole
     )
 

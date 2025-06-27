@@ -93,7 +93,7 @@ open class KFactoryImpl<T : Any, S : T, ID : Comparable<ID>>(
     private lateinit var registryProvider: Provider<FiltersRegistry>
 
     @Inject
-    private lateinit var microservices: Provider<Microservices>
+    private lateinit var microservices: Microservices
 
     private val immutableType = ImmutableType.get(entityType.java)
 
@@ -214,7 +214,7 @@ open class KFactoryImpl<T : Any, S : T, ID : Comparable<ID>>(
         return Internal.produce(immutableType, base, consumer).uncheckedCast()
     }
 
-    suspend fun resourceAcl(): ResourceAcl = microservices.get().buildAcl(coroutineContext, requireEmployeeAcl)
+    suspend fun resourceAcl(): ResourceAcl = microservices.buildAcl(coroutineContext, requireEmployeeAcl)
 
     private suspend fun applyPermissions(
         values: List<T>,

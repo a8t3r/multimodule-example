@@ -6,10 +6,10 @@ import io.eordie.multimodule.contracts.basic.geometry.TPoint
 import io.eordie.multimodule.contracts.organization.models.extra.OrganizationPublicInformation
 
 data class Address(
-    @JsonProperty("geo_lat")
+    @param:JsonProperty("geo_lat")
     val geoLat: Double,
 
-    @JsonProperty("geo_lon")
+    @param:JsonProperty("geo_lon")
     val geoLon: Double
 )
 

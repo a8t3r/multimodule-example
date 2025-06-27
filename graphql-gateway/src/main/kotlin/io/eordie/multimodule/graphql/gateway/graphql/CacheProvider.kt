@@ -10,7 +10,8 @@ import kotlin.reflect.full.findAnnotation
 
 @Singleton
 class CacheProvider(
-    @Named("dataloader") private val cache: SyncCache<*>,
+    @param:Named("dataloader")
+    private val cache: SyncCache<*>,
     private val openTelemetry: OpenTelemetry
 ) {
 

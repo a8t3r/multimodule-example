@@ -9,5 +9,7 @@ micronaut:
       enabled: false
 
 otel:
+  traces:
+    exporter: none
   exporter:
     enabled: false

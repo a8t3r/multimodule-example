@@ -28,7 +28,7 @@ dependencies {
 val generatedTag: String get() =
     project.findProperty("generated-tag")?.toString() ?: RandomStringUtils.randomNumeric(4)
 
-val activeProfile = "dev"
+val activeProfile = project.gradle.startParameter.projectProperties["active.profile"] ?: "dev"
 val gitCommitHash: String get() = providers.of(GitCommitValueSource::class) {}.get()
 val version = "$gitCommitHash-$generatedTag"
 

@@ -13,7 +13,6 @@ import io.eordie.multimodule.contracts.utils.asRoleSet
 import io.eordie.multimodule.organization.management.models.OrganizationEmployeeModel
 import io.eordie.multimodule.organization.management.repository.OrganizationDepartmentFactory
 import io.eordie.multimodule.organization.management.repository.OrganizationEmployeeFactory
-import jakarta.inject.Provider
 import jakarta.inject.Singleton
 import java.util.*
 import kotlin.coroutines.CoroutineContext
@@ -21,13 +20,13 @@ import kotlin.coroutines.coroutineContext
 
 @Singleton
 class EmployeeAclQueriesController(
-    private val microservices: Provider<Microservices>,
+    private val microservices: Microservices,
     private val employees: OrganizationEmployeeFactory,
     private val departments: OrganizationDepartmentFactory
 ) : EmployeeAclQueries {
 
     override suspend fun activeEmployeeAcl(): List<EmployeeAcl> =
-        microservices.get().loadAclElement(coroutineContext).resource
+        microservices.loadAclElement(coroutineContext).resource
 
     override suspend fun internalActiveResourceAcl(userId: UUID, organizationId: UUID): ResourceAcl? {
         return loadResourceAcl(listOf(userId), organizationId).firstOrNull()

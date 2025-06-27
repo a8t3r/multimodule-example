@@ -5,13 +5,16 @@ import io.eordie.multimodule.contracts.organization.models.acl.EmployeeAcl
 import io.eordie.multimodule.contracts.organization.models.acl.ResourceAcl
 import io.eordie.multimodule.contracts.organization.services.EmployeeAclQueries
 import jakarta.inject.Inject
+import jakarta.inject.Provider
 import jakarta.inject.Singleton
 import java.util.*
 import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.EmptyCoroutineContext
 
 @Singleton
-class Microservices @Inject constructor(private val api: EmployeeAclQueries) {
+class Microservices @Inject constructor(
+    private val api: Provider<EmployeeAclQueries>
+) {
 
     fun loadAclElement(coroutineContext: CoroutineContext): AclContextElement {
         val element = coroutineContext.getOrCreateAclElement()
@@ -22,7 +25,7 @@ class Microservices @Inject constructor(private val api: EmployeeAclQueries) {
     }
 
     private fun loadAcl(context: CoroutineContext, userId: UUID, organizationId: UUID): List<EmployeeAcl> {
-        return api.loadEmployeeAcl(context, userId, organizationId)
+        return api.get().loadEmployeeAcl(context, userId, organizationId)
     }
 
     fun buildAcl(context: CoroutineContext, requireEmployeeAcl: Boolean = true): ResourceAcl {

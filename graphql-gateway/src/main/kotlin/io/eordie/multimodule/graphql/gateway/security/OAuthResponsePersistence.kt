@@ -14,7 +14,7 @@ import java.util.*
 
 @Singleton
 class OAuthResponsePersistence(
-    @Named("oauth2") private val cache: SyncCache<*>
+    @param:Named("oauth2") private val cache: SyncCache<*>
 ) : ApplicationEventListener<LoginSuccessfulEvent> {
 
     override fun onApplicationEvent(event: LoginSuccessfulEvent) {
