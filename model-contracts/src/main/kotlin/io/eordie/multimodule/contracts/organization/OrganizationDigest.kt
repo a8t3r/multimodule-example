@@ -8,7 +8,7 @@ import kotlinx.serialization.Serializable
 @Introspected
 @Serializable
 data class OrganizationDigest(
-    @GraphQLIgnore
+    @property:GraphQLIgnore
     val organizationId: UuidStr,
     val membersCount: Long,
     val domainsCount: Long,

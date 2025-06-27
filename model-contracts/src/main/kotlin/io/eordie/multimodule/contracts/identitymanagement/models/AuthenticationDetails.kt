@@ -22,7 +22,7 @@ import java.util.concurrent.CompletableFuture
 data class OrganizationRoleBinding(
     val organizationId: UuidStr,
     val organizationName: String,
-    @GraphQLIgnore val roleSet: RoleSet
+    @property:GraphQLIgnore val roleSet: RoleSet
 ) {
     val roles: List<Roles> get() = roleSet.asList()
 }
@@ -31,7 +31,7 @@ data class OrganizationRoleBinding(
 @Serializable
 data class AuthenticationDetails(
     val userId: UuidStr,
-    @GraphQLIgnore val roleSet: RoleSet,
+    @property:GraphQLIgnore val roleSet: RoleSet,
     val email: String,
     val emailVerified: Boolean,
     val locale: LocaleBinding,

@@ -12,7 +12,7 @@ data class EmployeeAcl(
     val farmId: UuidStr,
     val farmOwnerOrganizationId: UuidStr,
     val fieldIds: List<UuidStr>? = null,
-    @GraphQLIgnore val roleIds: List<Int>? = null
+    @property:GraphQLIgnore val roleIds: List<Int>? = null
 ) {
     fun roles() = Roles.fromIds(roleIds)
 }
