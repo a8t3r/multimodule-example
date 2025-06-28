@@ -1,7 +1,6 @@
 import com.bmuschko.gradle.docker.shaded.org.apache.commons.lang3.RandomStringUtils
 import com.bmuschko.gradle.docker.tasks.image.DockerBuildImage
 import io.micronaut.gradle.docker.MicronautDockerfile
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import java.io.FileInputStream
 import java.util.*
 
@@ -73,7 +72,7 @@ val movingResources by tasks.registering(Copy::class) {
     into(layout.buildDirectory.dir("resources/main"))
 }
 
-tasks.withType(KotlinCompile::class.java).configureEach {
+tasks.withType(ProcessResources::class.java).configureEach {
     dependsOn(movingResources)
 }
 
