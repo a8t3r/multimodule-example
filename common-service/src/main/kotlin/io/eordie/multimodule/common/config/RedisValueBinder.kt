@@ -14,6 +14,7 @@ class RedisValueBinder<K, V>(
     null,
     null,
     null,
+    null,
     Duration.ofMinutes(10),
     20
 ) {
