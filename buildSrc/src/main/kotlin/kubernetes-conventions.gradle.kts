@@ -31,8 +31,9 @@ val generatedTag: String get() =
 
 val localProperties = Properties().apply { load(FileInputStream(".run/local.properties")) }
 
-val activeProfile: String = if (project.gradle.startParameter.taskNames.any { it.contains("test") }) "test" else {
-    project.gradle.startParameter.projectProperties["active.profile"] ?: localProperties.getProperty("active.profile")
+val startParameter = project.gradle.startParameter
+val activeProfile: String = if (startParameter.taskNames.flatMap { it.split(':') }.contains("test")) "test" else {
+    startParameter.projectProperties["active.profile"] ?: localProperties.getProperty("active.profile")
 }
 
 val gitCommitHash: String get() = providers.of(GitCommitValueSource::class) {}.get()
