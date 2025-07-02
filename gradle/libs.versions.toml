@@ -27,7 +27,7 @@ logitech = "1.20.0"
 micronaut = "4.9.0"
 micronautPlugin = "4.5.4"
 # @pin
-opentelemetry = "1.48.0"
+opentelemetry = "1.51.0"
 phaseTwo = "0.1.11"
 rsocket = "0.20.0"
 valiktor = "0.12.0"
