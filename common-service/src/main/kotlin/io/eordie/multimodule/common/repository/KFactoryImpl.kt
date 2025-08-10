@@ -148,7 +148,7 @@ open class KFactoryImpl<T : Any, S : T, ID : Comparable<ID>>(
             noCacheSql.javaClient.connectionManager.execute { connection ->
                 connection.autoCommit = false
                 runBlocking(context + ConnectionContextElement(connection)) {
-                    val result = kotlin.runCatching { block(connection) }
+                    val result = runCatching { block(connection) }
                     if (result.isSuccess) connection.commit() else connection.rollback()
                     result.getOrElse { throw UnexpectedRollbackException(it.message, it) }
                 }
@@ -236,7 +236,7 @@ open class KFactoryImpl<T : Any, S : T, ID : Comparable<ID>>(
     }
 
     suspend fun checkPermission(value: T, permission: BasePermission): T {
-        return applyPermissions(listOf(value), permission).firstOrNull() ?: kotlin.run {
+        return applyPermissions(listOf(value), permission).firstOrNull() ?: run {
             MissingPermission(permission).error()
         }
     }
@@ -307,18 +307,18 @@ open class KFactoryImpl<T : Any, S : T, ID : Comparable<ID>>(
         return applyPermissions(data, BasePermission.VIEW)
     }
 
-    override suspend fun findOneBySpecification(fetcher: Fetcher<T>?, block: KMutableRootQuery<T>.() -> Unit): T? {
+    override suspend fun findOneBySpecification(fetcher: Fetcher<T>?, block: KMutableRootQuery<KNonNullTable<T>>.() -> Unit): T? {
         return findBySpecificationPager(block, fetcher).asFlow().singleOrNull()
     }
 
-    override suspend fun findAllBySpecification(fetcher: Fetcher<T>?, block: KMutableRootQuery<T>.() -> Unit): Flow<T> =
+    override suspend fun findAllBySpecification(fetcher: Fetcher<T>?, block: KMutableRootQuery<KNonNullTable<T>>.() -> Unit): Flow<T> =
         findBySpecificationPager(block, fetcher).asFlow()
 
-    override suspend fun findBySpecification(pageable: Pageable, block: KMutableRootQuery<T>.() -> Unit): Page<T> {
+    override suspend fun findBySpecification(pageable: Pageable, block: KMutableRootQuery<KNonNullTable<T>>.() -> Unit): Page<T> {
         return findBySpecificationPager(block)(pageable)
     }
 
-    override suspend fun findIdsBySpecification(block: KMutableRootQuery<T>.() -> Unit): Flow<ID> {
+    override suspend fun findIdsBySpecification(block: KMutableRootQuery<KNonNullTable<T>>.() -> Unit): Flow<ID> {
         val pager = createIdsPager(resourceAcl(), block)
         return flow {
             var nextPageable = Pageable()
@@ -337,17 +337,17 @@ open class KFactoryImpl<T : Any, S : T, ID : Comparable<ID>>(
     private fun Pageable.actualLimit(): Int = limit?.coerceAtMost(MAX_LIMIT) ?: MAX_LIMIT
 
     private suspend fun findBySpecificationPager(
-        block: KMutableRootQuery<T>.() -> Unit
+        block: KMutableRootQuery<KNonNullTable<T>>.() -> Unit
     ): suspend (Pageable) -> Page<T> = findBySpecificationPager(block, null)
 
     override suspend fun findBySpecification(
         fetcher: Fetcher<T>,
         pageable: Pageable,
-        block: KMutableRootQuery<T>.() -> Unit
+        block: KMutableRootQuery<KNonNullTable<T>>.() -> Unit
     ): Page<T> = findBySpecificationPager(block, fetcher)(pageable)
 
     private suspend fun findBySpecificationPager(
-        block: KMutableRootQuery<T>.() -> Unit,
+        block: KMutableRootQuery<KNonNullTable<T>>.() -> Unit,
         fetcher: Fetcher<T>?
     ): suspend (Pageable) -> Page<T> {
         val acl = resourceAcl()
@@ -386,7 +386,7 @@ open class KFactoryImpl<T : Any, S : T, ID : Comparable<ID>>(
 
     private fun createIdsPager(
         acl: ResourceAcl,
-        block: KMutableRootQuery<T>.() -> Unit
+        block: KMutableRootQuery<KNonNullTable<T>>.() -> Unit
     ): (Pageable) -> List<Pair<ID, () -> Pageable>> {
         return { pageable ->
             val cursor = InternalCursor.create(pageable, idPropertyName, sortingExpressionKeys)
@@ -402,10 +402,10 @@ open class KFactoryImpl<T : Any, S : T, ID : Comparable<ID>>(
     }
 
     private fun createQuery(
-        block: KMutableRootQuery<T>.() -> Unit,
+        block: KMutableRootQuery<KNonNullTable<T>>.() -> Unit,
         acl: ResourceAcl,
         cursor: InternalCursor
-    ): KConfigurableRootQuery<T, out Tuple6<ID, out Any, out Any, out Any, out Any, out Any>> {
+    ): KConfigurableRootQuery<KNonNullTable<T>, out Tuple6<ID, out Any, out Any, out Any, out Any, out Any>> {
         return sql.createQuery(entityType) {
             block(this)
             where(*acl.listPredicates(table).toTypedArray())

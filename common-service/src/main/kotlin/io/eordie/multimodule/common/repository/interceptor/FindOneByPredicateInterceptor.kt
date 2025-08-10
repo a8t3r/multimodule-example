@@ -21,6 +21,8 @@ import org.babyfish.jimmer.sql.ast.tuple.Tuple3
 import org.babyfish.jimmer.sql.kt.KSqlClient
 import org.babyfish.jimmer.sql.kt.ast.expression.value
 import org.babyfish.jimmer.sql.kt.ast.query.KConfigurableRootQuery
+import org.babyfish.jimmer.sql.kt.ast.table.KNonNullTable
+import org.babyfish.jimmer.sql.kt.ast.table.KPropsLike
 import org.babyfish.jimmer.sql.runtime.ExecutionPurpose
 import org.babyfish.jimmer.sql.runtime.Executor
 import org.babyfish.jimmer.sql.runtime.SqlBuilder
@@ -41,12 +43,12 @@ class FindOneByPredicateInterceptor(
     private val executorLog: OpenTelemetryExecutorLog? = context.getBean<Executor>()
         .takeIf { it is OpenTelemetryExecutorLog } as OpenTelemetryExecutorLog?
 
-    private fun ConfigurableRootQueryImpl<Table<Any>, *>.prepare(
+    private fun ConfigurableRootQueryImpl<Table<KNonNullTable<Any>>, *>.prepare(
         nativeSql: String
     ): Tuple3<String, MutableList<Any>, MutableList<Int>> {
-        val sqlBuilder = SqlBuilder(AstContext(baseQuery.sqlClient))
+        val sqlBuilder = SqlBuilder(AstContext(mutableQuery.sqlClient))
 
-        baseQuery.applyVirtualPredicates(sqlBuilder.astContext)
+        mutableQuery.applyVirtualPredicates(sqlBuilder.astContext)
 
         val visitor = UseTableVisitor(sqlBuilder.astContext)
         accept(visitor)
@@ -59,7 +61,7 @@ class FindOneByPredicateInterceptor(
         return sqlResult.copy(_1 = finalQuery)
     }
 
-    private fun <X : Any, V> KConfigurableRootQuery<X, V>.asNative(): ConfigurableRootQueryImpl<Table<X>, V> {
+    private fun <X : KPropsLike, V> KConfigurableRootQuery<X, V>.asNative(): ConfigurableRootQueryImpl<Table<X>, V> {
         val query = this
         return safeCast(
             ReflectionUtils.getFieldValue(

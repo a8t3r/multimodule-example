@@ -16,6 +16,7 @@ import org.babyfish.jimmer.runtime.ImmutableSpi
 import org.babyfish.jimmer.sql.event.EntityListener
 import org.babyfish.jimmer.sql.fetcher.Fetcher
 import org.babyfish.jimmer.sql.kt.ast.query.KMutableRootQuery
+import org.babyfish.jimmer.sql.kt.ast.table.KNonNullTable
 import kotlin.reflect.KClass
 
 abstract class KBaseFactory<T : Convertable<C>, S : T, C : Any, ID, F : Any>(
@@ -60,7 +61,7 @@ abstract class KBaseFactory<T : Convertable<C>, S : T, C : Any, ID, F : Any>(
         )
     }
 
-    private suspend fun where(filter: F): KMutableRootQuery<T>.() -> Unit {
+    private suspend fun where(filter: F): KMutableRootQuery<KNonNullTable<T>>.() -> Unit {
         val acl = resourceAcl()
         return {
             where(registry.toPredicates(acl, filter, table))

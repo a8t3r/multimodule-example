@@ -6,6 +6,7 @@ import kotlinx.coroutines.flow.Flow
 import org.babyfish.jimmer.sql.fetcher.Fetcher
 import org.babyfish.jimmer.sql.kt.ast.expression.KNonNullExpression
 import org.babyfish.jimmer.sql.kt.ast.query.KMutableRootQuery
+import org.babyfish.jimmer.sql.kt.ast.table.KNonNullTable
 import org.babyfish.jimmer.sql.kt.ast.table.KNonNullTableEx
 
 @Suppress("TooManyFunctions")
@@ -13,23 +14,23 @@ interface KFactory<T : Any, S : T, ID> {
 
     suspend fun findByIds(ids: Collection<ID>, fetcher: Fetcher<T>? = null): Flow<T>
 
-    suspend fun findOneBySpecification(block: KMutableRootQuery<T>.() -> Unit): T? =
+    suspend fun findOneBySpecification(block: KMutableRootQuery<KNonNullTable<T>>.() -> Unit): T? =
         findOneBySpecification(null, block)
 
-    suspend fun findOneBySpecification(fetcher: Fetcher<T>? = null, block: KMutableRootQuery<T>.() -> Unit): T?
+    suspend fun findOneBySpecification(fetcher: Fetcher<T>? = null, block: KMutableRootQuery<KNonNullTable<T>>.() -> Unit): T?
 
-    suspend fun findBySpecification(block: KMutableRootQuery<T>.() -> Unit): Page<T> =
+    suspend fun findBySpecification(block: KMutableRootQuery<KNonNullTable<T>>.() -> Unit): Page<T> =
         findBySpecification(Pageable(), block)
 
-    suspend fun findBySpecification(pageable: Pageable, block: KMutableRootQuery<T>.() -> Unit): Page<T>
+    suspend fun findBySpecification(pageable: Pageable, block: KMutableRootQuery<KNonNullTable<T>>.() -> Unit): Page<T>
     suspend fun findBySpecification(
         fetcher: Fetcher<T>,
         pageable: Pageable,
-        block: KMutableRootQuery<T>.() -> Unit
+        block: KMutableRootQuery<KNonNullTable<T>>.() -> Unit
     ): Page<T>
 
-    suspend fun findAllBySpecification(fetcher: Fetcher<T>? = null, block: KMutableRootQuery<T>.() -> Unit): Flow<T>
-    suspend fun findIdsBySpecification(block: KMutableRootQuery<T>.() -> Unit): Flow<ID>
+    suspend fun findAllBySpecification(fetcher: Fetcher<T>? = null, block: KMutableRootQuery<KNonNullTable<T>>.() -> Unit): Flow<T>
+    suspend fun findIdsBySpecification(block: KMutableRootQuery<KNonNullTable<T>>.() -> Unit): Flow<ID>
 
     suspend fun deleteBySpecification(block: (KNonNullTableEx<T>) -> List<KNonNullExpression<Boolean>>)
     suspend fun deleteById(id: ID): Boolean
